@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BirthdayMe — Your birthday, fully celebrated.</title>
+<meta name="description" content="Turn your birthday into an event. Collect real money from friends and family, build a wishlist, win monthly prizes, and share the celebration."/>
+<meta property="og:title" content="BirthdayMe — Your birthday, fully celebrated."/>
+<meta property="og:description" content="Set up your page, share your link, receive real birthday money."/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#EEF4FF"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --coral:#FF5252;--coral2:#FF8A7A;
+  --gold:#F5A623;--gold2:#FFD166;
+  --mint:#00C896;--mint2:#06D6A0;
+  --violet:#9B5DE5;--violet2:#C77DFF;
+  --sky:#4DAAFF;--sky2:#A8D4FF;
+  --hero-bg:#EEF4FF;--cream:#FFF8F2;--warm-white:#FFFCF8;
+  --dark:#0C0B10;--dark2:#16141C;--dark3:#1E1B27;
+  --text:#18243C;--text-mid:#4A5B7A;--text-muted:#8B96B0;
+  --font-display:'Clash Display',sans-serif;
+  --font-body:'Bricolage Grotesque',sans-serif;
+  --font-ui:'Plus Jakarta Sans',sans-serif;
+}
+html{scroll-behavior:smooth;scroll-padding-top:68px;}
+body{font-family:var(--font-body);background:var(--hero-bg);color:var(--text);overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:rgba(77,170,255,.3);border-radius:4px;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;
+  padding:16px 48px;
+  background:rgba(238,244,255,0.85);
+  backdrop-filter:blur(22px) saturate(1.6);
+  border-bottom:1px solid rgba(74,144,255,0.1);
+  transition:all .3s;
+}
+nav.scrolled{padding:11px 48px;background:rgba(255,255,255,0.95);box-shadow:0 4px 32px rgba(74,144,255,0.08);}
+.nav-logo{font-family:var(--font-display);font-size:21px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:7px;letter-spacing:-.02em;}
+.nav-logo .dot{color:var(--coral);}
+.nav-links{display:flex;align-items:center;gap:8px;margin:0 auto;}
+.nav-links a{font-family:var(--font-ui);font-size:14px;font-weight:600;color:var(--text-mid);text-decoration:none;padding:8px 14px;border-radius:10px;transition:all .18s;}
+.nav-links a:hover{color:var(--text);background:rgba(74,144,255,0.08);}
+.nav-cta{display:flex;align-items:center;gap:10px;}
+.btn-nav-ghost{font-family:var(--font-ui);font-size:14px;font-weight:600;color:var(--text-mid);background:none;border:none;cursor:pointer;padding:9px 16px;border-radius:10px;text-decoration:none;transition:all .18s;}
+.btn-nav-ghost:hover{color:var(--coral);background:rgba(255,82,82,0.07);}
+.btn-nav-cta{font-family:var(--font-ui);font-size:14px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--coral),#FF4040);border:none;cursor:pointer;padding:10px 22px;border-radius:12px;text-decoration:none;transition:all .22s;box-shadow:0 4px 18px rgba(255,82,82,0.32);}
+.btn-nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,82,82,0.42);}
+@media(max-width:768px){nav{padding:14px 20px;}.nav-links{display:none;}}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:120px 24px 90px;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse 75% 55% at 15% 12%, rgba(77,170,255,.14), transparent 58%),
+    radial-gradient(ellipse 55% 45% at 88% 85%, rgba(245,166,35,.11), transparent 52%),
+    radial-gradient(ellipse 45% 40% at 80% 10%, rgba(255,82,82,.08),  transparent 48%),
+    radial-gradient(ellipse 50% 45% at 5%  80%, rgba(0,200,150,.07),  transparent 52%),#EEF4FF;
+}
+#ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;animation:orbDrift ease-in-out infinite;}
+@keyframes orbDrift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(24px,-16px) scale(1.04);}66%{transform:translate(-16px,12px) scale(.97);}}
+.amb-balloon{position:absolute;animation:balloonFloat ease-in-out infinite;}
+@keyframes balloonFloat{0%,100%{transform:translateY(0) rotate(-3deg);}33%{transform:translateY(-13px) rotate(2.5deg);}66%{transform:translateY(-7px) rotate(-1.5deg);}}
+.amb-star{position:absolute;font-size:10px;animation:starTwinkle ease-in-out infinite;}
+@keyframes starTwinkle{0%,100%{opacity:.5;}50%{opacity:.07;}}
+.amb-conf{position:absolute;animation:confSpin linear infinite;}
+@keyframes confSpin{0%{transform:rotate(0);}100%{transform:rotate(360deg);}}
+
+.hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;max-width:860px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,166,35,.15);border:1.5px solid rgba(245,166,35,.45);color:#B8720A;font-family:var(--font-ui);font-size:12px;font-weight:800;padding:6px 15px;border-radius:100px;margin-bottom:28px;animation:fadeUp .6s ease both;}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold2);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.65);}}
+.hero-h1{font-family:var(--font-display);font-size:clamp(54px,8.5vw,100px);font-weight:700;line-height:.98;letter-spacing:-.03em;color:var(--text);margin-bottom:10px;animation:fadeUp .7s .08s ease both;}
+.hero-h1 .c{color:var(--coral);}
+.hero-h1 .g{background:linear-gradient(135deg,var(--gold),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-tagline{font-family:var(--font-display);font-size:clamp(17px,2.8vw,24px);font-weight:500;color:var(--text-mid);letter-spacing:.06em;margin-bottom:24px;animation:fadeUp .7s .16s ease both;display:flex;align-items:center;}
+.hero-tagline span{display:inline-block;padding:0 12px;position:relative;}
+.hero-tagline span:not(:last-child)::after{content:'·';position:absolute;right:-4px;color:var(--coral);font-weight:700;}
+.hero-sub{font-size:18px;line-height:1.72;color:var(--text-mid);max-width:540px;margin-bottom:38px;animation:fadeUp .7s .24s ease both;}
+.hero-sub strong{color:var(--text);font-weight:700;}
+.hero-btns{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:26px;animation:fadeUp .7s .32s ease both;}
+.btn-hero{font-family:var(--font-ui);font-size:16px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--coral),#FF3E3E);border:none;cursor:pointer;padding:16px 38px;border-radius:16px;box-shadow:0 8px 32px rgba(255,82,82,.38);transition:all .26s;text-decoration:none;}
+.btn-hero:hover{transform:translateY(-3px);box-shadow:0 14px 44px rgba(255,82,82,.48);}
+.btn-hero-ghost{font-family:var(--font-ui);font-size:16px;font-weight:700;color:var(--text);background:rgba(255,255,255,.8);border:1.5px solid rgba(28,36,60,.11);cursor:pointer;padding:15px 32px;border-radius:16px;backdrop-filter:blur(10px);transition:all .26s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-hero-ghost:hover{background:#fff;border-color:rgba(255,82,82,.28);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08);}
+.free-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(0,200,150,.1);border:1.5px solid rgba(0,200,150,.3);color:#076B52;font-family:var(--font-ui);font-size:13px;font-weight:700;padding:8px 18px;border-radius:100px;animation:fadeUp .7s .4s ease both;margin-bottom:30px;}
+.value-strip{display:flex;align-items:center;animation:fadeUp .7s .48s ease both;background:rgba(255,255,255,.75);backdrop-filter:blur(14px);border:1.5px solid rgba(74,144,255,.14);border-radius:100px;padding:11px 26px;}
+.vs-item{display:flex;align-items:center;gap:8px;font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--text-mid);padding:0 18px;}
+.vs-item i{color:var(--coral);font-size:14px;}
+.vs-divider{width:1px;height:16px;background:rgba(74,144,255,.2);flex-shrink:0;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PEXELS PHOTO STRIP ── */
+.photo-strip{padding:0;overflow:hidden;position:relative;}
+.photo-strip::before,.photo-strip::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none;}
+.photo-strip::before{left:0;background:linear-gradient(to right,var(--hero-bg),transparent);}
+.photo-strip::after{right:0;background:linear-gradient(to left,#fff,transparent);}
+.strip-track{display:flex;gap:14px;animation:stripScroll 32s linear infinite;width:max-content;padding:20px 0;}
+@keyframes stripScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%)}}
+.strip-photo{width:200px;height:140px;border-radius:16px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 20px rgba(24,36,60,.1);}
+
+/* ── MOCKUP ── */
+.mockup-section{background:var(--cream);padding:80px 24px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;}
+.mockup-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--coral),var(--gold),var(--violet),transparent);}
+.phone-wrap{display:flex;gap:20px;align-items:flex-start;max-width:860px;width:100%;justify-content:center;}
+.phone{background:var(--dark);border-radius:36px;padding:14px;flex-shrink:0;box-shadow:0 40px 80px rgba(12,11,16,.22),0 0 0 1px rgba(255,255,255,.05) inset;}
+.phone.main{width:228px;}
+.phone.side{width:200px;margin-top:44px;opacity:.84;}
+.phone.side2{width:200px;margin-top:82px;opacity:.68;}
+@media(max-width:640px){.phone.side,.phone.side2{display:none;}}
+
+/* ── SHARED SECTION LABELS ── */
+.eyebrow{font-family:var(--font-ui);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;opacity:0;transform:translateY(18px);transition:all .6s ease;}
+.eyebrow.vis{opacity:1;transform:translateY(0);}
+.sec-title{font-family:var(--font-display);font-size:clamp(30px,5vw,52px);font-weight:700;letter-spacing:-.025em;text-align:center;max-width:640px;margin-bottom:14px;opacity:0;transform:translateY(18px);transition:all .6s .1s ease;}
+.sec-title.vis{opacity:1;transform:translateY(0);}
+.sec-sub{font-size:16px;color:var(--text-muted);text-align:center;max-width:480px;line-height:1.65;margin-bottom:56px;opacity:0;transform:translateY(18px);transition:all .6s .2s ease;}
+.sec-sub.vis{opacity:1;transform:translateY(0);}
+
+/* ── HOW IT WORKS ── */
+.how{padding:100px 24px;background:var(--warm-white);display:flex;flex-direction:column;align-items:center;}
+.how .eyebrow{color:var(--coral);}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:900px;width:100%;}
+.step{background:#fff;border-radius:24px;padding:32px 28px;border:1px solid rgba(28,36,60,.07);box-shadow:0 4px 24px rgba(28,36,60,.05);opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease,box-shadow .3s,border-color .3s;}
+.step:nth-child(1){transition-delay:.1s;}.step:nth-child(2){transition-delay:.2s;}.step:nth-child(3){transition-delay:.3s;}
+.step.vis{opacity:1;transform:translateY(0);}
+.step:hover{box-shadow:0 14px 52px rgba(255,82,82,.11);border-color:rgba(255,82,82,.18);transform:translateY(-5px);}
+.step-num{font-family:var(--font-display);font-size:62px;font-weight:700;line-height:1;margin-bottom:14px;background:linear-gradient(135deg,rgba(255,82,82,.14),rgba(245,166,35,.14));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block;}
+.step-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px;}
+.step-ico.coral{background:rgba(255,82,82,.1);color:var(--coral);}
+.step-ico.gold{background:rgba(245,166,35,.12);color:var(--gold);}
+.step-ico.mint{background:rgba(0,200,150,.1);color:var(--mint);}
+.step-title{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.step-desc{font-size:15px;line-height:1.68;color:var(--text-muted);}
+.step-img{width:100%;height:110px;object-fit:cover;border-radius:12px;margin-bottom:14px;}
+@media(max-width:720px){.steps{grid-template-columns:1fr;}}
+
+/* ── FEATURES BENTO ── */
+.features{padding:100px 24px 120px;background:var(--dark);display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;}
+.features::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,82,82,.5),rgba(245,166,35,.5),transparent);}
+.features .eyebrow{color:var(--gold);}
+.features .sec-title{color:#F0ECFF;}
+.features .sec-sub{color:#7B7494;}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;max-width:1040px;width:100%;}
+.bc{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:28px 24px;position:relative;overflow:hidden;opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease,background .25s,border-color .25s;}
+.bc.vis{opacity:1;transform:translateY(0);}
+.bc:hover{background:rgba(255,255,255,.055);border-color:rgba(245,166,35,.16);}
+.bc:nth-child(1){transition-delay:.04s;}.bc:nth-child(2){transition-delay:.09s;}.bc:nth-child(3){transition-delay:.14s;}.bc:nth-child(4){transition-delay:.19s;}.bc:nth-child(5){transition-delay:.04s;}.bc:nth-child(6){transition-delay:.09s;}.bc:nth-child(7){transition-delay:.14s;}.bc:nth-child(8){transition-delay:.19s;}
+.bh{grid-column:span 7;grid-row:span 2;padding:38px 34px;}
+.bt{grid-column:span 5;grid-row:span 2;}
+.bw{grid-column:span 7;}
+.bs{grid-column:span 5;}
+.bstrip{grid-column:span 12;padding:26px 30px;display:flex;align-items:center;gap:26px;}
+.bthird{grid-column:span 4;}
+.bc .fi{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:18px;flex-shrink:0;}
+.fi-coral{background:rgba(255,82,82,.15);color:var(--coral2);}
+.fi-gold{background:rgba(245,166,35,.12);color:var(--gold2);}
+.fi-violet{background:rgba(155,93,229,.15);color:var(--violet2);}
+.fi-mint{background:rgba(0,200,150,.12);color:var(--mint2);}
+.fi-sky{background:rgba(77,170,255,.12);color:var(--sky);}
+.bc .ft{font-family:var(--font-display);font-size:21px;font-weight:700;color:#F0ECFF;margin-bottom:9px;}
+.bc .fd{font-size:14px;line-height:1.68;color:#7B7494;}
+.bh .ft{font-size:26px;margin-bottom:12px;}
+.bh .fd{font-size:15px;max-width:360px;}
+.bh::before{content:'';position:absolute;top:-70px;right:-70px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,82,82,.09) 0%,transparent 70%);pointer-events:none;}
+.ftag{display:inline-block;margin-top:14px;font-family:var(--font-ui);font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;}
+.tc{background:rgba(255,82,82,.15);color:var(--coral2);}
+.tg{background:rgba(245,166,35,.12);color:var(--gold2);}
+.tv{background:rgba(155,93,229,.15);color:var(--violet2);}
+.tm{background:rgba(0,200,150,.12);color:var(--mint2);}
+.ts{background:rgba(77,170,255,.12);color:var(--sky);}
+.money-d{margin-top:18px;display:flex;align-items:flex-end;gap:6px;}
+.money-big{font-family:var(--font-display);font-size:54px;font-weight:700;line-height:1;background:linear-gradient(135deg,var(--gold),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.money-lbl{font-size:13px;color:#7B7494;padding-bottom:7px;}
+.squad-bar-wrap{margin-top:20px;}
+.squad-bar{height:7px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:7px;}
+.squad-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--coral),var(--gold));width:0;transition:width 1.6s cubic-bezier(.4,0,.2,1);}
+.squad-fill.go{width:74%;}
+.squad-stats{display:flex;justify-content:space-between;font-size:12px;color:#7B7494;}
+.squad-stats strong{color:var(--gold2);}
+.surp{margin-top:16px;display:flex;flex-direction:column;gap:6px;}
+.surp-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;font-size:13px;}
+.sname{color:#F0ECFF;font-weight:600;}.shide{color:#2E2A3D;font-weight:600;letter-spacing:.15em;}.samt{color:var(--gold2);font-weight:700;}
+.mwall{margin-top:14px;display:flex;flex-direction:column;gap:6px;}
+.mpost{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px 10px;}
+.mpost-u{font-size:9.5px;color:var(--violet2);font-weight:700;margin-bottom:2px;}
+.mpost-m{font-size:10.5px;color:#7B7494;line-height:1.45;}
+.strip-ico{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.strip-txt h3{font-family:var(--font-display);font-size:20px;color:#F0ECFF;font-weight:700;margin-bottom:5px;}
+.strip-txt p{font-size:14px;color:#7B7494;line-height:1.6;max-width:560px;}
+.strip-cta{margin-left:auto;flex-shrink:0;}
+.btn-strip{font-family:var(--font-ui);font-size:14px;font-weight:800;color:var(--dark);background:linear-gradient(135deg,var(--gold),var(--coral));border:none;cursor:pointer;padding:12px 24px;border-radius:12px;text-decoration:none;white-space:nowrap;transition:all .22s;box-shadow:0 4px 18px rgba(245,166,35,.3);}
+.btn-strip:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(245,166,35,.42);}
+/* Pexels bento image */
+.bento-img{width:100%;height:130px;object-fit:cover;border-radius:12px;margin-top:14px;opacity:.7;}
+@media(max-width:900px){.bh,.bt,.bw,.bs,.bthird{grid-column:span 12;}.bstrip{flex-direction:column;gap:14px;}.strip-cta{margin-left:0;}}
+
+/* ── COLLAGE ── */
+.collage-section{padding:100px 24px 80px;background:linear-gradient(180deg,#fff9f5 0%,#fff 100%);overflow:hidden;}
+.collage-header{text-align:center;margin-bottom:64px;}
+.collage-eyebrow{font-family:var(--font-ui);font-size:12px;font-weight:800;color:var(--coral);text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:7px;justify-content:center;margin-bottom:12px;}
+.collage-title{font-family:var(--font-display);font-size:clamp(28px,4.5vw,46px);font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:-.02em;}
+.collage-sub{font-size:15px;color:var(--text-muted);}
+.collage-stage{position:relative;height:460px;max-width:940px;margin:0 auto;}
+.wall-card{position:absolute;background:#fff;border-radius:18px;padding:15px;display:flex;gap:11px;align-items:flex-start;width:252px;box-shadow:0 4px 24px rgba(28,36,60,.09),0 1px 4px rgba(28,36,60,.06);border:1px solid rgba(28,36,60,.06);transition:transform .3s ease,box-shadow .3s ease;}
+.wall-card:hover{transform:rotate(0deg) scale(1.05) !important;box-shadow:0 14px 44px rgba(28,36,60,.16);}
+.wc-avatar{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;font-family:var(--font-ui);}
+.wc-name{font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.wc-time{font-weight:500;color:var(--text-muted);font-size:11px;margin-left:6px;}
+.wc-text{font-size:13px;color:#4A5570;line-height:1.5;margin-bottom:5px;}
+.wc-likes{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;}
+.wc1{top:8px;left:1%;transform:rotate(-2.5deg);}
+.wc2{top:28px;left:23%;transform:rotate(1.8deg);}
+.wc3{top:6px;left:45%;transform:rotate(-1.2deg);}
+.wc4{top:18px;right:1%;transform:rotate(2.2deg);}
+.wc5{bottom:55px;left:3%;transform:rotate(1.5deg);}
+.wc6{bottom:38px;left:24%;transform:rotate(-2deg);}
+.wc7{bottom:52px;left:47%;transform:rotate(1deg);}
+.wc8{bottom:42px;right:2%;transform:rotate(-1.8deg);}
+.proof-ticker{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(12,11,16,.9);backdrop-filter:blur(16px);border:1px solid rgba(245,166,35,.25);border-radius:100px;padding:10px 22px;color:#F0ECFF;font-size:13px;font-family:var(--font-ui);font-weight:600;white-space:nowrap;z-index:10;display:flex;align-items:center;gap:9px;}
+.ticker-dot{width:7px;height:7px;border-radius:50%;background:var(--mint2);animation:pulse 1.5s ease infinite;flex-shrink:0;}
+@media(max-width:768px){.collage-stage{height:auto;display:flex;flex-direction:column;gap:10px;align-items:center;}.wall-card{position:static;transform:none !important;width:100%;max-width:320px;}.wall-card:nth-child(odd){transform:rotate(-1deg) !important;}.wall-card:nth-child(even){transform:rotate(1deg) !important;}.proof-ticker{position:static;transform:none;margin:10px auto;display:inline-flex;}}
+
+/* ── INTERACTIVE DEMO ── */
+.demo-section{padding:100px 24px;background:#fff;}
+.demo-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.demo-eyebrow{font-family:var(--font-ui);font-size:12px;font-weight:800;color:var(--coral);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.demo-title{font-family:var(--font-display);font-size:clamp(26px,3.5vw,42px);font-weight:700;color:var(--text);margin-bottom:14px;line-height:1.12;letter-spacing:-.02em;}
+.demo-desc{font-size:15px;color:var(--text-mid);line-height:1.72;margin-bottom:26px;}
+.demo-bullets{display:flex;flex-direction:column;gap:11px;}
+.db-item{display:flex;align-items:center;gap:11px;font-size:14px;color:#4A5570;font-family:var(--font-ui);}
+.db-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.db-ico.coral{background:rgba(255,82,82,.1);color:var(--coral);}
+.db-ico.gold{background:rgba(245,166,35,.12);color:var(--gold);}
+.db-ico.mint{background:rgba(0,200,150,.1);color:var(--mint);}
+.demo-card{background:linear-gradient(145deg,#0C0B10,#13101E);border-radius:24px;padding:24px;border:1px solid rgba(255,255,255,.08);box-shadow:0 32px 80px rgba(12,11,16,.32),0 0 0 1px rgba(255,255,255,.04);position:relative;overflow:hidden;}
+.demo-card::before{content:'';position:absolute;top:-55px;right:-55px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,82,82,.14),transparent 70%);pointer-events:none;}
+.demo-profile{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.demo-avatar{width:50px;height:50px;border-radius:50%;background:rgba(255,82,82,.14);border:2px solid rgba(255,82,82,.24);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.demo-name{font-family:var(--font-display);font-size:16px;font-weight:700;color:#F0ECFF;margin-bottom:3px;}
+.demo-age{font-size:12px;color:rgba(240,236,255,.45);}
+.demo-badge{margin-left:auto;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:100px;padding:5px 11px;font-size:11px;font-weight:700;color:var(--gold2);font-family:var(--font-ui);}
+.demo-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(240,236,255,.38);margin-bottom:5px;font-family:var(--font-ui);}
+.demo-rate{font-family:var(--font-display);font-size:20px;font-weight:800;color:#F0ECFF;}
+.demo-total{font-family:var(--font-display);font-size:34px;font-weight:800;color:var(--coral);line-height:1;}
+.demo-slider-labels{display:flex;justify-content:space-between;margin-bottom:14px;}
+.demo-track-wrap{position:relative;padding:10px 0;margin-bottom:7px;}
+.demo-track{height:5px;background:rgba(255,255,255,.08);border-radius:3px;position:relative;overflow:hidden;}
+.demo-fill{height:100%;background:linear-gradient(90deg,var(--coral),var(--gold));border-radius:3px;transition:width .1s ease;pointer-events:none;}
+.demo-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2;margin:0;}
+.demo-track-wrap::after{content:'';position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--coral),var(--gold));border:2px solid #fff;box-shadow:0 2px 10px rgba(255,82,82,.5);transform:translate(-50%,-50%);pointer-events:none;left:var(--thumb-pct,44.4%);transition:left .08s ease;}
+.demo-track-ends{display:flex;justify-content:space-between;font-size:10px;color:rgba(240,236,255,.28);font-family:var(--font-ui);}
+.demo-squad-bar-wrap{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-bottom:8px;}
+.demo-squad-bar{height:100%;background:linear-gradient(90deg,var(--mint),var(--mint2));border-radius:3px;}
+.demo-squad-info{display:flex;justify-content:space-between;font-size:11px;color:rgba(240,236,255,.38);font-family:var(--font-ui);}
+.demo-btn{width:100%;padding:14px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--coral),var(--gold));color:#0C0B10;font-weight:800;font-size:14px;font-family:var(--font-ui);cursor:pointer;transition:all .22s;margin-bottom:10px;text-decoration:none;display:block;text-align:center;}
+.demo-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(255,82,82,.38);}
+.demo-fee-note{text-align:center;font-size:11px;color:rgba(240,236,255,.28);font-family:var(--font-ui);}
+@media(max-width:768px){.demo-inner{grid-template-columns:1fr;gap:40px;}}
+
+/* ── TRUST ── */
+.trust-section{padding:80px 24px 100px;background:linear-gradient(180deg,#fff 0%,#fff8f4 100%);}
+.trust-inner{max-width:940px;margin:0 auto;text-align:center;}
+.trust-eyebrow{font-family:var(--font-ui);font-size:12px;font-weight:800;color:var(--coral);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;display:flex;align-items:center;gap:7px;justify-content:center;}
+.trust-title{font-family:var(--font-display);font-size:clamp(26px,4vw,44px);font-weight:700;color:var(--text);margin-bottom:48px;line-height:1.12;letter-spacing:-.02em;}
+.trust-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:40px;}
+.trust-card{background:#fff;border-radius:20px;padding:26px 20px;border:1.5px solid rgba(28,36,60,.07);text-align:left;transition:all .22s;}
+.trust-card:hover{border-color:rgba(255,82,82,.2);transform:translateY(-4px);box-shadow:0 14px 36px rgba(255,82,82,.08);}
+.trust-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;}
+.ti-blue{background:rgba(77,170,255,.1);color:var(--sky);}
+.ti-coral{background:rgba(255,82,82,.1);color:var(--coral);}
+.ti-mint{background:rgba(0,200,150,.1);color:var(--mint);}
+.ti-gold{background:rgba(245,166,35,.12);color:var(--gold);}
+.trust-card-title{font-family:var(--font-ui);font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.trust-card-desc{font-size:13px;color:var(--text-muted);line-height:1.65;}
+.trust-badges{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.trust-badge{background:rgba(28,36,60,.04);border:1.5px solid rgba(28,36,60,.08);border-radius:100px;padding:8px 16px;font-size:13px;font-weight:600;font-family:var(--font-ui);color:#4A5570;display:flex;align-items:center;gap:7px;}
+.trust-badge i{color:var(--coral);font-size:12px;}
+@media(max-width:768px){.trust-cards{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.trust-cards{grid-template-columns:1fr;}}
+
+/* ── FINAL CTA ── */
+.cta-sec{padding:120px 24px;background:linear-gradient(160deg,var(--dark) 0%,#160e28 50%,var(--dark) 100%);display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden;}
+.cta-sec::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(155,93,229,.14) 0%,transparent 70%);pointer-events:none;}
+.cta-title{font-family:var(--font-display);font-size:clamp(42px,7vw,82px);font-weight:700;letter-spacing:-.03em;color:#F0ECFF;line-height:1.05;max-width:700px;margin-bottom:18px;position:relative;z-index:1;opacity:0;transform:translateY(26px);transition:all .7s ease;}
+.cta-title.vis{opacity:1;transform:translateY(0);}
+.cta-title .hi{background:linear-gradient(135deg,var(--gold),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta-sub{font-size:18px;color:#7B7494;max-width:460px;line-height:1.68;margin-bottom:42px;position:relative;z-index:1;opacity:0;transform:translateY(18px);transition:all .7s .14s ease;}
+.cta-sub.vis{opacity:1;transform:translateY(0);}
+.cta-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;opacity:0;transform:translateY(18px);transition:all .7s .26s ease;}
+.cta-btns.vis{opacity:1;transform:translateY(0);}
+.btn-cta{font-family:var(--font-ui);font-size:16px;font-weight:800;color:var(--dark);background:linear-gradient(135deg,var(--gold),var(--coral));border:none;cursor:pointer;padding:16px 42px;border-radius:16px;box-shadow:0 8px 32px rgba(245,166,35,.32);transition:all .26s;text-decoration:none;}
+.btn-cta:hover{transform:translateY(-3px);box-shadow:0 14px 44px rgba(245,166,35,.48);}
+.btn-cta-2{font-family:var(--font-ui);font-size:16px;font-weight:700;color:#A099BC;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);cursor:pointer;padding:15px 32px;border-radius:16px;transition:all .26s;text-decoration:none;display:inline-flex;align-items:center;gap:9px;}
+.btn-cta-2:hover{background:rgba(255,255,255,.09);color:#F0ECFF;}
+.cta-note{position:relative;z-index:1;margin-top:20px;font-size:13px;color:#7B7494;opacity:0;transform:translateY(14px);transition:all .7s .36s ease;display:flex;align-items:center;gap:16px;}
+.cta-note.vis{opacity:1;transform:translateY(0);}
+.cta-note span{display:flex;align-items:center;gap:6px;}
+.cta-note i{color:var(--mint);}
+
+/* ── FOOTER ── */
+footer{background:var(--dark);padding:28px 48px;border-top:1px solid rgba(255,255,255,.06);}
+.fbot{max-width:1060px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.fbot p{font-size:13px;color:#7B7494;}
+.fbot p a{color:var(--coral);text-decoration:none;}
+.flinks-inline{display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.flinks-inline a{font-size:13px;color:#7B7494;text-decoration:none;transition:color .18s;}
+.flinks-inline a:hover{color:#F0ECFF;}
+.socials{display:flex;gap:12px;align-items:center;}
+.socials a{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#7B7494;text-decoration:none;transition:all .2s;font-size:14px;}
+.socials a:hover{background:rgba(255,82,82,.15);border-color:rgba(255,82,82,.3);color:var(--coral);}
+@media(max-width:600px){footer{padding:28px 20px;}.fbot{flex-direction:column;align-items:flex-start;gap:14px;}}
+#prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--coral),var(--gold));z-index:9999;width:0;border-radius:0 3px 3px 0;}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <a href="/" class="nav-logo">🎂 Birthday<span class="dot">Me</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#demo">Try it</a>
+  </div>
+  <div class="nav-cta">
+    <a href="/app" class="btn-nav-ghost">Sign In</a>
+    <a href="/app?action=signup" class="btn-nav-cta">Get Started →</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="top">
+  <div id="ambient"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="badge-dot"></span>New — Group Gift Pools now live</div>
+    <h1 class="hero-h1">Your birthday,<br><span class="c">fully</span> <span class="g">celebrated.</span></h1>
+    <p class="hero-tagline"><span>Wish</span><span>Share</span><span>Celebrate</span></p>
+    <p class="hero-sub">Set up your birthday page, share it with your crew, and let everyone <strong>chip in real money</strong> for what you actually want. Wishlists, group pools, e-cards — all in one link.</p>
+    <div class="hero-btns">
+      <a href="/app?action=signup" class="btn-hero">🎉 Create My Birthday Page</a>
+      <a href="#how" class="btn-hero-ghost"><i class="fa-solid fa-circle-play"></i> See how it works</a>
+    </div>
+    <div class="free-pill"><i class="fa-solid fa-check" style="font-size:12px"></i> 100% free &nbsp;·&nbsp; No credit card &nbsp;·&nbsp; Live in 2 minutes</div>
+    <div class="value-strip">
+      <div class="vs-item"><i class="fa-regular fa-clock"></i> 2-min setup</div>
+      <div class="vs-divider"></div>
+      <div class="vs-item"><i class="fa-solid fa-dollar-sign"></i> Real birthday money</div>
+      <div class="vs-divider"></div>
+      <div class="vs-item"><i class="fa-solid fa-link"></i> One link to share</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PEXELS PHOTO STRIP ── -->
+<div class="photo-strip" style="background:var(--cream)">
+  <div class="strip-track" id="photoStrip">
+    <!-- populated by JS via Pexels API — fallback gradient tiles shown while loading -->
+  </div>
+</div>
+
+<!-- ── MOCKUP PHONES ── -->
+<section class="mockup-section">
+  <div style="text-align:center;margin-bottom:40px">
+    <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,82,82,.08);border:1px solid rgba(255,82,82,.18);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--coral);margin-bottom:14px;font-family:var(--font-ui)">✦ The App</div>
+    <h2 style="font-family:var(--font-display);font-size:clamp(24px,3.5vw,38px);font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.1">Everything in one place</h2>
+    <p style="color:#6B7FA3;font-size:15px;max-width:480px;margin:0 auto">Profile, gifts, wishlist, wall — yours in 2 minutes</p>
+  </div>
+  <div class="phone-wrap">
+    <!-- Phone 1: Gift Sending -->
+    <div class="phone side2" style="background:#18243C;border-radius:28px;padding:10px">
+      <div style="background:#F4F8FF;border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;min-height:360px">
+        <div style="font-size:8px;font-weight:700;color:#6B7FA3;text-transform:uppercase;letter-spacing:.05em">🎁 Send Birthday Gift</div>
+        <div style="background:#fff;border:1px solid rgba(74,144,255,.1);border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(74,144,255,.06)">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,rgba(155,93,229,.15),rgba(77,170,255,.1));border:2px solid rgba(155,93,229,.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🌟</div>
+          <div><div style="font-size:9px;font-weight:700;color:#18243C">Alex Rivera</div><div style="font-size:7px;color:#FF5252;font-weight:700">🎂 Birthday Today!</div></div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(74,144,255,.1);border-radius:10px;padding:9px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:7px;color:#6B7FA3">Per year of life</span><span style="font-size:12px;font-weight:800;color:#F5A623">$0.50</span></div>
+          <div style="height:4px;border-radius:2px;background:#EEF4FF;overflow:hidden;margin-bottom:3px"><div style="height:100%;width:33%;background:linear-gradient(90deg,#FF5252,#F5A623);border-radius:2px"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:6.5px;color:#6B7FA3"><span>$0.25/yr</span><span>$1.00/yr</span></div>
+        </div>
+        <div style="text-align:center;padding:8px 0">
+          <div style="font-size:7px;color:#6B7FA3;margin-bottom:2px">Your gift total</div>
+          <div style="font-size:26px;font-weight:800;background:linear-gradient(135deg,#FF5252,#F5A623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">$14.50</div>
+          <div style="font-size:7px;color:#6B7FA3;margin-top:2px">29 yrs × $0.50</div>
+        </div>
+        <div style="background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.18);border-radius:9px;padding:7px">
+          <div style="font-size:7px;color:#F5A623;font-weight:700;margin-bottom:4px">💛 Squad Goal — $200</div>
+          <div style="height:4px;border-radius:2px;background:#EEF4FF;overflow:hidden"><div style="height:100%;width:72%;background:linear-gradient(90deg,#F5A623,#FF5252);border-radius:2px"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:6.5px;color:#6B7FA3;margin-top:3px"><span>$144 raised</span><span>72%</span></div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FF5252,#F5A623);border-radius:9px;padding:8px;text-align:center;font-size:8px;font-weight:800;color:#fff;margin-top:auto">🎉 Send Birthday Gift</div>
+        <div style="text-align:center;font-size:6.5px;color:#6B7FA3">10% platform fee · Powered by Stripe</div>
+      </div>
+    </div>
+    <!-- Phone 2: Profile / Home (MAIN) -->
+    <div class="phone main" style="background:#18243C;border-radius:30px;padding:11px">
+      <div style="background:#F4F8FF;border-radius:22px;padding:16px 13px;display:flex;flex-direction:column;gap:9px;min-height:400px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:9px;font-weight:800;color:#FF5252">🎂 BirthdayMe</span>
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#FF5252,#F5A623)"></div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(74,144,255,.1);border-radius:14px;padding:12px;text-align:center;box-shadow:0 2px 12px rgba(74,144,255,.06)">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(255,82,82,.12),rgba(245,166,35,.12));border:2px solid rgba(255,82,82,.18);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 5px">🎸</div>
+          <div style="font-size:11px;font-weight:700;color:#18243C;margin-bottom:2px">Taylor Kim</div>
+          <div style="font-size:7.5px;color:#6B7FA3;margin-bottom:8px">♒ Aquarius · 26 yrs</div>
+          <div style="height:5px;border-radius:3px;background:#EEF4FF;overflow:hidden;margin-bottom:4px"><div style="height:100%;width:67%;background:linear-gradient(90deg,#FF5252,#F5A623);border-radius:3px"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:7px;color:#6B7FA3"><span>$134 raised</span><span>Goal $200</span></div>
+        </div>
+        <div style="background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.18);border-radius:10px;padding:8px;text-align:center">
+          <div style="font-size:7.5px;color:#F5A623;font-weight:700">⏳ 47 days until your birthday!</div>
+        </div>
+        <div style="font-size:7.5px;font-weight:700;color:#3D5280;text-transform:uppercase;letter-spacing:.05em">🎉 Birthday Wall</div>
+        <div style="background:#fff;border:1px solid rgba(74,144,255,.1);border-radius:8px;padding:7px">
+          <div style="font-size:7.5px;font-weight:700;color:#18243C">Jordan M. 💸 sent $30</div>
+          <div style="font-size:7px;color:#6B7FA3;margin-top:1px">You deserve everything!! 🔥</div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(74,144,255,.1);border-radius:8px;padding:7px">
+          <div style="font-size:7.5px;font-weight:700;color:#18243C">Casey T.</div>
+          <div style="font-size:7px;color:#6B7FA3;margin-top:1px">Celebrating you always! ✨</div>
+        </div>
+        <div style="display:flex;justify-content:space-around;margin-top:auto;border-top:1px solid #EEF4FF;padding-top:8px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1px"><span style="font-size:12px">🏠</span><span style="font-size:6px;color:#FF5252;font-weight:700">Home</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1px"><span style="font-size:12px">💬</span><span style="font-size:6px;color:#6B7FA3">Wall</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1px"><span style="font-size:12px">🎁</span><span style="font-size:6px;color:#6B7FA3">Gifts</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1px"><span style="font-size:12px">🛍️</span><span style="font-size:6px;color:#6B7FA3">Wishlist</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Phone 3: Wishlist -->
+    <div class="phone side" style="background:#18243C;border-radius:28px;padding:10px">
+      <div style="background:#F4F8FF;border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;gap:7px;min-height:360px">
+        <div style="font-size:7.5px;font-weight:700;color:#3D5280;text-transform:uppercase;letter-spacing:.05em">🛍️ My Wishlist</div>
+        <div style="font-size:6.5px;color:#6B7FA3">Paste links · friends claim in secret</div>
+        <div style="background:#fff;border:1px solid rgba(74,144,255,.1);border-radius:10px;padding:8px">
+          <div style="font-size:8px;font-weight:700;color:#18243C;margin-bottom:2px">🎸 Guitar Pedal Bundle</div>
+          <div style="font-size:7px;color:#6B7FA3;margin-bottom:4px">amazon.com · $120</div>
+          <span style="background:rgba(107,127,163,.1);border:1px solid rgba(107,127,163,.2);border-radius:5px;padding:2px 7px;font-size:6.5px;color:#6B7FA3;font-weight:700">Unclaimed</span>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:8px">
+          <div style="font-size:8px;font-weight:700;color:#18243C;margin-bottom:2px">✈️ Travel Adapter</div>
+          <div style="font-size:7px;color:#6B7FA3;margin-bottom:4px">amazon.com · $35</div>
+          <span style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);border-radius:5px;padding:2px 7px;font-size:6.5px;color:#00C896;font-weight:700">🤫 Claimed!</span>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(74,144,255,.1);border-radius:10px;padding:8px">
+          <div style="font-size:8px;font-weight:700;color:#18243C;margin-bottom:2px">🎨 Art Supply Kit</div>
+          <div style="font-size:7px;color:#6B7FA3;margin-bottom:4px">etsy.com · $85</div>
+          <span style="background:rgba(107,127,163,.1);border:1px solid rgba(107,127,163,.2);border-radius:5px;padding:2px 7px;font-size:6.5px;color:#6B7FA3;font-weight:700">Unclaimed</span>
+        </div>
+        <div style="margin-top:auto;background:rgba(74,144,255,.06);border:1px solid rgba(74,144,255,.12);border-radius:9px;padding:8px">
+          <div style="font-size:6.5px;color:#6B7FA3;margin-bottom:3px">🔗 Your link</div>
+          <div style="font-size:7.5px;color:#4D88FF;font-weight:600">birthdayme.app/u/taylor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES BENTO ── -->
+<section class="features" id="features">
+  <div class="eyebrow anim" style="color:var(--gold)"><i class="fa-solid fa-star"></i> Every feature, free forever</div>
+  <h2 class="sec-title anim">Built for real birthdays</h2>
+  <p class="sec-sub anim">From birthday money to AI gifting — everything designed to make your day feel as big as it should be.</p>
+  <div class="bento">
+    <div class="bc bh anim">
+      <div class="fi fi-coral"><i class="fa-solid fa-money-bill-wave"></i></div>
+      <div class="ft">Birthday money, simplified</div>
+      <p class="fd">Set a squad goal, share your link, and let your people chip in real money directly. The smart age-based calculator suggests the perfect amount — no pressure, no awkwardness.</p>
+      <div class="money-d"><div class="money-big">$247</div><div class="money-lbl">raised from 9 people</div></div>
+      <div class="squad-bar-wrap">
+        <div class="squad-bar"><div class="squad-fill" id="sf"></div></div>
+        <div class="squad-stats"><span>Goal: <strong>$300</strong></span><span>82% funded</span></div>
+      </div>
+      <span class="ftag tg">Core feature</span>
+    </div>
+    <div class="bc bt anim">
+      <div class="fi fi-violet"><i class="fa-solid fa-lock"></i></div>
+      <div class="ft">Surprise Mode</div>
+      <p class="fd">Hide contributor names until your actual birthday. The big reveal is half the fun — let the anticipation build.</p>
+      <div class="surp">
+        <div class="surp-row"><span class="sname">Jordan M.</span><span class="samt">$30 💛</span></div>
+        <div class="surp-row"><span class="shide">••••••••</span><span class="samt">$50 💛</span></div>
+        <div class="surp-row"><span class="shide">••••••••</span><span class="samt">$25 💛</span></div>
+        <div style="margin-top:8px;font-size:11px;color:#7B7494;text-align:center">2 more names revealed on your birthday 🎉</div>
+      </div>
+      <span class="ftag tv">Privacy first</span>
+    </div>
+    <div class="bc bw anim">
+      <div class="fi fi-coral"><i class="fa-solid fa-comments"></i></div>
+      <div class="ft">Your Birthday Wall</div>
+      <p class="fd">A living message board where your people post love, reactions, and gifts — all in one beautiful place.</p>
+      <div class="mwall">
+        <div class="mpost"><div class="mpost-u">Casey T. 💸 sent $40</div><div class="mpost-m">You deserve everything and more!! 🥂🔥</div></div>
+        <div class="mpost"><div class="mpost-u">Morgan L. 🛍️ claimed Guitar Pedal</div><div class="mpost-m">Couldn't let this go — enjoy it!! 🎸</div></div>
+      </div>
+      <span class="ftag tc">Social</span>
+    </div>
+    <div class="bc bs anim">
+      <div class="fi fi-mint"><i class="fa-solid fa-bag-shopping"></i></div>
+      <div class="ft">Smart Wishlist</div>
+      <p class="fd">Paste any Amazon, Etsy or custom link. Friends claim items in secret — zero duplicates, zero spoilers.</p>
+      <span class="ftag tm">Zero duplicates</span>
+    </div>
+    <div class="bc bthird anim">
+      <div class="fi fi-gold"><i class="fa-solid fa-trophy"></i></div>
+      <div class="ft">Monthly Sweepstakes</div>
+      <p class="fd">Earn points for gifting and engaging. Every 5 points = 1 entry. Birthday month = 2× entries. Grand prize: <strong style="color:var(--gold2)">$100 gift card</strong>.</p>
+      <span class="ftag tg">Win prizes</span>
+    </div>
+    <div class="bc bthird anim">
+      <div class="fi fi-violet"><i class="fa-solid fa-robot"></i></div>
+      <div class="ft">AI Gift Concierge</div>
+      <p class="fd">Chat with our AI gift advisor — powered by Claude. Tell it the person's interests and budget, get personalised picks in seconds.</p>
+      <span class="ftag tv">Powered by Claude</span>
+    </div>
+    <div class="bc bthird anim">
+      <div class="fi fi-sky"><i class="fa-solid fa-envelope-open-text"></i></div>
+      <div class="ft">Animated E-Cards</div>
+      <p class="fd">Beautiful themed cards with custom messages, photo upload, and read receipts. Delivered straight to their birthday wall.</p>
+      <span class="ftag ts">Personalised</span>
+    </div>
+    <div class="bc bstrip anim">
+      <div class="strip-ico fi-gold"><i class="fa-solid fa-gift" style="font-size:22px;color:var(--gold2)"></i></div>
+      <div class="strip-txt">
+        <h3>Group Pools, Referral Rewards &amp; Badge Tiers</h3>
+        <p>Start a group gift pool for someone's birthday. Invite friends to contribute together toward one great gift. Unlock 25+ achievement badges from Bronze to Platinum — the more you celebrate, the more it gives back.</p>
+      </div>
+      <div class="strip-cta"><a href="/app?action=signup" class="btn-strip">Start for free →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how" id="how">
+  <div class="eyebrow anim" style="color:var(--coral)"><i class="fa-solid fa-list-ol"></i> How it works</div>
+  <h2 class="sec-title anim" style="color:var(--text)">Three steps to your<br>best birthday yet</h2>
+  <p class="sec-sub anim">No awkward "what do you want?" texts. No gifts nobody asked for. Just your people, your wishlist, and birthday money that actually matters.</p>
+  <div class="steps">
+    <div class="step anim">
+      <img class="step-img" id="howImg1" alt="Create your birthday profile" src="https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" loading="lazy"/>
+      <div class="step-ico coral"><i class="fa-solid fa-user-plus"></i></div>
+      <div class="step-num">01</div>
+      <div class="step-title">Create your page</div>
+      <p class="step-desc">Set up your birthday profile in under 2 minutes. Add your wishlist, set a squad money goal, and personalise your hub with your vibe.</p>
+    </div>
+    <div class="step anim">
+      <img class="step-img" id="howImg2" alt="Share your birthday link" src="https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" loading="lazy"/>
+      <div class="step-ico gold"><i class="fa-solid fa-share-nodes"></i></div>
+      <div class="step-num">02</div>
+      <div class="step-title">Share your link</div>
+      <p class="step-desc">Drop your custom birthday link in your bio, group chat, or story. One link — everything your crew needs to chip in, no app required.</p>
+    </div>
+    <div class="step anim">
+      <img class="step-img" id="howImg3" alt="Receive birthday money" src="https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" loading="lazy"/>
+      <div class="step-ico mint"><i class="fa-solid fa-champagne-glasses"></i></div>
+      <div class="step-num">03</div>
+      <div class="step-title">Celebrate &amp; cash out</div>
+      <p class="step-desc">Watch birthday money roll in. Withdraw to a gift card from 500+ brands via Tango Card. See messages, celebrate in style, repeat every year.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOCIAL PROOF COLLAGE ── -->
+<section class="collage-section">
+  <div class="collage-header">
+    <div class="collage-eyebrow"><i class="fa-solid fa-heart"></i> Real moments</div>
+    <h2 class="collage-title">Birthdays worth celebrating</h2>
+    <p class="collage-sub">A glimpse of what people are saying and sending right now</p>
+  </div>
+  <div class="collage-stage" id="collage-stage">
+    <div class="wall-card wc1"><div class="wc-avatar" style="background:#9B5DE522;color:#C77DFF">JM</div><div class="wc-body"><div class="wc-name">Jordan M. <span class="wc-time">2h ago</span></div><div class="wc-text">Happy birthday!! You deserve everything 🎉</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 7</div></div></div>
+    <div class="wall-card wc2"><div class="wc-avatar" style="background:#FF525222;color:#FF8A7A">TK</div><div class="wc-body"><div class="wc-name">Taylor K. <span class="wc-time">5h ago</span></div><div class="wc-text">Sent you $35 for your 35th 🥂 love you!</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 12</div></div></div>
+    <div class="wall-card wc3"><div class="wc-avatar" style="background:#00C89622;color:#00C896">AS</div><div class="wc-body"><div class="wc-name">Alex S. <span class="wc-time">1d ago</span></div><div class="wc-text">Finally a birthday gift idea that actually makes sense 🙌</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 4</div></div></div>
+    <div class="wall-card wc4"><div class="wc-avatar" style="background:#FFD16622;color:#F5A623">MR</div><div class="wc-body"><div class="wc-name">Maya R. <span class="wc-time">3h ago</span></div><div class="wc-text">This is so much better than a random Amazon gift 😭</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 9</div></div></div>
+    <div class="wall-card wc5"><div class="wc-avatar" style="background:#4DAAFF22;color:#4DAAFF">DL</div><div class="wc-body"><div class="wc-name">Devon L. <span class="wc-time">6h ago</span></div><div class="wc-text">The age slider is genius. Sent $28 for her 28th 🎂</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 15</div></div></div>
+    <div class="wall-card wc6"><div class="wc-avatar" style="background:#FF7EB322;color:#FF7EB3">SP</div><div class="wc-body"><div class="wc-name">Sam P. <span class="wc-time">12h ago</span></div><div class="wc-text">Cried when I saw how much my squad raised 😭🎉 $420!!</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 23</div></div></div>
+    <div class="wall-card wc7"><div class="wc-avatar" style="background:#9B5DE522;color:#9B5DE5">RW</div><div class="wc-body"><div class="wc-name">Riley W. <span class="wc-time">2d ago</span></div><div class="wc-text">My whole family used this, easiest birthday ever 🙏</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 6</div></div></div>
+    <div class="wall-card wc8"><div class="wc-avatar" style="background:#00C89622;color:#00C896">CJ</div><div class="wc-body"><div class="wc-name">Chris J. <span class="wc-time">8h ago</span></div><div class="wc-text">Shared my link at midnight and had $100 by morning 🔥</div><div class="wc-likes"><i class="fa-regular fa-heart"></i> 18</div></div></div>
+    <div class="proof-ticker" id="proof-ticker"></div>
+  </div>
+</section>
+
+<!-- ── INTERACTIVE DEMO ── -->
+<section class="demo-section" id="demo">
+  <div class="demo-inner">
+    <div class="demo-copy">
+      <div class="demo-eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> Try it now</div>
+      <h2 class="demo-title">Feel how it works</h2>
+      <p class="demo-desc">Drag the slider. Watch the gift change.<br>This is what your friends see when they visit your page.</p>
+      <div class="demo-bullets">
+        <div class="db-item"><div class="db-ico coral"><i class="fa-solid fa-circle-dot"></i></div> Set per-year rate from $0.25 to $1.00</div>
+        <div class="db-item"><div class="db-ico gold"><i class="fa-solid fa-calculator"></i></div> Total = rate × their age. Feels personal, not random.</div>
+        <div class="db-item"><div class="db-ico mint"><i class="fa-solid fa-people-group"></i></div> Group contribution mode lets everyone chip in together.</div>
+      </div>
+    </div>
+    <div class="demo-card" id="demo-card">
+      <div class="demo-profile">
+        <div class="demo-avatar">🎂</div>
+        <div class="demo-info">
+          <div class="demo-name">Alex Rivera</div>
+          <div class="demo-age">♓ Pisces · Turning <span id="demo-age-num">29</span></div>
+        </div>
+        <div class="demo-badge">🎉 Today!</div>
+      </div>
+      <div style="margin-bottom:18px">
+        <div class="demo-slider-labels">
+          <div><div class="demo-label">Per year of life</div><div class="demo-rate" id="demo-rate">$0.50</div></div>
+          <div style="text-align:right"><div class="demo-label">Your gift total</div><div class="demo-total" id="demo-total">$14.50</div></div>
+        </div>
+        <div class="demo-track-wrap">
+          <div class="demo-track"><div class="demo-fill" id="demo-fill" style="width:44.4%"></div></div>
+          <input type="range" class="demo-range" id="demo-slider" min="0.25" max="1.00" step="0.05" value="0.50"/>
+        </div>
+        <div class="demo-track-ends"><span>$0.25/yr</span><span>$1.00/yr</span></div>
+      </div>
+      <div style="margin-bottom:18px">
+        <div class="demo-squad-bar-wrap"><div class="demo-squad-bar" style="width:72%"></div></div>
+        <div class="demo-squad-info"><span style="color:var(--mint);font-weight:700"><i class="fa-solid fa-circle-check"></i> Squad Goal</span><span>17 contributors · 72%</span></div>
+      </div>
+      <a href="/app?action=signup" class="demo-btn">🎁 Send This Gift → Create Account</a>
+      <div class="demo-fee-note">10% platform fee · Powered by Stripe · 100% secure</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRUST ── -->
+<section class="trust-section">
+  <div class="trust-inner">
+    <div class="trust-eyebrow"><i class="fa-solid fa-shield-halved"></i> Your money is safe</div>
+    <h2 class="trust-title">Built on payments<br>you already trust</h2>
+    <div class="trust-cards">
+      <div class="trust-card">
+        <div class="trust-icon ti-blue"><i class="fa-brands fa-stripe-s"></i></div>
+        <div class="trust-card-title">Stripe Payments</div>
+        <div class="trust-card-desc">All transactions processed by Stripe — the same infrastructure used by Amazon, Google, and Shopify. Cards, Apple Pay, Google Pay supported.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon ti-coral"><i class="fa-solid fa-percent"></i></div>
+        <div class="trust-card-title">One transparent fee</div>
+        <div class="trust-card-desc">10% platform fee, shown clearly before payment. No hidden charges, no surprises. Recipients keep 90% of every gift they receive.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon ti-mint"><i class="fa-solid fa-trash-can"></i></div>
+        <div class="trust-card-title">You own your data</div>
+        <div class="trust-card-desc">Delete your account anytime and all your data goes with it. We never sell your information. No ads, ever.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon ti-gold"><i class="fa-solid fa-cake-candles"></i></div>
+        <div class="trust-card-title">Free to receive</div>
+        <div class="trust-card-desc">Creating a profile and receiving gifts is completely free. The fee only applies when someone sends — and they see it clearly before confirming.</div>
+      </div>
+    </div>
+    <div class="trust-badges">
+      <div class="trust-badge"><i class="fa-solid fa-lock"></i> SSL Encrypted</div>
+      <div class="trust-badge"><i class="fa-solid fa-check"></i> PCI Compliant via Stripe</div>
+      <div class="trust-badge"><i class="fa-solid fa-ban"></i> No ads ever</div>
+      <div class="trust-badge"><i class="fa-solid fa-trash-can"></i> Delete anytime</div>
+      <div class="trust-badge"><i class="fa-solid fa-gift"></i> 500+ gift card brands</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ── -->
+<section class="cta-sec">
+  <h2 class="cta-title anim">Your birthday deserves <span class="hi">this moment.</span></h2>
+  <p class="cta-sub anim">Stop settling for awkward gift cards and forgotten Amazon links. Create your page in 2 minutes and let your people fund what you actually want.</p>
+  <div class="cta-btns anim">
+    <a href="/app?action=signup" class="btn-cta">🎂 Create My Birthday Page</a>
+    <a href="#demo" class="btn-cta-2"><i class="fa-solid fa-circle-play"></i> Try the demo</a>
+  </div>
+  <div class="cta-note anim">
+    <span><i class="fa-solid fa-check"></i> Free forever</span>
+    <span><i class="fa-solid fa-check"></i> No credit card required</span>
+    <span><i class="fa-solid fa-check"></i> Live in 2 minutes</span>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="fbot">
+    <div class="flinks-inline">
+      <a href="/app">Open App</a>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/terms.html">Terms of Service</a>
+      <a href="/spec-sheet.html">Investor Overview</a>
+    </div>
+    <div class="socials">
+      <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+    </div>
+    <p>© 2026 BirthdayMe. Built with 🎂</p>
+  </div>
+</footer>
+
+<script>
+// ── Progress bar ──────────────────────────────────────────────────────────────
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  prog.style.width = Math.min(pct, 100) + '%';
+}, { passive: true });
+
+// ── Nav scroll ────────────────────────────────────────────────────────────────
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40), { passive: true });
+
+// ── Scroll reveal ─────────────────────────────────────────────────────────────
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -28px 0px' });
+document.querySelectorAll('.anim, .eyebrow, .sec-title, .sec-sub, .step, .bc').forEach(el => revObs.observe(el));
+
+// ── Squad bar animate ─────────────────────────────────────────────────────────
+const sf = document.getElementById('sf');
+if (sf) {
+  const sfObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { sf.classList.add('go'); sfObs.disconnect(); }
+  }, { threshold: 0.5 });
+  sfObs.observe(sf);
+}
+
+// ── Pexels photo strip ────────────────────────────────────────────────────────
+(async function() {
+  const PEXELS_KEY = document.querySelector('meta[name="pexels-key"]')?.content || '';
+  const strip = document.getElementById('photoStrip');
+  if (!strip) return;
+
+  // Fallback gradient tiles — shown immediately while API loads
+  const fallbackColors = [
+    ['#FF5252','#FFD166'],['#9B5DE5','#4DAAFF'],['#00C896','#06D6A0'],
+    ['#F5A623','#FF8A7A'],['#4DAAFF','#C77DFF'],['#FFD166','#FF5252'],
+    ['#FF7EB3','#9B5DE5'],['#00C896','#4DAAFF'],['#F5A623','#00C896'],
+    ['#FF5252','#9B5DE5'],['#4DAAFF','#FFD166'],['#C77DFF','#FF7EB3'],
+  ];
+  const emojis = ['🎂','🎉','🎁','🥳','🎈','🎊','🥂','🎆','🎀','🎸','🌟','✨'];
+
+  // Build fallback tiles first
+  const tiles = [...fallbackColors, ...fallbackColors].map((colors, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = `width:200px;height:140px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,${colors[0]}22,${colors[1]}22);border:1px solid ${colors[0]}33;display:flex;align-items:center;justify-content:center;font-size:2.5rem;`;
+    div.textContent = emojis[i % emojis.length];
+    return div;
+  });
+  tiles.forEach(t => strip.appendChild(t));
+
+  // Try Pexels API if key is available in env (injected server-side)
+  const apiKey = window.__PEXELS_KEY__ || '';
+  if (!apiKey) return;
+
+  try {
+    const queries = ['birthday celebration friends','birthday cake candles','birthday party happy','friends celebrating'];
+    const query = queries[Math.floor(Math.random() * queries.length)];
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12&orientation=landscape`, {
+      headers: { Authorization: apiKey }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.photos?.length) return;
+
+    strip.innerHTML = '';
+    const photos = [...data.photos, ...data.photos]; // double for infinite scroll
+    photos.forEach(photo => {
+      const img = document.createElement('img');
+      img.src = photo.src.medium;
+      img.alt = photo.alt || 'Birthday celebration';
+      img.className = 'strip-photo';
+      img.loading = 'lazy';
+      strip.appendChild(img);
+    });
+  } catch (e) {
+    // Keep fallback tiles
+  }
+})();
+
+// ── Ambient balloon background ────────────────────────────────────────────────
+(function() {
+  const el = document.getElementById('ambient');
+  if (!el) return;
+  const s = n => { let x = Math.sin(n) * 9301 + 49297; return x - Math.floor(x); };
+  const colors = ['#FF5252','#FF7EB3','#F5A623','#FFD166','#00C896','#4DAAFF','#C77DFF','#74BBFF','#FF8A7A','#A8D4FF'];
+
+  [{w:680,h:680,x:'-8%',y:'-6%',c:'rgba(77,170,255,.07)',d:'14s',dl:'0s'},{w:480,h:480,x:'76%',y:'60%',c:'rgba(245,166,35,.06)',d:'18s',dl:'2s'},{w:400,h:400,x:'56%',y:'6%',c:'rgba(255,82,82,.05)',d:'22s',dl:'5s'},{w:340,h:340,x:'2%',y:'50%',c:'rgba(0,200,150,.05)',d:'26s',dl:'8s'}].forEach(o => {
+    const d = document.createElement('div'); d.className = 'orb';
+    Object.assign(d.style,{width:o.w+'px',height:o.h+'px',left:o.x,top:o.y,background:`radial-gradient(circle,${o.c},transparent 70%)`,animationDuration:o.d,animationDelay:o.dl,position:'absolute'});
+    el.appendChild(d);
+  });
+  [{x:'3%',y:'9%',c:'#FF7EB3',sz:52,op:.09,d:22,dl:0},{x:'89%',y:'11%',c:'#4DAAFF',sz:62,op:.08,d:28,dl:3},{x:'13%',y:'56%',c:'#FFD166',sz:44,op:.10,d:18,dl:6},{x:'81%',y:'60%',c:'#00C896',sz:55,op:.08,d:24,dl:1.5},{x:'45%',y:'3%',c:'#C77DFF',sz:38,op:.09,d:20,dl:8},{x:'64%',y:'74%',c:'#FF5252',sz:47,op:.07,d:32,dl:4},{x:'27%',y:'82%',c:'#F5A623',sz:33,op:.08,d:26,dl:9},{x:'92%',y:'80%',c:'#74BBFF',sz:57,op:.09,d:21,dl:2}].forEach(b => {
+    const wrap = document.createElement('div'); wrap.className = 'amb-balloon';
+    Object.assign(wrap.style,{left:b.x,top:b.y,opacity:b.op,animationDuration:b.d+'s',animationDelay:b.dl+'s',position:'absolute'});
+    wrap.innerHTML = `<div style="width:${b.sz}px;height:${b.sz*1.2}px;border-radius:50%;background:radial-gradient(circle at 33% 28%,${b.c}FF,${b.c}BB);box-shadow:inset -4px -6px 12px rgba(0,0,0,.1)"></div><div style="width:1.5px;height:${b.sz*.45}px;background:${b.c}55;margin:0 auto"></div>`;
+    el.appendChild(wrap);
+  });
+  for (let i=0;i<36;i++){
+    const d=document.createElement('div');d.className='amb-conf';const sz=4+s(i+60)*6,c=colors[i%colors.length];
+    Object.assign(d.style,{left:`${1+s(i)*98}%`,top:`${2+s(i+40)*96}%`,width:sz+'px',height:sz+'px',background:c,borderRadius:['50%','2px','2px','0'][i%4],opacity:(.06+s(i+70)*.06),animationDuration:(17+s(i+80)*18)+'s',animationDelay:(s(i+90)*10)+'s',position:'absolute'});
+    el.appendChild(d);
+  }
+  for (let i=0;i<18;i++){
+    const d=document.createElement('div');d.className='amb-star';
+    Object.assign(d.style,{left:`${4+s(i+80)*92}%`,top:`${3+s(i+90)*94}%`,fontSize:(8+s(i+100)*10)+'px',color:colors[i%colors.length],opacity:(.07+s(i+110)*.05),animationDuration:(16+s(i+120)*12)+'s',animationDelay:(s(i+130)*8)+'s',position:'absolute'});
+    d.textContent='✦';el.appendChild(d);
+  }
+})();
+
+// ── Interactive Demo Slider ───────────────────────────────────────────────────
+(function() {
+  const slider = document.getElementById('demo-slider');
+  const rateEl = document.getElementById('demo-rate');
+  const totalEl = document.getElementById('demo-total');
+  const fillEl = document.getElementById('demo-fill');
+  const DEMO_AGE = 29;
+  function updateDemo(val) {
+    const rate = parseFloat(val);
+    const total = (rate * DEMO_AGE).toFixed(2);
+    const pct = ((rate - 0.25) / 0.75) * 100;
+    rateEl.textContent = '$' + rate.toFixed(2);
+    totalEl.textContent = '$' + total;
+    fillEl.style.width = pct + '%';
+    totalEl.style.textShadow = rate > 0.70 ? '0 0 20px rgba(255,82,82,.5)' : 'none';
+    const wrap = document.querySelector('.demo-track-wrap');
+    if (wrap) wrap.style.setProperty('--thumb-pct', pct + '%');
+  }
+  if (slider) { slider.addEventListener('input', e => updateDemo(e.target.value)); updateDemo(slider.value); }
+})();
+
+// ── Live Ticker ───────────────────────────────────────────────────────────────
+(function() {
+  const ticker = document.getElementById('proof-ticker');
+  if (!ticker) return;
+  const events = [
+    {icon:'💸', text:'Marcus just received $29 for his 29th birthday'},
+    {icon:'🎉', text:'Sarah hit her Squad Goal — $300 raised!'},
+    {icon:'🛍️', text:'Someone claimed "Dyson Airwrap" from a wishlist'},
+    {icon:'👥', text:'12 new profiles created in the last hour'},
+    {icon:'🎂', text:'Priya received 23 birthday wall messages today'},
+    {icon:'🤖', text:'AI Concierge suggested the perfect gift for Jordan'},
+    {icon:'🏆', text:'Riley just earned 20 sweepstakes entries this month'},
+    {icon:'🎁', text:'Someone sent $50 using the age slider'},
+  ];
+  let idx = 0;
+  function showNext() {
+    const e = events[idx % events.length];
+    ticker.innerHTML = '<div class="ticker-dot"></div>' + e.icon + ' ' + e.text;
+    ticker.style.opacity = '1';
+    idx++;
+  }
+  showNext();
+  setInterval(() => {
+    ticker.style.opacity = '0'; ticker.style.transition = 'opacity .4s ease';
+    setTimeout(() => { showNext(); ticker.style.transition = 'opacity .4s ease'; }, 440);
+  }, 3800);
+})();
+</script>
+</body>
+</html>

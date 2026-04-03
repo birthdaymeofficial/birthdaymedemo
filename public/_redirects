@@ -1,0 +1,15 @@
+# Landing page at root
+/           /landing.html    200
+
+# All app routes → React SPA
+/app        /index.html      200
+/app/*      /index.html      200
+
+# Profile share links
+/u/*        /index.html      200
+
+# Static pages served directly
+/privacy.html    /privacy.html    200
+/terms.html      /terms.html      200
+/spec-sheet.html /spec-sheet.html 200
+/team-guide.html /team-guide.html 200
