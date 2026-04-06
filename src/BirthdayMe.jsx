@@ -1248,19 +1248,16 @@ body,body *{transition:background-color .28s ease,border-color .22s ease,color .
 `;
   document.head.appendChild(G);
 }
-const PLATFORM_FEE = 0.10;
+const PLATFORM_FEE = 0.15;
 const STRIPE_RATE  = 0.029;
 const STRIPE_FIXED = 0.30;
 const LOGO_PATH = null; // e.g. '/assets/logo.png' — null uses emoji fallback 🎂
 const CHILD_AGE_THRESHOLD = 13;
 const CHILD_MIN_GIFT = 5.00;
-const SLIDER_MIN_RATE = 0.25;
-const getMinGift = (age) => {
-  if (!age || age <= 0) return CHILD_MIN_GIFT;
-  if (age <= CHILD_AGE_THRESHOLD) return CHILD_MIN_GIFT;
-  return +(age * SLIDER_MIN_RATE).toFixed(2);
-};
-const MIN_CONTRIBUTION = CHILD_MIN_GIFT;
+const SLIDER_MIN_RATE = 0.25;       // $0.25/yr for adults
+const CHILD_SLIDER_MIN_RATE = 0.50; // $0.50/yr for ages 13 and under
+const getMinGift = (age) => 0; // No hard minimum — let users give any amount
+const MIN_CONTRIBUTION = 0; // No hard minimum
 const calcFees = (gross) => {
   const recipient  = +(gross * (1 - PLATFORM_FEE)).toFixed(2);
   const platFee    = +(gross * PLATFORM_FEE).toFixed(2);
@@ -1315,7 +1312,7 @@ const BADGES = [
   {id:"the_socialite",  icon:"🥂",  label:"The Socialite",     desc:"Received 50+ contributions — the life of the party",          tier:"gold"},
   {id:"the_popular_one",icon:"🌟",  label:"The Popular One",   desc:"Had 25+ people visit your birthday link in one day",          tier:"silver"},
   {id:"pot_of_gold",    icon:"🪙",  label:"Pot of Gold",       desc:"Received $100+ in birthday money",                           tier:"gold"},
-  {id:"goal_crusher",   icon:"💯",  label:"Goal Crusher",      desc:"Hit your squad funding goal",                                tier:"gold"},
+  {id:"goal_crusher",   icon:"💯",  label:"Goal Crusher",      desc:"Hit your circle funding goal",                                tier:"gold"},
   {id:"grand_haul",     icon:"🎀",  label:"Grand Haul",        desc:"Had every wishlist item claimed",                             tier:"silver"},
   {id:"top_recruiter",  icon:"📣",  label:"Top Recruiter",     desc:"5+ referrals who signed up",                                 tier:"gold"},
   {id:"viral_link",     icon:"🚀",  label:"Viral Link",        desc:"Shared your birthday link 10+ times",                        tier:"silver"},
@@ -1331,20 +1328,20 @@ const BADGES = [
   {id:"fully_minted",   icon:"✅",  label:"Fully Minted",       desc:"Completed every section of your profile — you're the real deal", tier:"platinum"},
   {id:"surprise_mode",  icon:"🎭",  label:"Mystery Host",      desc:"Received gifts with Surprise Mode enabled",                  tier:"bronze"},
   {id:"top_dog",icon:"🐶",label:"Top Dog",desc:"The life of every birthday — gifted 20+ different people",tier:"gold",gender:"male"},
-  {id:"big_homie",icon:"🤝",label:"Big Homie",desc:"Sent the biggest single contribution in a group pool",tier:"silver",gender:"male"},
-  {id:"the_don",icon:"🎩",label:"The Don",desc:"Organized 3+ group gift pools for others",tier:"gold",gender:"male"},
+  {id:"big_homie",icon:"🤝",label:"Big Homie",desc:"Dropped the biggest candy in a piñata",tier:"silver",gender:"male"},
+  {id:"the_don",icon:"🎩",label:"The Don",desc:"Organized 3+ piñatas for the squad",tier:"gold",gender:"male"},
   {id:"king_vibes",icon:"👑",label:"King Vibes",desc:"Had 50+ wall messages on a single birthday",tier:"platinum",gender:"male"},
   {id:"mvp_badge",icon:"🏆",label:"MVP",desc:"Contributed to every birthday in your circle for a full year",tier:"gold",gender:"male"},
   {id:"that_girl",icon:"✨",label:"That Girl",desc:"Had 20+ unique visitors on your birthday profile page",tier:"silver",gender:"female"},
   {id:"main_character",icon:"🎬",label:"Main Character",desc:"Received gifts from 15+ different people on one birthday",tier:"gold",gender:"female"},
-  {id:"baddie_energy",icon:"💅",label:"Baddie Energy",desc:"Sent the highest value gift in a group pool 3+ times",tier:"platinum",gender:"female"},
-  {id:"yaas_queen",icon:"👸",label:"Yaas Queen!",desc:"Organized 3+ group gift pools and rallied the squad every time",tier:"gold",gender:"female"},
+  {id:"baddie_energy",icon:"💅",label:"Baddie Energy",desc:"Dropped the most candy in a piñata 3+ times",tier:"platinum",gender:"female"},
+  {id:"yaas_queen",icon:"👸",label:"Yaas Queen!",desc:"Organized 3+ piñatas and filled them every time",tier:"gold",gender:"female"},
   {id:"the_blueprint",icon:"📐",label:"The Blueprint",desc:"First in your friend group to use every BirthdayMe feature",tier:"gold",gender:"female"},
-  {id:"pool_starter",   icon:"🏊", label:"Pool Party",     desc:"Created your first group gift pool",                               tier:"bronze"},
-  {id:"pool_master",    icon:"🌊", label:"Pool Master",    desc:"Successfully completed 5 group gift pools",                        tier:"gold"},
-  {id:"pool_whale",     icon:"🐋", label:"The Whale",      desc:"Single contribution of $100+ in a group pool",                    tier:"gold"},
-  {id:"squad_builder",  icon:"🧱", label:"Squad Builder",  desc:"Had 10+ members join one of your group pools",                    tier:"silver"},
-  {id:"goal_smashed",   icon:"💥", label:"Goal Smashed!",  desc:"A pool you organized hit 200% of its funding goal",               tier:"platinum"},
+  {id:"pool_starter",   icon:"🏊", label:"Piñata Party",     desc:"Started your first piñata 🪅",                               tier:"bronze"},
+  {id:"pool_master",    icon:"🌊", label:"Piñata Master",    desc:"Successfully popped 5 piñatas",                        tier:"gold"},
+  {id:"pool_whale",     icon:"🐋", label:"The Whale",      desc:"Dropped $100+ candy in a single piñata",                    tier:"gold"},
+  {id:"squad_builder",  icon:"🧱", label:"Squad Builder",  desc:"Had 10+ friends fill one piñata",                    tier:"silver"},
+  {id:"goal_smashed",   icon:"💥", label:"Goal Smashed!",  desc:"A piñata you organized was overstuffed 200%!",               tier:"platinum"},
   {id:"lucky_draw",     icon:"🍀", label:"Lucky Draw",     desc:"Entered your first monthly sweepstakes",                          tier:"bronze"},
   {id:"sweep_winner",   icon:"🎰", label:"Jackpot!",       desc:"Won a monthly BirthdayMe sweepstakes",                            tier:"platinum"},
   {id:"points_grinder", icon:"⚡", label:"Points Grinder", desc:"Earned 500+ sweepstakes points in a single month",               tier:"silver"},
@@ -1365,7 +1362,7 @@ const BADGES = [
   // Annual user accolades
   {id:"top_gifter_yr",   icon:"🏆", label:"Top Gifter of the Year",     desc:"Highest total gifted — annual award",                              tier:"gold",   permanent:true},
   {id:"influencer_yr",   icon:"🌟", label:"#1 Influencer of the Year",  desc:"Most referrals driving gifts — annual award",                      tier:"gold",   permanent:true},
-  {id:"community_yr",    icon:"🫂", label:"Community Champion",          desc:"Most group pools organized — annual award",                         tier:"gold",   permanent:true},
+  {id:"community_yr",    icon:"🫂", label:"Community Champion",          desc:"Most piñatas organized — annual award",                         tier:"gold",   permanent:true},
 ];
 const TIER_COL = {bronze:"#CD7F32",silver:"#A8B4C0",gold:"#FFD166",platinum:"url(#platGrad)"};
 const TIER_GLOW = {bronze:"rgba(205,127,50,.4)",silver:"rgba(168,180,192,.4)",gold:"rgba(255,209,102,.5)",platinum:"rgba(180,200,255,.6)"};
@@ -1455,6 +1452,13 @@ const MILESTONES = {
 };
 const getMilestone = age => MILESTONES[age] || null;
 const DB = {users:{}, walls:{}, wishlists:{}, referrals:{}, notifications:{}, follows:{}, ecards:{}, blocks:{}, analytics:{}, pushSubs:{}, lists:{}, savedPosts:{}, announcements:{}, giftHistory:{}, groupPools:{}, sentCards:{}, cardReadReceipts:{}, families:{}, familyConsents:[], sentGifts:{}, balances:{}, followRequests:{}, // targetId → [{fromId, fromName, ts}]
+  // Wishlist feature extensions
+  shoppingQueue:{},      // userId → [{itemId, ownerProfileId, ownerName, ownerDob, itemTitle, price, link, isAmazon, savedAt}]
+  claimHistory:{},       // userId → [{itemId, ownerProfileId, ownerName, ownerDob, itemTitle, price, status, claimedAt, purchasedAt, birthdayYear, note}]
+  giftGroups:{},         // listId → {isGiftGroup:bool, setAt:ts}  (flag on existing lists)
+  groupClaims:{},        // listId → [{itemId, ownerProfileId, claimedBy, claimedByName, ts}]
+  wishlistPrefs:{},      // userId → {reminderDays:[14,3,1], priceRangeMax:null, budgetMonthly:null}
+  itemStaleness:{},      // itemId → {lastNudgedAt:ts}
   registeredEmails: {},
   suspensions: {},
   shadowBanned: {},
@@ -1506,6 +1510,19 @@ const DB = {users:{}, walls:{}, wishlists:{}, referrals:{}, notifications:{}, fo
     gift_scheduling:     false,  // Schedule gifts to deliver on birthday — Phase 2
     anonymous_reveal:    false,  // 30-day anonymous sender reveal — Phase 2
     api_access:          false,  // Public API access for developers — Phase 3
+
+    // ── New granular controls ──────────────────────────────────────────────────
+    pinata_pause_enabled:    true,   // Pool owners can pause/close their piñatas
+    wallet_history_visible:  true,   // Show year-over-year wallet history to users
+    notifications_page:      true,   // Full notifications page (false = mini panel only)
+    bulk_actions_enabled:    true,   // Bulk follow/block/list actions on friends page
+    social_links_visible:    true,   // Show social links on public profiles
+    wishlist_shopping_queue: true,   // Shopping queue tab in wishlist
+    group_claims_enabled:    true,   // Gift group claim visibility
+    belated_grace_days:      7,      // Days after birthday gifts still count as birthday gifts
+    cashout_window_days:     7,      // Days before birthday cashout window opens
+    min_cashout_amount:      5.00,   // Minimum balance to initiate a cashout ($)
+    platform_fee_rate:       0.15,   // Platform take rate (0.15 = 15%) — change without deploy
   },
   rateLimits: {
     gifts_per_hour_per_ip: 10,
@@ -1570,7 +1587,7 @@ PRIVACY ABSOLUTE RULES:
 - Never confirm, deny, or share ANY information about any user other than the recipient whose data the platform has provided
 - If asked about another person: "I can only use the birthday person's profile to make suggestions — I cannot share details about other accounts on BirthdayMe."
 
-GIFT FORMULA: turning_age × increment. turning_age = age recipient WILL BE on NEXT birthday (current_age + 1 if birthday hasn't happened yet this year). A person currently 29 turning 30 has a minimum of 30 × $0.25 = $7.50. Always use turning age, never current age.
+GIFT FORMULA: turning_age × increment. turning_age = age recipient WILL BE on NEXT birthday (current_age + 1 if birthday hasn't happened yet this year). There is no minimum gift amount. Always use turning age, never current age.
 
 OUTPUT: Exactly 3 suggestions (budget / mid-range / premium), 2 sentences each, separated by blank lines. No lists.` },
       card_message: { enabled:true, temperature:0.7, maxTokens:400, dailyLimit:0,
@@ -1595,7 +1612,7 @@ PRIVACY ABSOLUTE RULES — NON-NEGOTIABLE:
 
 GIFT FORMULA: turning_age × increment (age+1 if pre-birthday). Example: turning 30 = 30 × $0.25 = $7.50.
 
-SELF-SERVICE: account lockout recovery (security question), gift status (own sent gifts only), cashout status, badge questions, points/tier, pool questions, report status by case ID, DOB change requests (escalate), username change requests, platform explanations.
+SELF-SERVICE: account lockout recovery (security question), gift status (own sent gifts only), cashout status, badge questions, points/tier, piñata questions, report status by case ID, DOB change requests (escalate), username change requests, platform explanations.
 
 CASE IDs: Every ticket gets BM-YYYY-XXXXXX format. Always give to user.` },
       admin_summary: { enabled:true, temperature:0.2, maxTokens:300, dailyLimit:0,
@@ -1678,6 +1695,8 @@ const GroupPoolStore = {
   getById(id) { return Object.values(DB.groupPools).flat().find(p=>p.id===id)||null; },
   invite(poolId, targetUserId, invitedByUserId) {
     const p=this.getById(poolId); if(!p) return;
+    // Guardrail: never allow the recipient to be a pool member (it's their surprise)
+    if(targetUserId === p.recipientId) return;
     if(p.members.includes(targetUserId)) return;
     if(p.pendingInvites.find(i=>i.userId===targetUserId)) return;
     p.pendingInvites.push({userId:targetUserId, invitedAt:Date.now(), invitedBy:invitedByUserId});
@@ -1689,7 +1708,7 @@ const GroupPoolStore = {
       recipientName: recipient?.name||'someone',
       from: inviter?.name||'Someone',
       fromId: invitedByUserId,
-      text:`${inviter?.name||'Someone'} invited you to join "${p.name}" 🎁`,
+      text:`${inviter?.name||'Someone'} invited you to fill "${p.name}" piñata 🪅`,
       ts: Date.now(), read:false,
     };
     if(!DB.notifications[targetUserId]) DB.notifications[targetUserId]=[];
@@ -1697,6 +1716,8 @@ const GroupPoolStore = {
   },
   acceptInvite(poolId, userId) {
     const p=this.getById(poolId); if(!p) return;
+    // Guardrail: recipient can never be a member of their own surprise pool
+    if(userId === p.recipientId) return;
     p.pendingInvites = p.pendingInvites.filter(i=>i.userId!==userId);
     if(!p.members.includes(userId)) p.members.push(userId);
   },
@@ -1714,7 +1735,7 @@ const GroupPoolStore = {
     p.members = p.members.filter(m=>m!==userId);
     p.pendingInvites = p.pendingInvites.filter(i=>i.userId!==userId);
   },
-  join(poolId, userId) { const p=this.getById(poolId); if(p&&!p.members.includes(userId)) p.members.push(userId); },
+  join(poolId, userId) { const p=this.getById(poolId); if(p && !p.members.includes(userId) && userId !== p.recipientId) p.members.push(userId); },
   contribute(poolId, userId, amount, note='', displayName='', isAnonymous=false) {
     const p=this.getById(poolId); if(!p) return;
     const gross = +amount;
@@ -1731,12 +1752,12 @@ const GroupPoolStore = {
     const pct = p.goal>0 ? raised/p.goal : 0;
     if(pct>=0.8 && pct<1.0) {
       p.members.filter(m=>m!==p.recipientId).forEach(m=>{
-        NotifStore.push(m,{icon:'🎯',text:`"${p.name}" is 80% funded!`,sub:'Share the link to hit the goal',color:'var(--mint)',route:'pools'});
+        NotifStore.push(m,{icon:'🎯',text:`"${p.name}" piñata is 80% full! 🍬`,sub:'Drop in more candy! 🍬',color:'var(--mint)',route:'pools',poolId:p.id});
       });
     }
     if(pct>=1.0) {
       p.members.filter(m=>m!==p.recipientId).forEach(m=>{
-        NotifStore.push(m,{icon:'🎉',text:`"${p.name}" goal reached!`,sub:`${p.recipientId}'s gift is ready 🎁`,color:'var(--gold)',route:'pools'});
+        NotifStore.push(m,{icon:'🎉',text:`"${p.name}" piñata is stuffed! 🎊`,sub:`Piñata is stuffed and ready! 🪅`,color:'var(--gold)',route:'pools',poolId:p.id});
       });
     }
     return {gross, net, fee};
@@ -1764,17 +1785,37 @@ const GroupPoolStore = {
     p.releasedAt = Date.now();
     p.status = 'released';
     // Add to recipient balance
-    BalanceStore.addContribution(p.recipientId, total, `${p.name} 🎁`, `From ${p.members.length} friends`);
+    BalanceStore.addContribution(p.recipientId, total, `🪅 ${p.name}`, `From ${p.members.length} friends`);
     // Wall post
     if(!DB.walls[p.recipientId]) DB.walls[p.recipientId]=[];
     DB.walls[p.recipientId].unshift({
-      id:Date.now(), user:'🎁 Group Gift', text:'', ts:'Just now',
+      id:Date.now(), user:'🪅 Piñata', text:'', ts:'Just now',
       reactions:{}, likes:0, likedBy:[],
-      isGift:true, amount:total, note:`${p.name} — from ${p.members.length} friends 🎉`,
+      isGift:true, amount:total, note:`🪅 ${p.name} — popped by ${p.members.length} friends! 🎊`,
       isGroupPool:true, poolId,
     });
-    // Notify recipient
-    NotifStore.push(p.recipientId,{icon:'🎁',text:`You received a group gift of $${total.toFixed(2)}!`,sub:`From ${p.members.length} friends 🥳`,color:'var(--gold)',route:'cashout'});
+    // Notify recipient with warm reveal showing contributors
+    const contributors = p.contributions.map(c => {
+      if(c.isAnonymous) return { name: 'Anonymous Friend', emoji: '🎁', amount: c.net||c.amount };
+      const u = DB.users[c.userId];
+      return { name: c.displayName || u?.name || 'A friend', emoji: u?.emoji || '🎁', amount: c.net||c.amount };
+    });
+    const contributorNames = contributors.slice(0,3).map(c=>c.name).join(', ');
+    const extraCount = contributors.length > 3 ? ` + ${contributors.length - 3} more` : '';
+    NotifStore.push(p.recipientId, {
+      icon:'🎁',
+      text:`🎉 Your piñata was popped! ${fmt$(total)}! 🎉`,
+      sub:`From ${contributorNames}${extraCount} 🥳`,
+      color:'var(--gold)',
+      route:'cashout',
+      type:'pool_reveal',
+      poolReveal: {
+        poolName: p.name,
+        total,
+        contributors,
+        memberCount: p.members.length,
+      },
+    });
     return total;
   },
   getTotal(poolId) { const p=this.getById(poolId); return p?p.contributions.reduce((s,c)=>s+(c.net||c.amount||0),0):0; },
@@ -2060,6 +2101,13 @@ const ListsStore = {
   getList(userId, listId){
     return ListsStore.getLists(userId).find(l => l.id === listId) || null;
   },
+  // Toggle a list as a gift trust group
+  setGiftGroup(listId, enabled) {
+    if(!DB.giftGroups[listId]) DB.giftGroups[listId] = {};
+    DB.giftGroups[listId].isGiftGroup = enabled;
+    DB.giftGroups[listId].setAt = Date.now();
+  },
+  isGiftGroup(listId) { return !!(DB.giftGroups[listId]?.isGiftGroup); },
 };
 const SavedStore = {
   getSaved(userId){ return DB.savedPosts[userId] || []; },
@@ -2270,6 +2318,7 @@ const FamilyStore = {
   addMember(familyId, member){
     const fam=DB.families[familyId];
     if(!fam) return null;
+    // No member cap — families can be any size
     const mem={...member,id:'mem-'+Date.now(),addedAt:Date.now(),inviteStatus:member.isMinor?'managed':'pending'};
     fam.members.push(mem);
     return mem;
@@ -3039,6 +3088,7 @@ const nextBirthdayMs = dob => {
   if(next<=t) next.setFullYear(t.getFullYear()+1);
   return next.getTime()-t.getTime();
 };
+const nextBirthday = (dob) => { const t=new Date(),b=new Date(dob),n=new Date(t.getFullYear(),b.getMonth(),b.getDate()); if(n<=t)n.setFullYear(t.getFullYear()+1); return n; };
 const fmt$ = n => `$${parseFloat(n).toFixed(2)}`;
 const formatTs = (ts) => {
   if(!ts && ts!==0) return '';
@@ -3388,7 +3438,7 @@ const ToastContainer = ({userId}) => {
         {icon:"🏆", tKey:'notif.badgeUnlocked',    tParams:{badge:'Viral Link'},        color:"var(--coral)",  subKey:'notif.tapBadges',       route:"badges"},
         {icon:"⏰", text:"Your balance hasn't been withdrawn yet 💸",                  color:"var(--gold)",   sub:"Tap to cash out or regift", route:"cashout"},
         {icon:"🎂", text:"Remy L.'s birthday is tomorrow — don't miss it!",            color:"var(--violet2)",sub:"Tap to send a gift 🎁",       route:"community"},
-        {icon:"🎯", text:"Squad Goal is 80% there — almost!",                          color:"var(--mint)",   sub:"Share your link to push it over the top", route:"analytics"},
+        {icon:"🪅", text:"🪅 Piñata is 80% full — almost!",                          color:"var(--mint)",   sub:"Drop in more candy! 🍬", route:"pools"},
         {icon:"🎁", text:"First gift received! Someone just sent you $25 🥳",          color:"var(--coral)",  sub:"Check your balance",         route:"cashout"},
       ];
       demos.forEach((d,i)=>setTimeout(()=>NotifStore.push(userId,d), 2500+(i*3800)));
@@ -3457,6 +3507,10 @@ const NotificationBell = ({userId}) => {
   const [open,setOpen]=useState(false);
   const [showMuteMenu,setShowMuteMenu]=useState(false);
   const [showAllNotifs,setShowAllNotifs]=useState(false);
+  const [notifSearch,setNotifSearch]=useState('');
+  const [notifTypeFilter,setNotifTypeFilter]=useState('all');
+  const [notifReadFilter,setNotifReadFilter]=useState('all');
+  const [notifTimeFilter,setNotifTimeFilter]=useState('all');
 
   // Resolve at render time so language changes are reflected immediately
   const resolveText = (n) => n.tKey ? t(n.tKey, n.tParams||{}) : (n.text||'');
@@ -3491,6 +3545,7 @@ const NotificationBell = ({userId}) => {
   };
 
   return (
+    <>
     <div style={{position:"relative"}}>
       <button onClick={open_} style={{
         width:36,height:36,borderRadius:10,background:"var(--s2)",border:"1px solid var(--border)",
@@ -3525,16 +3580,19 @@ const NotificationBell = ({userId}) => {
           <div style={{padding:"24px 16px",textAlign:"center",color:"var(--muted)",fontSize:13}}>{t('notif.noNotifications')} 🔔</div>
           ):(showAllNotifs?notifs:notifs.slice(0,4)).map(n=>(
           <div key={n.id}
-          onClick={()=>{ if(n.route){ setOpen(false); if(window._routeNotif) window._routeNotif(n); } }}
-          style={{padding:"11px 16px",borderBottom:"1px solid var(--border)",display:"flex",gap:10,alignItems:"flex-start",background:n.read?"transparent":"rgba(255,209,102,.03)",cursor:n.route||n.type==='pool_invite'?"pointer":"default",transition:"background .12s"}}
-          onMouseEnter={e=>{ if(n.route||n.type==='pool_invite') e.currentTarget.style.background="rgba(255,209,102,.06)"; }}
-          onMouseLeave={e=>{ e.currentTarget.style.background=n.read?"transparent":"rgba(255,209,102,.03)"; }}>
+          onClick={()=>{
+            if(n.type==='pool_reveal'&&n.poolReveal){ setOpen(false); if(window._routeNotif) window._routeNotif(n); return; }
+            if(n.route){ setOpen(false); if(window._routeNotif) window._routeNotif(n); }
+          }}
+          style={{padding:"11px 16px",borderBottom:"1px solid var(--border)",display:"flex",gap:10,alignItems:"flex-start",background:n.read?"transparent":n.type==='pool_reveal'?"rgba(255,209,102,.06)":"rgba(255,209,102,.03)",cursor:n.route||n.type==='pool_invite'||n.type==='pool_reveal'?"pointer":"default",transition:"background .12s"}}
+          onMouseEnter={e=>{ if(n.route||n.type==='pool_invite'||n.type==='pool_reveal') e.currentTarget.style.background="rgba(255,209,102,.08)"; }}
+          onMouseLeave={e=>{ e.currentTarget.style.background=n.read?"transparent":n.type==='pool_reveal'?"rgba(255,209,102,.06)":"rgba(255,209,102,.03)"; }}>
           <span style={{fontSize:18,flexShrink:0,marginTop:1}}>{n.icon||"🎁"}</span>
           <div style={{flex:1}}>
-          <div style={{fontSize:12,color:"var(--muted2)",lineHeight:1.5}}>{resolveText(n)}</div>
+          <div style={{fontSize:12,color:"var(--muted2)",lineHeight:1.5,fontWeight:n.type==='pool_reveal'?700:400}}>{resolveText(n)}</div>
           {n.type==='pool_invite'&&(
           <div style={{display:'flex',gap:6,marginTop:7}}>
-           <button onClick={(e)=>{e.stopPropagation();GroupPoolStore.acceptInvite(n.poolId,currentUserId);n.read=true;n.text=`✓ You joined "${n.poolName}"`;n.type='pool_accepted';setOpen(false);if(window._routeNotif)window._routeNotif({type:'pool_invite'});}}
+           <button onClick={(e)=>{e.stopPropagation();GroupPoolStore.acceptInvite(n.poolId,currentUserId);n.read=true;n.text=`✓ You're filling "${n.poolName}"`;n.type='pool_accepted';setOpen(false);if(window._routeNotif)window._routeNotif({...n,type:'pool_invite'});}}
             style={{padding:'4px 12px',borderRadius:7,border:'none',background:'var(--violet)',color:'#fff',fontSize:11,fontWeight:700,cursor:'pointer'}}>
             ✓ Accept
            </button>
@@ -3547,7 +3605,8 @@ const NotificationBell = ({userId}) => {
           <div style={{fontSize:10,color:"var(--muted)",marginTop:4,display:"flex",alignItems:"center",gap:4}}>
           {timeAgo(n.ts)}
           {n.route&&!n.type?.startsWith('pool')&&<span style={{color:"var(--gold)",fontWeight:700}}>· Tap →</span>}
-          {n.type==='pool_invite'&&<span style={{color:'var(--violet2)',fontWeight:600}}>· Gift Pool invite</span>}
+          {n.type==='pool_invite'&&<span style={{color:'var(--violet2)',fontWeight:600}}>· Piñata invite 🪅</span>}
+          {n.type==='pool_reveal'&&<span style={{color:'var(--gold)',fontWeight:700}}>· Tap to pop! 🎊</span>}
           </div>
           </div>
           {!n.read&&<div style={{width:6,height:6,borderRadius:"50%",background:"var(--gold)",flexShrink:0,marginTop:5}}/>}
@@ -3563,80 +3622,175 @@ const NotificationBell = ({userId}) => {
           )}
         </div>
       )}
+
+    </div>
       {showAllNotifs&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",zIndex:600,display:"flex",alignItems:"center",justifyContent:"center",padding:"16px"}} onClick={()=>setShowAllNotifs(false)}>
-          <div style={{width:"min(94vw,520px)",background:"var(--surface)",borderRadius:20,border:"1px solid var(--border)",maxHeight:"min(88vh,700px)",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-          <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-          <div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:16}}>🔔 {t('notif.allNotifications')}</div>
-          <div style={{fontSize:12,color:"var(--muted)",marginTop:2}}>{notifs.length} notification{notifs.length!==1?"s":""}</div>
-          </div>
-          <button onClick={()=>setShowAllNotifs(false)} style={{background:"var(--s2)",border:"1px solid var(--border)",borderRadius:8,padding:"6px 12px",color:"var(--muted2)",cursor:"pointer",fontWeight:700}}>✕</button>
-          </div>
-          <div style={{flex:1,overflowY:"auto"}}>
-          {(()=>{
-          const groups = {};
-          const now = Date.now();
-          notifs.forEach(n=>{
-          const diff = now - new Date(n.ts).getTime();
-          const grp = diff < 86400000 ? t('notif.today') : diff < 172800000 ? t('common.yesterday') : diff < 604800000 ? t('common.thisWeek') : t('common.earlier');
-          if(!groups[grp]) groups[grp]=[];
-          groups[grp].push(n);
-          });
-          return [t('notif.today'),t('common.yesterday'),t('common.thisWeek'),t('common.earlier')].filter(g=>groups[g]).map(grp=>(
-          <div key={grp}>
-          <div style={{padding:"10px 20px 6px",fontSize:10,fontWeight:800,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",background:"rgba(0,0,0,.15)"}}>{grp}</div>
-          {groups[grp].map(n=>{
-           const isPoolInvite = n.type==='pool_invite';
-           const isClickable = !!(n.route || isPoolInvite);
-           return (
-           <div key={n.id}
-            onClick={()=>{
-             if(isPoolInvite) return;
-             n.read=true;
-             if(n.route){ setShowAllNotifs(false); if(window._routeNotif) window._routeNotif(n); }
-             else if(n.type){ setShowAllNotifs(false); if(window._routeNotif) window._routeNotif(n); }
-            }}
-            style={{padding:"12px 20px",borderBottom:"1px solid var(--border)",display:"flex",gap:12,alignItems:"flex-start",background:n.read?"transparent":"rgba(255,209,102,.03)",cursor:isClickable&&!isPoolInvite?"pointer":"default",transition:"background .12s"}}
-            onMouseEnter={e=>{ if(isClickable&&!isPoolInvite) e.currentTarget.style.background="rgba(255,209,102,.06)"; }}
-            onMouseLeave={e=>{ e.currentTarget.style.background=n.read?"transparent":"rgba(255,209,102,.03)"; }}>
-            <div style={{width:38,height:38,borderRadius:10,flexShrink:0,background:"var(--s2)",border:"1px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
-             {n.icon||"🔔"}
-            </div>
-            <div style={{flex:1}}>
-             <div style={{fontSize:13,color:"var(--muted2)",lineHeight:1.55}}>{resolveText(n)}</div>
-             {isPoolInvite&&n.type==='pool_invite'&&(
-              <div style={{display:'flex',gap:8,marginTop:8}}>
-               <button onClick={(e)=>{e.stopPropagation();GroupPoolStore.acceptInvite(n.poolId,userId);n.read=true;n.type='pool_accepted';n.text=`✓ You joined "${n.poolName}"`;setShowAllNotifs(false);if(window._goToPools)window._goToPools();}}
-                style={{padding:'5px 14px',borderRadius:8,border:'none',background:'var(--violet)',color:'#fff',fontSize:12,fontWeight:700,cursor:'pointer'}}>
-                ✓ Accept
-               </button>
-               <button onClick={(e)=>{e.stopPropagation();GroupPoolStore.declineInvite(n.poolId,userId);n.read=true;n.type='pool_declined';n.text=`Declined "${n.poolName}"`;}}
-                style={{padding:'5px 12px',borderRadius:8,border:'1px solid var(--border)',background:'none',color:'var(--muted)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
-                Decline
-               </button>
+        <div style={{position:"fixed",inset:0,zIndex:600,background:"var(--bg)",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+          <div style={{width:"100%",height:"100%",background:"var(--bg)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+            {/* ── Native page header ── */}
+            <div style={{padding:"12px 16px 0",flexShrink:0,background:"var(--surface)",borderBottom:"1px solid var(--border)"}}>
+              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+                <button onClick={()=>setShowAllNotifs(false)} style={{width:34,height:34,borderRadius:10,border:"1px solid var(--border)",background:"var(--s2)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <div style={{flex:1}}>
+                  <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:18}}>🔔 Notifications</div>
+                  <div style={{fontSize:11,color:"var(--muted)",marginTop:1}}>
+                    {notifs.length} total · {notifs.filter(n=>!n.read).length} unread
+                  </div>
+                </div>
+                <button onClick={()=>{NotifStore.markAllRead(userId);setNotifs(NotifStore.getAll(userId));}}
+                  style={{fontSize:11,color:"var(--muted2)",background:"var(--s2)",border:"1px solid var(--border)",borderRadius:8,padding:"5px 10px",cursor:"pointer",fontWeight:600,flexShrink:0}}>
+                  ✓ All read
+                </button>
               </div>
-             )}
-             <div style={{fontSize:11,color:"var(--muted)",marginTop:4,display:"flex",alignItems:"center",gap:6}}>
-              {timeAgo(n.ts)}
-              {n.route&&!isPoolInvite&&<span style={{color:n.isDisputeNotif?"var(--sky)":"var(--gold)",fontWeight:700,fontSize:10}}>{n.isDisputeNotif?'Tap to dispute →':t('notif.tapView')}</span>}
-              {isPoolInvite&&n.type==='pool_invite'&&<span style={{color:'var(--violet2)',fontWeight:600,fontSize:10}}>· Gift Pool invite</span>}
-             </div>
+              {/* ── Search bar ── */}
+              <div style={{position:"relative",marginBottom:10}}>
+                <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:14,pointerEvents:"none"}}>🔍</span>
+                <input value={notifSearch||''} onChange={e=>setNotifSearch(e.target.value)}
+                  placeholder="Search by name, message..."
+                  style={{width:"100%",padding:"8px 10px 8px 32px",borderRadius:10,border:"1px solid var(--border)",background:"var(--s2)",color:"var(--text)",fontSize:13,boxSizing:"border-box"}}/>
+                {notifSearch&&(
+                  <button onClick={()=>setNotifSearch('')} style={{position:"absolute",right:8,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",color:"var(--muted)",fontSize:16,lineHeight:1}}>×</button>
+                )}
+              </div>
+              {/* ── Compact filter row ── */}
+              <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+                <select value={notifTypeFilter||'all'} onChange={e=>setNotifTypeFilter(e.target.value)}
+                  style={{flex:1,minWidth:100,padding:"7px 8px",borderRadius:9,border:"1px solid var(--border)",background:"var(--s2)",color:"var(--text)",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+                  <option value="all">All types</option>
+                  <option value="gift">🎁 Gifts</option>
+                  <option value="pool">🪅 Piñatas</option>
+                  <option value="birthday">🎂 Birthdays</option>
+                  <option value="wishlist">📋 Wishlist</option>
+                  <option value="invite">👥 Invites</option>
+                  <option value="system">⚙️ System</option>
+                </select>
+                <select value={notifReadFilter||'all'} onChange={e=>setNotifReadFilter(e.target.value)}
+                  style={{flex:1,minWidth:90,padding:"7px 8px",borderRadius:9,border:"1px solid var(--border)",background:"var(--s2)",color:"var(--text)",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+                  <option value="all">All status</option>
+                  <option value="unread">🔴 Unread</option>
+                  <option value="read">✓ Read</option>
+                </select>
+                <select value={notifTimeFilter||'all'} onChange={e=>setNotifTimeFilter(e.target.value)}
+                  style={{flex:1,minWidth:100,padding:"7px 8px",borderRadius:9,border:"1px solid var(--border)",background:"var(--s2)",color:"var(--text)",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+                  <option value="all">All time</option>
+                  <option value="today">Today</option>
+                  <option value="week">This week</option>
+                  <option value="month">This month</option>
+                </select>
+              </div>
             </div>
-            {!n.read&&<div style={{width:7,height:7,borderRadius:"50%",background:"var(--gold)",flexShrink:0,marginTop:6}}/>}
-           </div>
-          );})}
-          </div>
-          ));
-          })()}
-          </div>
-          <div style={{padding:"12px 20px",borderTop:"1px solid var(--border)",flexShrink:0,textAlign:"center"}}>
-          <button onClick={()=>{NotifStore.markAllRead(userId);setNotifs(NotifStore.getAll(userId));}} style={{background:"none",border:"none",color:"var(--muted)",fontSize:12,cursor:"pointer",fontWeight:600}}>✓ {t('notif.markAllRead')}</button>
-          </div>
+            {/* Notification list */}
+            <div style={{flex:1,overflowY:"auto"}}>
+            {(()=>{
+              const notifTypeMap = n => {
+                if(n.type==='pool_invite'||(n.text||'').toLowerCase().includes('invited you')) return 'invite';
+                if(n.type==='pool_accepted'||n.type==='pool_reveal'||n.type==='pool_declined') return 'pool';
+                if(n.type==='gift'||(n.text||'').toLowerCase().includes('gift')||(n.text||'').toLowerCase().includes('sent you')) return 'gift';
+                if((n.text||'').toLowerCase().includes('birthday')||(n.type||'').includes('birthday')) return 'birthday';
+                if((n.text||'').toLowerCase().includes('wishlist')||(n.text||'').toLowerCase().includes('claim')) return 'wishlist';
+                return 'system';
+              };
+              let filtered = notifs;
+              if(notifSearch?.trim()) filtered = filtered.filter(n=>(resolveText(n)||'').toLowerCase().includes(notifSearch.toLowerCase()));
+              if(notifTypeFilter&&notifTypeFilter!=='all') filtered = filtered.filter(n=>notifTypeMap(n)===notifTypeFilter);
+              if(notifReadFilter==='unread') filtered = filtered.filter(n=>!n.read);
+              if(notifReadFilter==='read') filtered = filtered.filter(n=>n.read);
+              if(notifTimeFilter&&notifTimeFilter!=='all'){
+                const now=Date.now();
+                const cutoff=notifTimeFilter==='today'?86400000:notifTimeFilter==='week'?604800000:2592000000;
+                filtered=filtered.filter(n=>(now-new Date(n.ts).getTime())<cutoff);
+              }
+              if(filtered.length===0) return (
+                <div style={{textAlign:"center",padding:"48px 20px",color:"var(--muted)"}}>
+                  <div style={{fontSize:40,marginBottom:10}}>🔔</div>
+                  <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>{notifSearch?`No results for "${notifSearch}"`:"No notifications here"}</div>
+                  <div style={{fontSize:12}}>Try a different filter or search term</div>
+                </div>
+              );
+              const groups = {};
+              const now = Date.now();
+              filtered.forEach(n=>{
+                const diff = now - new Date(n.ts).getTime();
+                const grp = diff<86400000?'Today':diff<172800000?'Yesterday':diff<604800000?'This week':'Earlier';
+                if(!groups[grp]) groups[grp]=[];
+                groups[grp].push(n);
+              });
+              return ['Today','Yesterday','This week','Earlier'].filter(g=>groups[g]).map(grp=>(
+                <div key={grp}>
+                  <div style={{padding:"10px 20px 6px",fontSize:10,fontWeight:800,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",background:"rgba(0,0,0,.15)"}}>{grp}</div>
+                  {groups[grp].map(n=>{
+                    const isPoolInvite=n.type==='pool_invite';
+                    const isPoolReveal=n.type==='pool_reveal';
+                    const isClickable=!!(n.route||isPoolInvite||isPoolReveal);
+                    return (
+                      <div key={n.id}
+                        onClick={()=>{
+                          if(isPoolInvite) return;
+                          n.read=true;
+                          if(isPoolReveal&&n.poolReveal){setShowAllNotifs(false);if(window._showPoolReveal)window._showPoolReveal(n.poolReveal);return;}
+                          if(n.route||n.type){setShowAllNotifs(false);if(window._routeNotif)window._routeNotif(n);}
+                        }}
+                        style={{padding:"12px 20px",borderBottom:"1px solid var(--border)",display:"flex",gap:12,alignItems:"flex-start",background:n.read?"transparent":isPoolReveal?"rgba(255,209,102,.06)":"rgba(255,209,102,.03)",cursor:isClickable&&!isPoolInvite?"pointer":"default",transition:"background .12s"}}
+                        onMouseEnter={e=>{if(isClickable&&!isPoolInvite)e.currentTarget.style.background="rgba(255,209,102,.08)";}}
+                        onMouseLeave={e=>{e.currentTarget.style.background=n.read?"transparent":isPoolReveal?"rgba(255,209,102,.06)":"rgba(255,209,102,.03)";}}>
+                        <div style={{width:38,height:38,borderRadius:10,flexShrink:0,background:isPoolReveal?"linear-gradient(135deg,rgba(255,209,102,.25),rgba(6,214,160,.2))":"var(--s2)",border:isPoolReveal?"1px solid rgba(255,209,102,.5)":"1px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
+                          {n.icon||"🔔"}
+                        </div>
+                        <div style={{flex:1}}>
+                          <div style={{fontSize:13,color:"var(--muted2)",lineHeight:1.55,fontWeight:isPoolReveal?700:400}}>{resolveText(n)}</div>
+                          {isPoolReveal&&n.poolReveal&&(
+                            <div style={{marginTop:10,background:"linear-gradient(135deg,rgba(255,209,102,.1),rgba(6,214,160,.08))",border:"1px solid rgba(255,209,102,.3)",borderRadius:12,padding:"10px 12px"}}>
+                              <div style={{fontSize:11,fontWeight:800,color:"var(--gold)",marginBottom:8,letterSpacing:".04em"}}>🪅 {n.poolReveal.poolName}</div>
+                              <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:8}}>
+                                {n.poolReveal.contributors.slice(0,6).map((c,i)=>(
+                                  <div key={i} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(255,255,255,.06)",borderRadius:20,padding:"3px 8px",fontSize:11,border:"1px solid rgba(255,255,255,.08)"}}>
+                                    <span>{c.emoji}</span><span style={{fontWeight:600,color:"var(--text)"}}>{c.name}</span><span style={{color:"var(--mint)",fontWeight:700,marginLeft:2}}>{fmt$(c.amount)}</span>
+                                  </div>
+                                ))}
+                                {n.poolReveal.contributors.length>6&&<div style={{fontSize:11,color:"var(--muted)",padding:"3px 8px"}}>+{n.poolReveal.contributors.length-6} more 🥳</div>}
+                              </div>
+                              <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:15,fontWeight:900,color:"var(--mint)",textAlign:"center"}}>Total: {fmt$(n.poolReveal.total)} 🎉</div>
+                              <div style={{fontSize:10,color:"var(--muted)",textAlign:"center",marginTop:4}}>Tap to see your full gift reveal ✨</div>
+                            </div>
+                          )}
+                          {isPoolInvite&&(
+                            <div style={{display:'flex',gap:8,marginTop:8}}>
+                              <button onClick={e=>{e.stopPropagation();GroupPoolStore.acceptInvite(n.poolId,userId);n.read=true;n.type='pool_accepted';n.text=`✓ You're filling "${n.poolName}"`;setShowAllNotifs(false);if(window._goToPools)window._goToPools();}}
+                                style={{padding:'5px 14px',borderRadius:8,border:'none',background:'var(--violet)',color:'#fff',fontSize:12,fontWeight:700,cursor:'pointer'}}>✓ Accept</button>
+                              <button onClick={e=>{e.stopPropagation();GroupPoolStore.declineInvite(n.poolId,userId);n.read=true;n.type='pool_declined';n.text=`Declined "${n.poolName}"`;}}
+                                style={{padding:'5px 12px',borderRadius:8,border:'1px solid var(--border)',background:'none',color:'var(--muted)',fontSize:12,fontWeight:600,cursor:'pointer'}}>Decline</button>
+                            </div>
+                          )}
+                          <div style={{fontSize:11,color:"var(--muted)",marginTop:4,display:"flex",alignItems:"center",gap:6}}>
+                            {timeAgo(n.ts)}
+                            {n.route&&!isPoolInvite&&!isPoolReveal&&<span style={{color:n.isDisputeNotif?"var(--sky)":"var(--gold)",fontWeight:700,fontSize:10}}>{n.isDisputeNotif?'Tap to dispute →':'Tap to view →'}</span>}
+                            {isPoolInvite&&<span style={{color:'var(--violet2)',fontWeight:600,fontSize:10}}>· Piñata invite 🪅</span>}
+                            {isPoolReveal&&<span style={{color:'var(--gold)',fontWeight:700,fontSize:10}}>· Tap to see your gift reveal ✨</span>}
+                          </div>
+                        </div>
+                        {!n.read&&<div style={{width:7,height:7,borderRadius:"50%",background:"var(--gold)",flexShrink:0,marginTop:6}}/>}
+                      </div>
+                    );
+                  })}
+                </div>
+              ));
+            })()}
+            </div>
+            {/* Footer */}
+            <div style={{padding:"10px 16px",borderTop:"1px solid var(--border)",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center",background:"var(--surface)"}}>
+              <div style={{fontSize:11,color:"var(--muted)"}}>
+                {notifs.filter(n=>!n.read).length} unread · {notifs.length} total
+              </div>
+              <button onClick={()=>setShowAllNotifs(false)} style={{fontSize:12,color:"var(--muted2)",background:"var(--s2)",border:"1px solid var(--border)",borderRadius:8,padding:"5px 12px",cursor:"pointer",fontWeight:600}}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 const MilestoneBanner = ({age, compact=false}) => {
@@ -3795,15 +3949,21 @@ const AvatarPicker = ({value, photoUrl, onEmoji, onPhoto}) => {
     </div>
   );
 };
-const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
+const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools, initialPoolId, prefillName='', prefillGoal=''}) => {
   const { t } = useTranslation();
   const [pools, setPools] = React.useState(GroupPoolStore.get(profile.id));
   const [editingId, setEditingId] = React.useState(null);
   const [editName, setEditName] = React.useState('');
   const [editGoal, setEditGoal] = React.useState('');
-  const [creating, setCreating] = React.useState(false);
-  const [newName, setNewName] = React.useState('');
-  const [newGoal, setNewGoal] = React.useState('');
+  const [creating, setCreating] = React.useState(!!prefillName); // auto-open if prefilled
+  // Auto-scroll to active pool
+  const activePool = pools.find(p=>!p.released) || pools[0];
+  const activePoolRef = React.useRef(null);
+  React.useEffect(()=>{
+    if(activePoolRef.current) setTimeout(()=>activePoolRef.current?.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  },[]);
+  const [newName, setNewName] = React.useState(prefillName||'');
+  const [newGoal, setNewGoal] = React.useState(prefillGoal?String(prefillGoal):'');
   const [copiedId, setCopiedId] = React.useState(null);
   const isOwner = currentUserId === profile.id;
 
@@ -3829,8 +3989,8 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
       <div style={{width:'min(94vw,520px)',background:'var(--surface)',borderRadius:20,border:'1px solid var(--border)',maxHeight:'min(90vh,680px)',display:'flex',flexDirection:'column',overflow:'hidden'}} onClick={e=>e.stopPropagation()}>
         <div style={{padding:'16px 20px',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
           <div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:16}}>🎯 Group Gift Pools</div>
-          <div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Coordinated gifting for {profile.name}</div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:16}}>🪅 Piñata</div>
+          <div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Secret piñata for {profile.name}</div>
           </div>
           <button onClick={onClose} style={{background:'var(--s2)',border:'1px solid var(--border)',borderRadius:8,padding:'6px 12px',color:'var(--muted2)',cursor:'pointer',fontWeight:700}}>✕</button>
         </div>
@@ -3838,8 +3998,8 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
           {pools.length===0&&!creating&&(
           <div style={{textAlign:'center',padding:'32px 0',color:'var(--muted)'}}>
           <div style={{fontSize:32,marginBottom:8}}>🎁</div>
-          <div style={{fontSize:14,fontWeight:700,marginBottom:4}}>{t('pools.noPoolsYet')}</div>
-          <div style={{fontSize:12}}>{t('pools.startOneCoordinate')}</div>
+          <div style={{fontSize:14,fontWeight:700,marginBottom:4}}>{"No piñatas yet 🪅"}</div>
+          <div style={{fontSize:12}}>{"Start one to fill it up for someone!"}</div>
           </div>
           )}
           {pools.map(pool=>{
@@ -3848,10 +4008,10 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
           const isPoolOwner = currentUserId===pool.ownerId;
           const editing = editingId===pool.id;
           return (
-          <div key={pool.id} style={{background:'var(--s2)',borderRadius:16,padding:'14px 16px',marginBottom:12,border:'1px solid var(--border)'}}>
+          <div key={pool.id} ref={pool.id===activePool?.id?activePoolRef:null} style={{background:'var(--s2)',borderRadius:16,padding:'14px 16px',marginBottom:12,border:pool.id===activePool?.id&&!pool.released?'1px solid rgba(6,214,160,.4)':'1px solid var(--border)',boxShadow:pool.id===activePool?.id&&!pool.released?'0 0 12px rgba(6,214,160,.1)':'none'}}>
           {editing ? (
           <div>
-          <div style={{fontSize:12,fontWeight:700,marginBottom:8,color:'var(--violet2)'}}>{t('pools.editPool')}</div>
+          <div style={{fontSize:12,fontWeight:700,marginBottom:8,color:'var(--violet2)'}}>{"Edit Piñata"}</div>
           <input value={editName} onChange={e=>setEditName(e.target.value)} style={{width:'100%',marginBottom:8,fontSize:13,padding:'8px 10px',borderRadius:8,border:'1px solid var(--border)',background:'var(--surface)',color:'var(--text)'}} placeholder="Pool name"/>
           <input value={editGoal} onChange={e=>setEditGoal(e.target.value)} type="number" style={{width:'100%',marginBottom:10,fontSize:13,padding:'8px 10px',borderRadius:8,border:'1px solid var(--border)',background:'var(--surface)',color:'var(--text)'}} placeholder="Goal amount"/>
           <div style={{display:'flex',gap:8}}>
@@ -3863,7 +4023,7 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
           <>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}>
            <div>
-            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--violet2)'}}>🎁 {pool.name}</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--violet2)'}}>🪅 {pool.name}</div>
             <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{pool.members.length} member{pool.members.length!==1?'s':''}</div>
            </div>
            <div style={{textAlign:'right',display:'flex',alignItems:'center',gap:8}}>
@@ -3881,12 +4041,12 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
             <div style={{height:6,background:'rgba(155,93,229,.12)',borderRadius:3,overflow:'hidden',marginBottom:4}}>
              <div style={{height:'100%',width:`${pct}%`,background:'linear-gradient(90deg,var(--violet),var(--mint))',borderRadius:3,transition:'width .5s'}}/>
             </div>
-            <div style={{fontSize:11,color:pct>=100?'var(--mint)':'var(--muted)',fontWeight:pct>=100?700:400}}>{pct>=100?'🎉 Goal reached!': `${pct}% funded`}</div>
+            <div style={{fontSize:11,color:pct>=100?'var(--mint)':'var(--muted)',fontWeight:pct>=100?700:400}}>{pct>=100?'🎊 Piñata stuffed!': `${pct}% full`}</div>
            </div>
           )}
           {pool.contributions.length>0&&(
            <div>
-            <div style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>{t('pools.contributors')}</div>
+            <div style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>"Candy droppers 🍬"</div>
             {pool.contributions.slice().reverse().map((contrib,i)=>{
              const u = DB.users[contrib.userId];
              return (
@@ -3904,7 +4064,7 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
             })}
            </div>
           )}
-          {pool.contributions.length===0&&<div style={{fontSize:12,color:'var(--muted)',textAlign:'center',padding:'8px 0'}}>{t('pools.noContributions')}</div>}
+          {pool.contributions.length===0&&<div style={{fontSize:12,color:'var(--muted)',textAlign:'center',padding:'8px 0'}}>{"No candy dropped yet — be the first! 🍬"}</div>}
           </>
           )}
           </div>
@@ -3913,17 +4073,17 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
           {currentUserId&&(
           creating ? (
           <div style={{background:'var(--s2)',border:'1px solid rgba(155,93,229,.25)',borderRadius:16,padding:16}}>
-          <div style={{fontWeight:800,fontSize:14,marginBottom:12}}>🎁 New Gift Pool</div>
+          <div style={{fontWeight:800,fontSize:14,marginBottom:12}}>🪅 New Piñata</div>
           <input value={newName} onChange={e=>setNewName(e.target.value)} placeholder={`e.g. "The Squad", "Work Fam"`} style={{width:'100%',marginBottom:10,fontSize:13,padding:'8px 10px',borderRadius:8,border:'1px solid var(--border)',background:'var(--surface)',color:'var(--text)'}}/>
           <input value={newGoal} onChange={e=>setNewGoal(e.target.value)} type="number" placeholder="Fundraising goal (optional)" style={{width:'100%',marginBottom:12,fontSize:13,padding:'8px 10px',borderRadius:8,border:'1px solid var(--border)',background:'var(--surface)',color:'var(--text)'}}/>
           <div style={{display:'flex',gap:8}}>
-          <button onClick={createPool} style={{flex:1,padding:'10px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontWeight:800,fontSize:13,cursor:'pointer',fontFamily:"'Plus Jakarta Sans',sans-serif"}}>{t('pools.createPool')}</button>
+          <button onClick={createPool} style={{flex:1,padding:'10px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontWeight:800,fontSize:13,cursor:'pointer',fontFamily:"'Plus Jakarta Sans',sans-serif"}}>{"🪅 Create Piñata"}</button>
           <button onClick={()=>setCreating(false)} style={{padding:'10px 14px',borderRadius:10,border:'1px solid var(--border)',background:'none',color:'var(--muted)',cursor:'pointer',fontSize:13}}>{t('common.cancel')}</button>
           </div>
           </div>
           ) : (
-          <button onClick={()=>{ onClose&&onClose(); onGoToPools&&onGoToPools(); }} style={{width:'100%',padding:'11px',borderRadius:12,border:'1px dashed rgba(155,93,229,.35)',background:'rgba(155,93,229,.04)',color:'var(--violet2)',fontSize:13,fontWeight:700,cursor:'pointer'}}>
-          + Start a new gift pool
+          <button onClick={()=>{ if(pools.length>0){ onClose&&onClose(); onGoToPools&&onGoToPools(); } else { setCreating(true); } }} style={{width:'100%',padding:'11px',borderRadius:12,border:'1px dashed rgba(155,93,229,.35)',background:'rgba(155,93,229,.04)',color:'var(--violet2)',fontSize:13,fontWeight:700,cursor:'pointer'}}>
+          {pools.length>0 ? '🪅 Manage piñatas →' : '+ Start a new piñata 🪅'}
           </button>
           )
           )}
@@ -3933,7 +4093,296 @@ const GroupPoolModal = ({profile, currentUserId, onClose, onGoToPools}) => {
   );
 };
 
-const SquadBar = ({goal,raised,count,surpriseMode,onOpen}) => {
+/* ── PiñataBar: birthday-only pop moment ─────────────────────────────────── */
+const PiñataBar = ({profile, isOwner, onPopped}) => {
+  const pools = GroupPoolStore.get(profile.id);
+  const activePool = pools.find(p => !p.released) || pools[0];
+  const total = activePool ? GroupPoolStore.getTotal(activePool.id) : 0;
+  const pct = activePool?.goal > 0 ? Math.min(100, Math.round(total / activePool.goal * 100)) : (total > 0 ? 100 : 0);
+  const [popped, setPopped] = useState(activePool?.released || false);
+  const [popping, setPopping] = useState(false);
+  const [candies, setCandies] = useState([]);
+  const [shaking, setShaking] = useState(false);
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => { setTimeout(() => setEntered(true), 100); }, []);
+
+  // Periodic shake tease before pop
+  useEffect(() => {
+    if (popped || popping) return;
+    const id = setInterval(() => {
+      setShaking(true);
+      setTimeout(() => setShaking(false), 600);
+    }, 3500);
+    return () => clearInterval(id);
+  }, [popped, popping]);
+
+  const handlePop = () => {
+    if (popped || popping || !activePool) return;
+    setPopping(true);
+    // Spawn candy particles
+    const items = ['🍬','🍭','🍫','⭐','🎊','💛','🎁','🍡','💰','✨','🌟','🎉'];
+    const burst = Array.from({length: 28}, (_, i) => ({
+      id: i,
+      emoji: items[i % items.length],
+      x: (Math.random() - 0.5) * 340,
+      y: -(Math.random() * 260 + 80),
+      rotate: Math.random() * 720 - 360,
+      scale: 0.7 + Math.random() * 1.1,
+      delay: Math.random() * 180,
+    }));
+    setCandies(burst);
+    setTimeout(() => {
+      GroupPoolStore.release(activePool.id);
+      setPopped(true);
+      setPopping(false);
+      onPopped && onPopped(total);
+    }, 900);
+  };
+
+  // Fill color based on pct
+  const bodyColor = pct >= 100 ? '#FF6B35' : pct >= 60 ? '#FFB347' : pct >= 30 ? '#FFD700' : '#FF8C94';
+  const streamers = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF','#FF8B94','#B4F8C8','#FFA07A','#87CEEB'];
+
+  return (
+    <div style={{
+      background: 'var(--surface)', borderRadius: 20, padding: '20px 18px',
+      border: '1.5px solid rgba(255,107,53,.35)',
+      boxShadow: '0 4px 24px rgba(255,107,53,.12), 0 1px 4px rgba(0,0,0,.06)',
+      marginBottom: 14, position: 'relative', overflow: 'hidden',
+      opacity: entered ? 1 : 0, transform: entered ? 'translateY(0) scale(1)' : 'translateY(20px) scale(.96)',
+      transition: 'opacity .5s ease, transform .5s ease',
+    }}>
+      {/* Candy burst particles */}
+      {(popping || popped) && candies.map(c => (
+        <div key={c.id} style={{
+          position: 'absolute', left: '50%', top: '40%',
+          fontSize: 18 * c.scale, pointerEvents: 'none', zIndex: 20,
+          transform: `translate(${c.x}px, ${c.y}px) rotate(${c.rotate}deg)`,
+          transition: `transform ${popping ? 0.9 : 0}s cubic-bezier(.17,.67,.35,1.3) ${c.delay}ms, opacity ${popping ? 0.9 : 0}s ease ${c.delay + 400}ms`,
+          opacity: popped ? 0 : 1,
+        }}>{c.emoji}</div>
+      ))}
+
+      {/* Header */}
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12}}>
+        <div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:900, fontSize:16, color:'var(--text)'}}>
+            🪅 {activePool?.name || "Your Piñata"}
+          </div>
+          <div style={{fontSize:11, color:'var(--muted)', marginTop:2}}>
+            {popped ? `Popped by ${activePool?.members?.length || 0} friends 🎊` : `Stuffed by ${activePool?.contributions?.length || 0} friend${(activePool?.contributions?.length||0)!==1?'s':''}  · ${pct}% full`}
+          </div>
+        </div>
+        {!popped && activePool?.goal > 0 && (
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:800, fontSize:18, color: pct>=100?'var(--mint)':'var(--gold)'}}>
+            {fmt$(total)}
+            <span style={{fontSize:11, color:'var(--muted)', fontWeight:500, display:'block', textAlign:'right'}}>of {fmt$(activePool.goal)}</span>
+          </div>
+        )}
+        {popped && (
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:900, fontSize:26, color:'var(--mint)'}}>
+            {fmt$(total)} 🎉
+          </div>
+        )}
+      </div>
+
+      {/* Piñata SVG + pop button */}
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', marginBottom:14, position:'relative'}}>
+
+        {/* Swing + shake animation styles */}
+        <style>{`
+          @keyframes piñata-swing {
+            0%   { transform: rotate(-12deg) translateX(0); }
+            25%  { transform: rotate(10deg)  translateX(4px); }
+            50%  { transform: rotate(-8deg)  translateX(-2px); }
+            75%  { transform: rotate(7deg)   translateX(2px); }
+            100% { transform: rotate(-12deg) translateX(0); }
+          }
+          @keyframes piñata-shake {
+            0%,100% { transform: rotate(-2deg) translateX(0); }
+            20%      { transform: rotate(8deg)  translateX(6px); }
+            40%      { transform: rotate(-8deg) translateX(-6px); }
+            60%      { transform: rotate(6deg)  translateX(4px); }
+            80%      { transform: rotate(-6deg) translateX(-4px); }
+          }
+          @keyframes piñata-pop {
+            0%   { transform: scale(1)    rotate(0deg); }
+            30%  { transform: scale(1.25) rotate(-15deg); }
+            60%  { transform: scale(0.6)  rotate(20deg); }
+            80%  { transform: scale(1.1)  rotate(-5deg); }
+            100% { transform: scale(0)    rotate(0deg); opacity:0; }
+          }
+          @keyframes string-sway {
+            0%,100% { transform: rotate(-6deg); transform-origin: top center; }
+            50%      { transform: rotate(6deg);  transform-origin: top center; }
+          }
+          .piñata-body {
+            animation: piñata-swing 2.8s ease-in-out infinite;
+            transform-origin: top center;
+            cursor: ${popped ? 'default' : 'pointer'};
+          }
+          .piñata-body.shaking {
+            animation: piñata-shake 0.55s ease-in-out;
+          }
+          .piñata-body.popping {
+            animation: piñata-pop 0.9s cubic-bezier(.36,.07,.19,.97) forwards;
+          }
+        `}</style>
+
+        {/* String */}
+        <svg width="4" height="36" style={{display:'block'}}>
+          <line x1="2" y1="0" x2="2" y2="36" stroke="rgba(255,255,255,.4)" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+
+        {/* Piñata donkey SVG */}
+        <div
+          className={`piñata-body${shaking && !popping ? ' shaking' : ''}${popping ? ' popping' : ''}`}
+          onClick={isOwner && !popped && !popping ? handlePop : undefined}
+          title={isOwner && !popped ? "Tap to pop your piñata! 🎊" : ""}
+        >
+          <svg width="160" height="130" viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg">
+            {/* Streamers hanging off body */}
+            {streamers.map((col, i) => (
+              <g key={i}>
+                <path
+                  d={`M${55 + i*7},${72 + (i%2)*4} Q${52+i*7+Math.sin(i)*6},${88+i%3*4} ${54+i*7+Math.cos(i)*5},${98+i%2*6}`}
+                  stroke={col} strokeWidth="3.5" fill="none" strokeLinecap="round"
+                  opacity="0.9"
+                />
+              </g>
+            ))}
+            {/* Tail streamers */}
+            <path d="M128,62 Q140,55 148,48" stroke={streamers[0]} strokeWidth="4" fill="none" strokeLinecap="round"/>
+            <path d="M128,65 Q142,62 150,58" stroke={streamers[2]} strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+            <path d="M128,68 Q141,70 148,75" stroke={streamers[4]} strokeWidth="3" fill="none" strokeLinecap="round"/>
+
+            {/* Body — classic burro shape */}
+            <ellipse cx="85" cy="68" rx="42" ry="30" fill={bodyColor}/>
+            {/* Body stripes / panels */}
+            <ellipse cx="85" cy="68" rx="42" ry="30" fill="none" stroke="rgba(0,0,0,.08)" strokeWidth="1"/>
+            <path d="M55,50 Q70,42 85,40 Q100,42 115,50" fill={streamers[1]} opacity="0.7"/>
+            <path d="M55,86 Q70,94 85,96 Q100,94 115,86" fill={streamers[3]} opacity="0.7"/>
+            <path d="M55,50 L55,86" stroke="rgba(0,0,0,.06)" strokeWidth="1"/>
+            <path d="M115,50 L115,86" stroke="rgba(0,0,0,.06)" strokeWidth="1"/>
+            {/* Color band decoration */}
+            <rect x="68" y="40" width="14" height="56" rx="4" fill={streamers[5]} opacity="0.55"/>
+            <rect x="84" y="40" width="14" height="56" rx="4" fill={streamers[6]} opacity="0.45"/>
+
+            {/* Head */}
+            <ellipse cx="128" cy="58" rx="18" ry="14" fill={bodyColor}/>
+            <ellipse cx="128" cy="58" rx="18" ry="14" fill={streamers[0]} opacity="0.3"/>
+
+            {/* Ears */}
+            <ellipse cx="120" cy="44" rx="5" ry="9" fill={bodyColor} transform="rotate(-15 120 44)"/>
+            <ellipse cx="120" cy="44" rx="3" ry="6" fill="#FFB6C1" transform="rotate(-15 120 44)"/>
+            <ellipse cx="134" cy="42" rx="5" ry="9" fill={bodyColor} transform="rotate(10 134 42)"/>
+            <ellipse cx="134" cy="42" rx="3" ry="6" fill="#FFB6C1" transform="rotate(10 134 42)"/>
+
+            {/* Eye */}
+            <circle cx="134" cy="56" r="4" fill="white"/>
+            <circle cx="135" cy="56" r="2.2" fill="#1a1a2e"/>
+            <circle cx="136" cy="55" r="0.8" fill="white"/>
+
+            {/* Nostril */}
+            <ellipse cx="143" cy="62" rx="2.5" ry="1.8" fill="rgba(0,0,0,.2)"/>
+
+            {/* Mouth / smile */}
+            <path d="M138,65 Q143,69 148,65" stroke="rgba(0,0,0,.3)" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+
+            {/* Legs */}
+            <rect x="64" y="94" width="10" height="22" rx="5" fill={bodyColor}/>
+            <rect x="64" y="94" width="10" height="22" rx="5" fill={streamers[2]} opacity="0.5"/>
+            <rect x="78" y="94" width="10" height="22" rx="5" fill={bodyColor}/>
+            <rect x="78" y="94" width="10" height="22" rx="5" fill={streamers[4]} opacity="0.5"/>
+            <rect x="92" y="94" width="10" height="22" rx="5" fill={bodyColor}/>
+            <rect x="92" y="94" width="10" height="22" rx="5" fill={streamers[1]} opacity="0.5"/>
+            <rect x="106" y="94" width="10" height="22" rx="5" fill={bodyColor}/>
+            <rect x="106" y="94" width="10" height="22" rx="5" fill={streamers[6]} opacity="0.5"/>
+
+            {/* Hooves */}
+            <rect x="63" y="112" width="12" height="6" rx="3" fill="#4a3728"/>
+            <rect x="77" y="112" width="12" height="6" rx="3" fill="#4a3728"/>
+            <rect x="91" y="112" width="12" height="6" rx="3" fill="#4a3728"/>
+            <rect x="105" y="112" width="12" height="6" rx="3" fill="#4a3728"/>
+
+            {/* Mane */}
+            <path d="M110,44 Q116,36 122,30 Q118,38 124,34 Q120,42 126,40" fill={streamers[0]} opacity="0.9"/>
+
+            {/* Fill indicator — "candy inside" dots visible through body */}
+            {pct > 0 && Array.from({length: Math.min(12, Math.round(pct/8.5))}, (_,i) => (
+              <circle key={i} cx={62 + (i%4)*18 + Math.sin(i)*4} cy={58 + Math.floor(i/4)*10} r="4.5"
+                fill={streamers[i%streamers.length]} opacity="0.65"/>
+            ))}
+          </svg>
+        </div>
+
+        {/* Pop instruction */}
+        {isOwner && !popped && !popping && (
+          <div style={{
+            marginTop: 8, fontSize: 13, fontWeight: 800,
+            color: 'var(--coral)', textAlign: 'center',
+            animation: 'pulse 1.8s ease-in-out infinite',
+          }}>
+            🎊 Tap the piñata to pop it!
+          </div>
+        )}
+
+        {/* Popped reveal */}
+        {popped && (
+          <div className="fade-up" style={{textAlign:'center', marginTop:8}}>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:900, fontSize:28, color:'var(--mint)', marginBottom:4}}>
+              {fmt$(total)} 🎉
+            </div>
+            <div style={{fontSize:13, color:'var(--muted2)', marginBottom:10}}>
+              From {activePool?.contributions?.length || 0} friends who love you 💛
+            </div>
+            {/* Contributor chips */}
+            <div style={{display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center'}}>
+              {(activePool?.contributions||[]).map((c,i)=>{
+                const u = DB.users[c.userId];
+                const name = c.isAnonymous ? 'Anonymous 🎁' : (c.displayName||u?.name||'A friend');
+                const emoji = c.isAnonymous ? '🎁' : (u?.emoji||'🎊');
+                return (
+                  <div key={i} style={{display:'flex',alignItems:'center',gap:5,background:'rgba(6,214,160,.1)',border:'1px solid rgba(6,214,160,.25)',borderRadius:20,padding:'4px 10px',fontSize:12}}>
+                    <span>{emoji}</span>
+                    <span style={{fontWeight:700,color:'var(--text)'}}>{name}</span>
+                    <span style={{color:'var(--mint)',fontWeight:800}}>{fmt$(c.net||c.amount)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Progress bar (visible to contributors on their friends' profiles, not shown post-pop) */}
+      {!popped && activePool?.goal > 0 && (
+        <div>
+          <div style={{height:8, background:'var(--s3)', borderRadius:4, overflow:'hidden', marginBottom:6}}>
+            <div style={{
+              height:'100%', width:`${pct}%`,
+              background: pct>=100
+                ? 'linear-gradient(90deg,#FF6B35,#FFD700,#FF6B35)'
+                : 'linear-gradient(90deg,#FF8C94,#FFB347,#FFD700)',
+              borderRadius:4, transition:'width 1.2s cubic-bezier(.16,1,.3,1)',
+              position:'relative', overflow:'hidden',
+            }}>
+              <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)',animation:'shimmer 2s linear infinite'}}/>
+            </div>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--muted)'}}>
+            <span style={{color:pct>=100?'#FF6B35':'var(--gold)',fontWeight:700}}>{fmt$(total)} stuffed</span>
+            <span>Goal: {fmt$(activePool.goal)}</span>
+          </div>
+          {pct>=100&&<div style={{textAlign:'center',fontSize:12,color:'#FF6B35',fontWeight:800,marginTop:6,animation:'pulse 1.5s ease-in-out infinite'}}>🎊 Piñata's stuffed! Pop it on your birthday!</div>}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SquadBar = ({goal,raised,count,surpriseMode,onOpen,poolName}) => {
   const { t } = useTranslation();
   if(!goal) return null;
   const pct=Math.min(100,Math.round((raised/goal)*100));
@@ -3965,7 +4414,10 @@ const SquadBar = ({goal,raised,count,surpriseMode,onOpen}) => {
       cursor:onOpen?"pointer":"default"}}>
       {hit&&<Confetti n={20}/>}
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-        <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:13,fontWeight:700,display:"flex",alignItems:"center",gap:6}}>{t('pools.squadGoal')}{onOpen&&<span style={{fontSize:10,color:"var(--muted)",fontWeight:400}}>· {t('common.tapToManage')}</span>}</div>
+        <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:13,fontWeight:700,display:"flex",alignItems:"center",gap:6}}>
+          🪅 {poolName||"Piñata"}
+          {onOpen&&<span style={{fontSize:10,color:"var(--muted)",fontWeight:400}}>· {"tap to manage"}</span>}
+        </div>
         <div style={{fontSize:12,color:"var(--muted)"}}>{surpriseMode?"🎭 Hidden":count+" contributors"} · <span style={{fontWeight:700,color:hit?"var(--mint)":"var(--text)",transition:"color .3s"}}>{displayPct}%</span></div>
       </div>
       <div style={{height:9,background:"var(--s3)",borderRadius:5,overflow:"hidden",marginBottom:8}}>
@@ -3992,7 +4444,7 @@ const SquadBar = ({goal,raised,count,surpriseMode,onOpen}) => {
         <span style={{color:"var(--muted)"}}>Goal: {fmt$(goal)}</span>
       </div>
       {hit&&<div style={{textAlign:"center",fontSize:11,color:"var(--mint)",fontWeight:700,marginTop:6,
-        animation:"fadeUp .5s ease .8s both"}}>{t('pools.goalSmashed')}</div>}
+        animation:"fadeUp .5s ease .8s both"}}>{"🎊 Piñata's stuffed! Pop it on your birthday!"}</div>}
     </div>
   );
 };
@@ -4290,20 +4742,25 @@ const Wall = ({pid, viewer, compact=false, onViewUser, isWallOwner=false, viewer
       })()}
       {wallTab==="all"&&<>
       {!compact&&(
-        <div style={{display:'flex',gap:6,overflowX:'auto',scrollbarWidth:'none',paddingBottom:4,marginBottom:10,alignItems:'center'}}>
-          <span style={{fontSize:11,color:'var(--muted)',fontWeight:700,flexShrink:0}}>{t('common.filter')}:</span>
-          {[['all',t('common.all')],['gift','🎁 '+t('nav.gifts')],['message','💬 '+t('wall.messages')]].map(([id,lbl])=>(
-          <button key={id} onClick={()=>setWallFilter(id)} style={{padding:'4px 12px',borderRadius:20,border:`1px solid ${wallFilter===id?'var(--coral)':'var(--border)'}`,background:wallFilter===id?'rgba(255,94,91,.1)':'var(--s2)',color:wallFilter===id?'var(--coral)':'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer',flexShrink:0,whiteSpace:'nowrap'}}>{lbl}</button>
-          ))}
-          {isWallOwner&&hiddenCount>0&&(
-          <button onClick={()=>setWallFilter(f=>f==='hidden'?'all':'hidden')} style={{padding:'4px 12px',borderRadius:20,border:`1px solid ${wallFilter==='hidden'?'var(--violet2)':'var(--border)'}`,background:wallFilter==='hidden'?'rgba(155,93,229,.12)':'var(--s2)',color:wallFilter==='hidden'?'var(--violet2)':'var(--muted)',fontSize:11,fontWeight:700,cursor:'pointer',flexShrink:0,whiteSpace:'nowrap',display:'flex',alignItems:'center',gap:4}}>
-          <Icon n="eyeOff" size={11}/> {t('wall.hidden')} ({hiddenCount})
-          </button>
-          )}
-          <div style={{marginLeft:'auto',display:'flex',gap:4}}>
-          {[['newest','↓ '+t('common.new')],['oldest','↑ '+t('common.old')]].map(([id,lbl])=>(
-          <button key={id} onClick={()=>setWallSort(id)} style={{padding:'4px 10px',borderRadius:20,border:`1px solid ${wallSort===id?'var(--violet2)':'var(--border)'}`,background:wallSort===id?'rgba(155,93,229,.1)':'var(--s2)',color:wallSort===id?'var(--violet2)':'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer',flexShrink:0}}>{lbl}</button>
-          ))}
+        <div style={{display:'flex',gap:8,marginBottom:10,alignItems:'center'}}>
+          {/* Filter dropdown */}
+          <div style={{display:'flex',alignItems:'center',gap:6,flex:1}}>
+            <span style={{fontSize:11,color:'var(--muted)',fontWeight:700,flexShrink:0}}>{t('common.filter')}:</span>
+            <select value={wallFilter==='hidden'?'hidden':wallFilter} onChange={e=>setWallFilter(e.target.value)}
+              style={{flex:1,padding:'6px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+              <option value="all">{t('common.all')}</option>
+              <option value="gift">🎁 {t('nav.gifts')}</option>
+              <option value="message">💬 {t('wall.messages')}</option>
+              {isWallOwner&&hiddenCount>0&&<option value="hidden">🙈 {t('wall.hidden')} ({hiddenCount})</option>}
+            </select>
+          </div>
+          {/* Sort dropdown */}
+          <div style={{display:'flex',alignItems:'center',gap:6}}>
+            <select value={wallSort} onChange={e=>setWallSort(e.target.value)}
+              style={{padding:'6px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+              <option value="newest">↓ {t('common.new')}</option>
+              <option value="oldest">↑ {t('common.old')}</option>
+            </select>
           </div>
         </div>
       )}
@@ -4441,7 +4898,7 @@ const WallUserModal = ({user, onClose, onGift}) => {
   const z = null;
   const [slider, setSlider] = useState(0.25);
   const rawBase = age ? +(slider*age).toFixed(2) : 0;
-  const base = age ? Math.max(rawBase, getMinGift(age)) : 0;
+  const base = age ? rawBase : 0;
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(12,11,16,.88)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:"16px"}}
       onClick={onClose}>
@@ -4500,7 +4957,7 @@ const WallUserModal = ({user, onClose, onGift}) => {
           <input type="range" min={.25} max={1.00} step={.05} value={slider}
           onChange={e=>setSlider(parseFloat(e.target.value))}
           style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",opacity:0,cursor:"pointer",margin:0,padding:0}}/>
-          <div style={{position:"absolute",top:"50%",left:`${((slider-.25)/.75)*100}%`,transform:"translate(-50%,-50%)",width:18,height:18,borderRadius:"50%",background:"var(--gold)",border:"3px solid var(--bg)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",top:"50%",left:`${((slider-(age<=CHILD_AGE_THRESHOLD?CHILD_SLIDER_MIN_RATE:SLIDER_MIN_RATE))/(1-(age<=CHILD_AGE_THRESHOLD?CHILD_SLIDER_MIN_RATE:SLIDER_MIN_RATE)))*100}%`,transform:"translate(-50%,-50%)",width:18,height:18,borderRadius:"50%",background:"var(--gold)",border:"3px solid var(--bg)",pointerEvents:"none"}}/>
           </div>
           <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"var(--muted)",marginTop:2}}><span>$0.25</span><span>$1.00</span></div>
           </div>
@@ -6155,6 +6612,75 @@ Use real product names that exist in stores right now. Return ONLY JSON array, n
   );
 };
 
+/* ── PiñataQuickModal: self-contained modal from any wishlist item 🪅 ──── */
+const PiñataQuickModal = ({item, ownerProfileId, currentUserId, onClose}) => {
+  const [name, setName] = useState(`🪅 ${item.title||'Gift'}`);
+  const [goal, setGoal] = useState(String(item.price||''));
+  const [created, setCreated] = useState(false);
+
+  const doCreate = () => {
+    if(!currentUserId || !name.trim()) return;
+    GroupPoolStore.create(currentUserId, ownerProfileId, name.trim(), parseFloat(goal)||0);
+    setCreated(true);
+    setTimeout(()=>{ onClose(); if(window._goToPools) window._goToPools(); }, 1600);
+  };
+
+  return (
+    <div style={{position:'fixed',inset:0,zIndex:2000,background:'rgba(0,0,0,.8)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={onClose}>
+      <div style={{background:'var(--surface)',borderRadius:20,padding:24,width:'min(380px,94vw)',border:'1px solid rgba(155,93,229,.3)',boxShadow:'0 8px 40px rgba(0,0,0,.4)'}} onClick={e=>e.stopPropagation()}>
+        {created ? (
+          <div style={{textAlign:'center',padding:'24px 0'}}>
+            <div style={{fontSize:56,marginBottom:12}}>🪅</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:18,color:'var(--violet2)',marginBottom:6}}>Piñata created!</div>
+            <div style={{fontSize:13,color:'var(--muted)'}}>Heading to your piñatas… 🎉</div>
+          </div>
+        ) : (<>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
+            <span style={{fontSize:32}}>🪅</span>
+            <div>
+              <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:17}}>Start a Piñata</div>
+              <div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Let everyone chip in for this gift together</div>
+            </div>
+          </div>
+          {/* Item preview chip */}
+          <div style={{background:'var(--s2)',borderRadius:12,padding:'10px 14px',marginBottom:16,display:'flex',alignItems:'center',gap:10,border:'1px solid var(--border)'}}>
+            <span style={{fontSize:20,flexShrink:0}}>{item.isAmazon?'📦':'🎁'}</span>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:13,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.title}</div>
+              {item.price&&<div style={{fontSize:12,color:'var(--gold)',fontWeight:700,marginTop:2}}>{fmt$(item.price)}</div>}
+            </div>
+          </div>
+          <div style={{marginBottom:12}}>
+            <div style={{fontSize:11,fontWeight:700,color:'var(--muted)',marginBottom:5,textTransform:'uppercase',letterSpacing:'.05em'}}>Piñata name</div>
+            <input value={name} onChange={e=>setName(e.target.value)} autoFocus
+              style={{width:'100%',padding:'9px 12px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:13,fontWeight:600,boxSizing:'border-box'}}/>
+          </div>
+          <div style={{marginBottom:20}}>
+            <div style={{fontSize:11,fontWeight:700,color:'var(--muted)',marginBottom:5,textTransform:'uppercase',letterSpacing:'.05em'}}>Goal amount <span style={{fontWeight:400,textTransform:'none'}}>(optional)</span></div>
+            <div style={{position:'relative'}}>
+              <span style={{position:'absolute',left:12,top:'50%',transform:'translateY(-50%)',color:'var(--gold)',fontWeight:700,fontSize:14,pointerEvents:'none'}}>$</span>
+              <input value={goal} onChange={e=>setGoal(e.target.value)} type="number" placeholder={item.price?String(item.price):'e.g. 200'}
+                style={{width:'100%',padding:'9px 12px 9px 26px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:13,fontWeight:600,boxSizing:'border-box'}}/>
+            </div>
+          </div>
+          <button onClick={doCreate} disabled={!name.trim()}
+            style={{width:'100%',padding:'13px',borderRadius:12,border:'none',
+              background:name.trim()?'linear-gradient(135deg,#9B5DE5,#7B2FD4)':'var(--s3)',
+              color:name.trim()?'#fff':'var(--muted)',fontWeight:800,fontSize:15,
+              cursor:name.trim()?'pointer':'not-allowed',
+              fontFamily:"'Plus Jakarta Sans',sans-serif",marginBottom:10}}>
+            🪅 Create Piñata
+          </button>
+          <button onClick={onClose}
+            style={{width:'100%',padding:'10px',borderRadius:12,border:'none',background:'none',color:'var(--muted)',fontSize:13,cursor:'pointer'}}>
+            Cancel
+          </button>
+        </>)}
+      </div>
+    </div>
+  );
+};
+
 const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ownerProfile=null}) => {
   const { t } = useTranslation();
   const initItems = () => {
@@ -6181,11 +6707,14 @@ const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ow
   const [claimingId, setClaimingId] = useState(null);
   const [claimerName, setClaimerName] = useState("");
   const [myClaims, setMyClaims]     = useState(new Set());
+  const [authGateItem, setAuthGateItem] = useState(null); // item blocked pending login
+  const [confirmedPurchases, setConfirmedPurchases] = useState(new Set()); // items confirmed bought
   const [revealItem, setRevealItem] = useState(null);
   const [sortBy, setSortBy]         = useState('priority'); // priority|price_asc|price_desc|az|za|recent
   const [showBrowser, setShowBrowser] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [removeModal, setRemoveModal] = useState(null); // item to confirm remove
+  const [piñataItem, setPiñataItem] = useState(null);   // item triggering piñata modal
 
   const isOwnerBirthday = ownerDob ? isBirthday(ownerDob) : false;
   const domain = u => { try{return new URL(u).hostname.replace("www.","")}catch{return u} };
@@ -6249,7 +6778,7 @@ const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ow
     sync(items.map(i => i.id===id ? {...i, claimed:true, claimedBy:claimerName.trim(), claimedAt:now} : i));
     setMyClaims(prev=>new Set([...prev, id]));
     if (!editable && currentUserId && item) {
-      ClaimedItemStore.add(currentUserId, pid, ownerName, item);
+      ClaimedItemStore.add(currentUserId, pid, ownerName, item, ownerDob||null);
       // ANONYMITY: do NOT push notification to owner — surprise is preserved
     }
     setClaimingId(null); setClaimerName("");
@@ -6284,6 +6813,49 @@ const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ow
     <div>
       {showBrowser && <StoreBrowser onAddItem={add} onClose={()=>setShowBrowser(false)} ownerProfile={ownerProfile||DB.users[pid]} currentUserId={currentUserId}/>}
 
+      {/* ── AUTH GATE MODAL — shown when non-logged-in user taps "I'll get this!" ── */}
+      {authGateItem && (
+        <div style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,.72)",display:"flex",alignItems:"flex-end",justifyContent:"center",padding:"0 0 0 0"}} onClick={()=>setAuthGateItem(null)}>
+          <div style={{background:"var(--surface)",borderRadius:"20px 20px 0 0",padding:"24px 20px 36px",width:"100%",maxWidth:480,border:"1px solid var(--border)"}} onClick={e=>e.stopPropagation()}>
+            {/* Handle bar */}
+            <div style={{width:36,height:4,borderRadius:2,background:"var(--border)",margin:"0 auto 20px"}}/>
+            {/* Item preview */}
+            <div style={{display:"flex",gap:12,alignItems:"center",background:"rgba(6,214,160,.06)",border:"1px solid rgba(6,214,160,.2)",borderRadius:12,padding:"12px 14px",marginBottom:20}}>
+              <span style={{fontSize:28}}>{authGateItem.isAmazon?"📦":"🎁"}</span>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontWeight:700,fontSize:13,color:"var(--text)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{authGateItem.title}</div>
+                {authGateItem.price&&<div style={{fontSize:12,color:"var(--gold)",fontWeight:700,marginTop:2}}>{fmt$(authGateItem.price)}</div>}
+              </div>
+              <span style={{fontSize:22}}>🔒</span>
+            </div>
+            {/* Headline */}
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:18,color:"var(--text)",marginBottom:6,textAlign:"center"}}>
+              Sign in to claim this gift
+            </div>
+            <div style={{fontSize:13,color:"var(--muted)",textAlign:"center",marginBottom:22,lineHeight:1.6}}>
+              Create a free account so two people don't buy the same thing — and we'll remind you before {ownerName||"their"} birthday.
+            </div>
+            {/* CTA buttons */}
+            <button onClick={()=>{
+              setAuthGateItem(null);
+              // Signal to parent app to open auth with pending claim context
+              if(window._openAuthForClaim) window._openAuthForClaim(authGateItem, pid, ownerName);
+            }} style={{width:"100%",padding:"14px",borderRadius:12,border:"none",background:"linear-gradient(135deg,var(--mint),var(--mint2))",color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer",marginBottom:10,fontFamily:"'Plus Jakarta Sans',sans-serif"}}>
+              🎁 Create free account to claim
+            </button>
+            <button onClick={()=>{
+              setAuthGateItem(null);
+              if(window._openAuthForClaim) window._openAuthForClaim(authGateItem, pid, ownerName, true);
+            }} style={{width:"100%",padding:"13px",borderRadius:12,border:"1px solid var(--border)",background:"var(--s2)",color:"var(--muted2)",fontWeight:700,fontSize:14,cursor:"pointer",marginBottom:12}}>
+              Sign in to existing account
+            </button>
+            <div style={{textAlign:"center",fontSize:11,color:"var(--muted)"}}>
+              Free forever · No credit card · 30 seconds
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Remove modal */}
       {removeModal && (
         <div style={{position:'fixed',inset:0,zIndex:2000,background:'rgba(0,0,0,.7)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setRemoveModal(null)}>
@@ -6301,6 +6873,16 @@ const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ow
             </div>
           </div>
         </div>
+      )}
+
+      {/* 🪅 Piñata quick-create modal — triggered by 🪅 icon on any wishlist item */}
+      {piñataItem && (
+        <PiñataQuickModal
+          item={piñataItem}
+          ownerProfileId={pid}
+          currentUserId={currentUserId}
+          onClose={()=>setPiñataItem(null)}
+        />
       )}
 
       {/* Surprise mode banner */}
@@ -6420,6 +7002,22 @@ const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ow
               {item.url && <a href={item.url} target="_blank" rel="noreferrer" style={{fontSize:11,color:"var(--coral2)",textDecoration:"none"}}>{item.isAmazon?"View on Amazon →":"Open link →"}</a>}
               <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2,flexWrap:"wrap"}}>
                 {item.price && <div style={{fontSize:11,color:"var(--gold)",fontWeight:700}}>{fmt$(item.price)}</div>}
+                {/* Universal piñata icon — always shown on unclaimed visitor items */}
+                {!item.claimed && !editable && currentUserId && (
+                  <button
+                    onClick={e=>{e.stopPropagation(); setPiñataItem(item);}}
+                    title="Start a piñata — let everyone chip in together 🪅"
+                    style={{
+                      display:'inline-flex',alignItems:'center',justifyContent:'center',
+                      width:22,height:22,borderRadius:6,border:'1px solid rgba(155,93,229,.25)',
+                      background:'rgba(155,93,229,.08)',cursor:'pointer',
+                      fontSize:13,lineHeight:1,padding:0,flexShrink:0,
+                      transition:'all .15s',
+                    }}
+                    onMouseEnter={e=>{e.currentTarget.style.background='rgba(155,93,229,.18)';e.currentTarget.style.borderColor='rgba(155,93,229,.5)';}}
+                    onMouseLeave={e=>{e.currentTarget.style.background='rgba(155,93,229,.08)';e.currentTarget.style.borderColor='rgba(155,93,229,.25)';}}
+                  >🪅</button>
+                )}
                 {!item.claimed && !editable && (()=>{
                   const seed = (item.id % 7) + 1;
                   const viewers = seed <= 2 ? null : seed;
@@ -6430,9 +7028,7 @@ const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ow
                     </div>
                   ) : null;
                 })()}
-                {!item.claimed && ownerDob && daysUntil(ownerDob) <= 14 && !editable && (
-                  <div style={{fontSize:10,color:"var(--gold)",fontWeight:700}}>⏰ Hides in {daysUntil(ownerDob)}d</div>
-                )}
+
                 {/* Owner sees "Someone claimed this" but NOT who — anonymity preserved */}
                 {editable && item.claimed && !isOwnerBirthday && (
                   <div style={{fontSize:11,color:"var(--mint)",display:"flex",alignItems:"center",gap:4}}>
@@ -6450,13 +7046,48 @@ const Wishlist = ({pid, editable, ownerDob, currentUserId=null, ownerName="", ow
             {editable && !item.claimed && (
               <button onClick={()=>setRemoveModal(item)} style={{padding:"6px 10px",borderRadius:8,border:"none",background:"rgba(255,94,91,.1)",color:"var(--coral)",fontSize:12,flexShrink:0}}>✕</button>
             )}
-            {!editable && !item.claimed && (
-              <button onClick={()=>{setClaimingId(item.id);setClaimerName("");}} style={{padding:"7px 12px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,background:"var(--mint)",color:"var(--bg)",flexShrink:0}}>🎁 I'll get this!</button>
-            )}
+            {!editable && !item.claimed && (() => {
+              const priceNum = parseFloat(String(item.price||'0').replace(/[^0-9.]/g,''))||0;
+              const otherClaimers = currentUserId ? ClaimedItemStore.getGroupClaimsForItem(currentUserId, pid, item.id) : [];
+              return (
+                <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:5,flexShrink:0}}>
+                  {/* Duplicate interest warning */}
+                  {otherClaimers.length>0&&(
+                    <div style={{fontSize:10,color:'var(--gold)',fontWeight:700,background:'rgba(255,209,102,.1)',borderRadius:6,padding:'2px 7px',marginBottom:2}}>
+                      👥 {otherClaimers.length} in your group already claiming
+                    </div>
+                  )}
+
+                  <button onClick={()=>{
+                    if(!currentUserId){ setAuthGateItem(item); }
+                    else { setClaimingId(item.id); setClaimerName(""); }
+                  }} style={{padding:"7px 12px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,background:"var(--mint)",color:"var(--bg)",flexShrink:0}}>🎁 I'll get this!</button>
+                  {/* Save to queue */}
+                  {currentUserId&&(
+                    <button onClick={()=>ClaimedItemStore.addToQueue(currentUserId,{...item,ownerProfileId:pid,ownerName:ownerName||'',ownerDob})}
+                      style={{padding:"4px 10px",borderRadius:7,border:"1px solid var(--border)",fontSize:10,fontWeight:700,background:"var(--s2)",color:"var(--muted)",cursor:"pointer"}}>
+                      📋 Save for later
+                    </button>
+                  )}
+                </div>
+              );
+            })()}
             {!editable && item.claimed && (myClaims.has(item.id) || item.claimedBy===claimerName) && (
               <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3,flexShrink:0}}>
-                <div style={{padding:"4px 8px",borderRadius:6,background:"rgba(6,214,160,.1)",fontSize:10,color:"var(--mint)",fontWeight:700}}>{t('gift.youClaimed')}</div>
-                <button onClick={()=>unclaim(item.id)} style={{padding:"4px 8px",borderRadius:6,border:"1px solid rgba(255,94,91,.3)",fontSize:10,fontWeight:700,background:"rgba(255,94,91,.08)",color:"var(--coral)"}}>↩ Unclaim</button>
+                {confirmedPurchases.has(item.id) ? (
+                  <div style={{padding:"4px 8px",borderRadius:6,background:"rgba(6,214,160,.15)",fontSize:10,color:"var(--mint)",fontWeight:700}}>✓ Purchased!</div>
+                ) : (
+                  <>
+                    <div style={{padding:"4px 8px",borderRadius:6,background:"rgba(6,214,160,.1)",fontSize:10,color:"var(--mint)",fontWeight:700}}>{t("gift.youClaimed")}</div>
+                    <button onClick={()=>{
+                      ClaimedItemStore.confirmPurchase(currentUserId, item.id);
+                      setConfirmedPurchases(prev=>new Set([...prev,item.id]));
+                      NotifStore.push(currentUserId,{icon:"🛍️",text:`Nice! You confirmed buying "${item.title||"an item"}"`,sub:`${ownerName||"They"} will love it 🎉`,color:"var(--mint)",route:"wishlist"});
+                      PointsStore.award(currentUserId,"gift_send",1);
+                    }} style={{padding:"4px 8px",borderRadius:6,border:"1px solid rgba(6,214,160,.4)",fontSize:10,fontWeight:700,background:"rgba(6,214,160,.1)",color:"var(--mint)"}}>✓ Bought it!</button>
+                    <button onClick={()=>unclaim(item.id)} style={{padding:"4px 8px",borderRadius:6,border:"1px solid rgba(255,94,91,.3)",fontSize:10,fontWeight:700,background:"rgba(255,94,91,.08)",color:"var(--coral)"}}>↩ Release</button>
+                  </>
+                )}
               </div>
             )}
             {!editable && item.claimed && !myClaims.has(item.id) && item.claimedBy!==claimerName && (
@@ -6616,20 +7247,26 @@ const ListsManager = ({profile}) => {
           </div>
           ) : (
           <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 16px',cursor:'pointer'}} onClick={()=>setActiveList(list.id)}>
-          <div style={{width:40,height:40,borderRadius:11,background:'rgba(155,93,229,.1)',border:'1px solid rgba(155,93,229,.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}}>
-          📋
+          <div style={{width:40,height:40,borderRadius:11,background:ListsStore.isGiftGroup(list.id)?'rgba(255,209,102,.15)':'rgba(155,93,229,.1)',border:`1px solid ${ListsStore.isGiftGroup(list.id)?'rgba(255,209,102,.35)':'rgba(155,93,229,.2)'}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}}>
+          {ListsStore.isGiftGroup(list.id)?'🎁':'📋'}
           </div>
           <div style={{flex:1,minWidth:0}}>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,marginBottom:2}}>{list.name}</div>
+          <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14}}>{list.name}</div>
+          {ListsStore.isGiftGroup(list.id)&&<span style={{fontSize:9,fontWeight:800,color:'var(--gold)',background:'rgba(255,209,102,.15)',border:'1px solid rgba(255,209,102,.3)',borderRadius:10,padding:'1px 6px',textTransform:'uppercase',letterSpacing:'.05em'}}>Gift Group</span>}
+          </div>
           <div style={{fontSize:12,color:'var(--muted)'}}>
           {memberUsers.length > 0
            ? `${memberUsers.slice(0,3).map(u=>u.name.split(' ')[0]).join(', ')}${memberUsers.length>3?` +${memberUsers.length-3} more`:''}`
-           : 'No members yet — tap to add'}
-          </div>
+           : 'No members yet — tap to add'}</div>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:4,flexShrink:0}}>
           <span style={{fontSize:12,color:'var(--muted)',fontWeight:600}}>{list.members?.length||0}</span>
-          <button onClick={e=>{e.stopPropagation();setEditingId(list.id);setEditName(list.name);}} style={{padding:'5px 8px',borderRadius:7,border:'1px solid var(--border)',background:'none',color:'var(--muted)',cursor:'pointer',fontSize:13,marginLeft:4}}>✏️</button>
+          {/* Gift group toggle */}
+          <button onClick={e=>{e.stopPropagation();ListsStore.setGiftGroup(list.id,!ListsStore.isGiftGroup(list.id));refresh();}}
+            title={ListsStore.isGiftGroup(list.id)?'Disable gift group — members won\'t see each other\'s claims':'Enable as gift group — members can see each other\'s claims (not the recipient\'s)'}
+            style={{padding:'4px 7px',borderRadius:7,border:`1px solid ${ListsStore.isGiftGroup(list.id)?'rgba(255,209,102,.4)':'var(--border)'}`,background:ListsStore.isGiftGroup(list.id)?'rgba(255,209,102,.1)':'none',color:ListsStore.isGiftGroup(list.id)?'var(--gold)':'var(--muted)',cursor:'pointer',fontSize:12,marginLeft:2}}>🎁</button>
+          <button onClick={e=>{e.stopPropagation();setEditingId(list.id);setEditName(list.name);}} style={{padding:'5px 8px',borderRadius:7,border:'1px solid var(--border)',background:'none',color:'var(--muted)',cursor:'pointer',fontSize:13,marginLeft:2}}>✏️</button>
           <button onClick={e=>{e.stopPropagation();if(window.confirm(`Delete "${list.name}"?`)) deleteList(list.id);}} style={{padding:'5px 8px',borderRadius:7,border:'1px solid rgba(255,94,91,.3)',background:'none',color:'var(--coral)',cursor:'pointer',fontSize:13}}>🗑</button>
           <span style={{fontSize:16,color:'var(--muted)',marginLeft:2}}>›</span>
           </div>
@@ -6642,7 +7279,8 @@ const ListsManager = ({profile}) => {
       {lists.length > 0 && (
         <div style={{marginTop:8,padding:'12px 16px',background:'rgba(155,93,229,.05)',borderRadius:12,border:'1px solid rgba(155,93,229,.15)'}}>
           <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.5}}>
-          💡 <strong>Tip:</strong> Use lists to filter your birthday feed. On the Feed tab, tap the list pill to see only that group's upcoming birthdays.
+          💡 <strong>Tip:</strong> Use lists to filter your birthday feed. On the Feed tab, tap the list pill to see only that group's upcoming birthdays.<br/><br/>
+          🎁 <strong>Gift Groups:</strong> Tap the 🎁 button on any list to enable it as a gift group. Members can see each other's wishlist claims — so no one buys the same thing — but the recipient never sees anything.
           </div>
         </div>
       )}
@@ -6983,6 +7621,9 @@ const PoolsScreen = ({profile, onViewProfile}) => {
   const [sort, setSort] = React.useState('newest');
   const [showCreate, setShowCreate] = React.useState(false);
   const [showInviteFor, setShowInviteFor] = React.useState(null);
+  const [poolMenuId, setPoolMenuId] = React.useState(null);
+  const [confirmReleasePool, setConfirmReleasePool] = React.useState(null);
+  const [confirmCancelPool, setConfirmCancelPool] = React.useState(null);
   const [inviteSearch, setInviteSearch] = React.useState('');
   const [inviteResults, setInviteResults] = React.useState([]);
   const [inviteSent, setInviteSent] = React.useState({});
@@ -6996,6 +7637,17 @@ const PoolsScreen = ({profile, onViewProfile}) => {
   const [editingId, setEditingId] = React.useState(null);
   const [editName, setEditName] = React.useState('');
   const [editGoal, setEditGoal] = React.useState('');
+
+  // Expose create opener so _goToPoolsCreate can trigger it from anywhere
+  // Accepts optional {name, goal} to pre-fill the form
+  React.useEffect(() => {
+    window._openPoolCreate = (prefill={}) => {
+      if(prefill.name) setNewName(prefill.name);
+      if(prefill.goal) setNewGoal(String(prefill.goal));
+      setShowCreate(true);
+    };
+    return () => { delete window._openPoolCreate; };
+  }, []);
   const [expandedId, setExpandedId] = React.useState(null);
   const topRef = React.useRef(null);
   const uid = profile.id;
@@ -7016,6 +7668,7 @@ const PoolsScreen = ({profile, onViewProfile}) => {
   const allPools = Object.values(DB.groupPools||{}).flat();
   const ownedPools = allPools.filter(p => p.ownerId===uid);
   const memberPools = allPools.filter(p => (p.members||[]).includes(uid) && p.ownerId!==uid);
+  const receivedPools = allPools.filter(p => p.recipientId===uid && (p.released||p.status==='released'));
   const pendingInvitePools = allPools.filter(p =>
     !p.members.includes(uid) &&
     p.ownerId !== uid &&
@@ -7062,6 +7715,23 @@ const PoolsScreen = ({profile, onViewProfile}) => {
     setEditingId(null);
   };
 
+  const doReleasePool = (pool) => {
+    GroupPoolStore.release(pool.id);
+    setConfirmReleasePool(null);
+    setForceUpdate(v=>v+1);
+    NotifStore.push(uid,{icon:'🎁',text:`Piñata funds released to ${DB.users[pool.recipientId]?.name?.split(' ')[0]||'recipient'}!`,color:'var(--mint)'});
+  };
+
+  const doCancelPool = (pool) => {
+    // Mark cancelled — in production would trigger refunds
+    pool.cancelled = true;
+    pool.released = true;
+    pool.releasedAt = Date.now();
+    setConfirmCancelPool(null);
+    setForceUpdate(v=>v+1);
+    NotifStore.push(uid,{icon:'✕',text:`Piñata cancelled. Contact support for refunds.`,color:'var(--coral)'});
+  };
+
   const searchInvites = (q) => {
     setInviteSearch(q);
     if(q.trim().length<2){ setInviteResults([]); return; }
@@ -7100,11 +7770,11 @@ const PoolsScreen = ({profile, onViewProfile}) => {
     const memberCount = (pool.members||[]).length + pending.length;
 
     return (
-      <div style={{background:'var(--surface)',borderRadius:16,border:'1px solid var(--border)',overflow:'hidden',marginBottom:12}}>
+      <div style={{background:'var(--surface)',borderRadius:16,border:'1px solid var(--border)',overflow:'visible',marginBottom:12,position:'relative'}}>
         <div style={{padding:'14px 16px'}}>
           {editing ? (
           <div>
-          <div style={{fontSize:11,fontWeight:700,color:'var(--violet2)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:10}}>{t('pools.editPool')}</div>
+          <div style={{fontSize:11,fontWeight:700,color:'var(--violet2)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:10}}>{"Edit Piñata"}</div>
           <input value={editName} onChange={e=>setEditName(e.target.value)}
           style={{width:'100%',marginBottom:8,fontSize:13,padding:'9px 12px',borderRadius:9,border:'1.5px solid rgba(155,93,229,.4)',background:'var(--s2)',color:'var(--text)'}} placeholder="Pool name"/>
           <input value={editGoal} onChange={e=>setEditGoal(e.target.value)} type="number"
@@ -7151,7 +7821,7 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           <div style={{height:'100%',width:`${pct}%`,background:pct>=100?'var(--mint)':'linear-gradient(90deg,var(--violet),var(--mint))',borderRadius:3,transition:'width .5s'}}/>
           </div>
           <div style={{display:'flex',justifyContent:'space-between'}}>
-          <span style={{fontSize:11,color:pct>=100?'var(--mint)':'var(--muted)',fontWeight:pct>=100?700:400}}>{pct>=100?'🎉 Goal reached!':`${pct}% funded`}</span>
+          <span style={{fontSize:11,color:pct>=100?'var(--mint)':'var(--muted)',fontWeight:pct>=100?700:400}}>{pct>=100?'🎊 Piñata stuffed!':`${pct}% full`}</span>
           <span style={{fontSize:11,color:'var(--muted)'}}>{memberCount} member{memberCount!==1?'s':''}{pending.length>0&&<span style={{color:'var(--gold)'}}> · {pending.length} pending</span>}</span>
           </div>
           </div>
@@ -7179,6 +7849,27 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           </button>
           )}
           {isOwner&&<button onClick={()=>{setEditingId(pool.id);setEditName(pool.name);setEditGoal(String(pool.goal||''));}} style={{padding:'7px 10px',borderRadius:9,border:'1px solid var(--border)',background:'none',color:'var(--muted)',cursor:'pointer',fontSize:13}}>✏️</button>}
+          {isOwner&&(
+            <div style={{position:'relative'}}>
+              <button onClick={()=>setPoolMenuId(poolMenuId===pool.id?null:pool.id)} style={{padding:'7px 10px',borderRadius:9,border:'1px solid var(--border)',background:'none',color:'var(--muted)',cursor:'pointer',fontSize:15}}>⋯</button>
+              {poolMenuId===pool.id&&(
+                <div style={{position:'absolute',right:0,top:'100%',marginTop:4,background:'var(--surface)',border:'1px solid var(--border)',borderRadius:12,boxShadow:'0 4px 20px rgba(0,0,0,.2)',zIndex:200,minWidth:180,overflow:'hidden'}}>
+                  <button onClick={()=>{ pool.paused=!pool.paused; setPoolMenuId(null); setForceUpdate(v=>v+1); NotifStore.push(uid,{icon:pool.paused?'⏸️':'▶️',text:pool.paused?`Piñata paused — no new contributions`:`Piñata resumed`,color:'var(--sky)'}); }}
+                    style={{width:'100%',padding:'11px 14px',border:'none',background:'none',textAlign:'left',fontSize:13,fontWeight:600,cursor:'pointer',color:'var(--text)',display:'flex',alignItems:'center',gap:8,borderBottom:'1px solid var(--border)'}}>
+                    {pool.paused?'▶️ Resume piñata':'⏸️ Pause piñata'}
+                  </button>
+                  <button onClick={()=>{ setPoolMenuId(null); setConfirmReleasePool(pool); }}
+                    style={{width:'100%',padding:'11px 14px',border:'none',background:'none',textAlign:'left',fontSize:13,fontWeight:600,cursor:'pointer',color:'var(--mint)',display:'flex',alignItems:'center',gap:8,borderBottom:'1px solid var(--border)'}}>
+                    🎁 Release to recipient
+                  </button>
+                  <button onClick={()=>{ setPoolMenuId(null); setConfirmCancelPool(pool); }}
+                    style={{width:'100%',padding:'11px 14px',border:'none',background:'none',textAlign:'left',fontSize:13,fontWeight:600,cursor:'pointer',color:'var(--coral)',display:'flex',alignItems:'center',gap:8}}>
+                    ✕ Cancel piñata
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           {!isOwner&&(
           <button onClick={()=>{GroupPoolStore.leave(pool.id,uid);setForceUpdate(v=>v+1);}} style={{padding:'7px 12px',borderRadius:9,border:'1px solid rgba(255,94,91,.3)',background:'rgba(255,94,91,.06)',color:'var(--coral)',fontSize:12,fontWeight:700,cursor:'pointer',flexShrink:0}}>
           Leave
@@ -7244,10 +7935,10 @@ const PoolsScreen = ({profile, onViewProfile}) => {
            <div style={{display:'flex',alignItems:'center',gap:5,flexWrap:'wrap'}}>
             <span style={{fontSize:13,fontWeight:700,color:'var(--text)'}}>{mu?.name||'Member'}</span>
             {mid===uid&&<span style={{fontSize:9,color:'var(--violet2)',fontWeight:700,background:'rgba(155,93,229,.15)',padding:'1px 5px',borderRadius:4}}>YOU</span>}
-            {isPoolOwner&&<span style={{fontSize:9,color:'var(--gold)',fontWeight:700,background:'rgba(255,209,102,.15)',padding:'1px 5px',borderRadius:4}}>{t('pools.organizer')}</span>}
+            {isPoolOwner&&<span style={{fontSize:9,color:'var(--gold)',fontWeight:700,background:'rgba(255,209,102,.15)',padding:'1px 5px',borderRadius:4}}>"ORGANIZER"</span>}
            </div>
            <div style={{fontSize:11,color:'var(--muted)',marginTop:1}}>
-            {contributed>0?<span style={{color:'var(--mint)',fontWeight:600}}>+${contributed.toFixed(2)} contributed</span>:<span>{t('pools.noContributionYet')}</span>}
+            {contributed>0?<span style={{color:'var(--mint)',fontWeight:600}}>+${contributed.toFixed(2)} dropped 🍬</span>:<span>"No candy yet"</span>}
            </div>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
@@ -7276,7 +7967,7 @@ const PoolsScreen = ({profile, onViewProfile}) => {
             </div>
             <div style={{flex:1,minWidth:0}}>
              <div style={{fontSize:13,fontWeight:700,color:'var(--text)'}}>{pu?.name||'User'}</div>
-             <div style={{fontSize:11,color:'var(--gold)',marginTop:1}}>{t('pools.inviteSentAwaiting')}</div>
+             <div style={{fontSize:11,color:'var(--gold)',marginTop:1}}>"Invite sent · awaiting response"</div>
             </div>
             <div style={{display:'flex',gap:5,flexShrink:0}}>
              {isOwner&&(
@@ -7294,11 +7985,11 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           </div>
           <div>
           <div style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:10,display:'flex',justifyContent:'space-between'}}>
-          <span>{t('pools.contributions')}</span>
+          <span>"Candy dropped 🍬"</span>
           <span style={{color:'var(--mint)',fontWeight:700}}>${total.toFixed(2)} total</span>
           </div>
           {(pool.contributions||[]).length===0&&(
-          <div style={{textAlign:'center',padding:'16px 0',color:'var(--muted)',fontSize:12,fontStyle:'italic'}}>{t('pools.noContributionsYet')}</div>
+          <div style={{textAlign:'center',padding:'16px 0',color:'var(--muted)',fontSize:12,fontStyle:'italic'}}>{"No contributions yet"}</div>
           )}
           {[...(pool.contributions||[])].sort((a,b)=>b.amount-a.amount).map((c,i)=>{
           const cu=DB.users[c.userId];
@@ -7324,11 +8015,49 @@ const PoolsScreen = ({profile, onViewProfile}) => {
 
   return (
     <div ref={topRef} className="page-wrap" style={{padding:'16px 20px 100px'}}>
+      {/* ── Release confirmation modal ── */}
+      {confirmReleasePool&&(
+        <div style={{position:'fixed',inset:0,zIndex:800,background:'rgba(0,0,0,.7)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setConfirmReleasePool(null)}>
+          <div style={{background:'var(--surface)',borderRadius:20,width:'min(380px,94vw)',border:'1px solid var(--border)',padding:'24px 24px 20px'}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:40,textAlign:'center',marginBottom:12}}>🎁</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:17,textAlign:'center',marginBottom:8}}>Release to {DB.users[confirmReleasePool.recipientId]?.name?.split(' ')[0]||'recipient'}?</div>
+            <div style={{fontSize:13,color:'var(--muted)',textAlign:'center',marginBottom:8,lineHeight:1.5}}>
+              This will immediately send <strong style={{color:'var(--mint)'}}>{fmt$(GroupPoolStore.getTotal(confirmReleasePool.id))}</strong> to their birthday wallet. This cannot be undone.
+            </div>
+            <div style={{background:'rgba(6,214,160,.06)',border:'1px solid rgba(6,214,160,.2)',borderRadius:10,padding:'10px 12px',fontSize:12,color:'var(--muted)',marginBottom:16,lineHeight:1.5}}>
+              💡 All contributors will be notified that the piñata was released early. The recipient will see who contributed.
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <button onClick={()=>setConfirmReleasePool(null)} style={{flex:1,padding:'11px',borderRadius:11,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted)',fontWeight:700,cursor:'pointer',fontSize:13}}>Cancel</button>
+              <button onClick={()=>doReleasePool(confirmReleasePool)} style={{flex:2,padding:'11px',borderRadius:11,border:'none',background:'linear-gradient(135deg,var(--mint),#06B6D4)',color:'#fff',fontWeight:800,cursor:'pointer',fontSize:13,fontFamily:"'Plus Jakarta Sans',sans-serif"}}>🎁 Yes, Release Funds</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ── Cancel confirmation modal ── */}
+      {confirmCancelPool&&(
+        <div style={{position:'fixed',inset:0,zIndex:800,background:'rgba(0,0,0,.7)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setConfirmCancelPool(null)}>
+          <div style={{background:'var(--surface)',borderRadius:20,width:'min(380px,94vw)',border:'1px solid var(--border)',padding:'24px 24px 20px'}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:40,textAlign:'center',marginBottom:12}}>⚠️</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:17,textAlign:'center',marginBottom:8}}>Cancel this piñata?</div>
+            <div style={{fontSize:13,color:'var(--muted)',textAlign:'center',marginBottom:8,lineHeight:1.5}}>
+              <strong style={{color:'var(--coral)'}}>{confirmCancelPool.name}</strong> has <strong>{fmt$(GroupPoolStore.getTotal(confirmCancelPool.id))}</strong> from {confirmCancelPool.members?.length||0} contributor{(confirmCancelPool.members?.length||0)!==1?'s':''}.
+            </div>
+            <div style={{background:'rgba(255,94,91,.06)',border:'1px solid rgba(255,94,91,.2)',borderRadius:10,padding:'10px 12px',fontSize:12,color:'var(--muted)',marginBottom:16,lineHeight:1.5}}>
+              ⚠️ Cancelling does not automatically refund contributors. Contact <strong>support@birthdayme.app</strong> to process individual refunds. All contributors will be notified.
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <button onClick={()=>setConfirmCancelPool(null)} style={{flex:1,padding:'11px',borderRadius:11,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted)',fontWeight:700,cursor:'pointer',fontSize:13}}>Keep it</button>
+              <button onClick={()=>doCancelPool(confirmCancelPool)} style={{flex:2,padding:'11px',borderRadius:11,border:'none',background:'var(--coral)',color:'#fff',fontWeight:800,cursor:'pointer',fontSize:13,fontFamily:"'Plus Jakarta Sans',sans-serif"}}>✕ Cancel Piñata</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div style={{marginBottom:16}}>
         <h2 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:20,fontWeight:900,marginBottom:3,display:'flex',alignItems:'center',gap:8}}>
-          🎁 Gift Pools
+          🪅 Piñatas
         </h2>
-        <p style={{color:'var(--muted)',fontSize:13,lineHeight:1.4}}>{t('pools.coordinateGroupGifts')}</p>
+        <p style={{color:'var(--muted)',fontSize:13,lineHeight:1.4}}>Fill piñatas for birthdays on BirthdayMe. 🪅</p>
       </div>
       {pendingInvitePools.length > 0 && (
         <div style={{marginBottom:16}}>
@@ -7340,11 +8069,11 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           return (
           <div key={pool.id} style={{background:'linear-gradient(135deg,rgba(155,93,229,.12),rgba(6,214,160,.06))',border:'1.5px solid rgba(155,93,229,.35)',borderRadius:16,padding:'14px 16px',marginBottom:8}}>
           <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
-          <span style={{fontSize:18}}>🎁</span>
+          <span style={{fontSize:18}}>🪅</span>
           <div style={{flex:1}}>
           <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--text)'}}>{pool.name}</div>
           <div style={{fontSize:11,color:'var(--muted)',marginTop:1}}>
-           {inviter?.name||'Someone'} invited you · for {recipient?.name||'someone'} · {pct}% funded
+           {inviter?.name||'Someone'} invited you · for {recipient?.name||'someone'} · {pct}% full
           </div>
           </div>
           <span style={{fontSize:10,fontWeight:800,color:'var(--violet2)',textTransform:'uppercase',letterSpacing:'.06em',background:'rgba(155,93,229,.12)',padding:'3px 8px',borderRadius:8,flexShrink:0,border:'1px solid rgba(155,93,229,.2)'}}>{t('wallet.pending')}</span>
@@ -7355,7 +8084,7 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           <div style={{display:'flex',gap:8}}>
           <button onClick={()=>{
           GroupPoolStore.acceptInvite(pool.id, uid);
-          (DB.notifications[uid]||[]).forEach(n=>{ if(n.type==='pool_invite'&&n.poolId===pool.id){n.type='pool_accepted';n.read=true;n.text=`✓ You joined "${pool.name}"`;}});
+          (DB.notifications[uid]||[]).forEach(n=>{ if(n.type==='pool_invite'&&n.poolId===pool.id){n.type='pool_accepted';n.read=true;n.text=`✓ You're filling "${pool.name}"`;}});
           setForceUpdate(v=>v+1);
           setTab('member');
           }} style={{flex:1,padding:'9px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontWeight:800,fontSize:13,cursor:'pointer',fontFamily:"'Plus Jakarta Sans',sans-serif"}}>
@@ -7376,8 +8105,9 @@ const PoolsScreen = ({profile, onViewProfile}) => {
       )}
       <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:13,padding:3,border:'1px solid var(--border)',marginBottom:16}}>
         {[
-          {id:'owned', label:`🎁 My Pools`, count:ownedPools.length},
-          {id:'member', label:`👥 Member Of`, count:memberPools.length},
+          {id:'owned', label:`🪅 Filling For`, count:ownedPools.length},
+          {id:'member', label:`👥 Also In`, count:memberPools.length},
+          {id:'received', label:`🎊 Received`, count:receivedPools.length},
         ].map(tb=>(
           <button key={tb.id} onClick={()=>setTab(tb.id)} style={{
           flex:1,padding:'9px 6px',borderRadius:10,border:'none',
@@ -7394,24 +8124,24 @@ const PoolsScreen = ({profile, onViewProfile}) => {
       </div>
       <div style={{display:'flex',justifyContent:'flex-end',marginBottom:14}}>
         <select value={sort} onChange={e=>setSort(e.target.value)} style={{fontSize:12,fontWeight:600,color:'var(--text)',background:'var(--s2)',border:'1px solid var(--border)',borderRadius:8,padding:'6px 10px',cursor:'pointer',outline:'none'}}>
-          <option value='newest'>{t('pools.newestFirst')}</option>
-          <option value='oldest'>{t('pools.oldestFirst')}</option>
-          <option value='largest'>{t('pools.largestPool')}</option>
-          <option value='smallest'>{t('pools.smallestPool')}</option>
+          <option value='newest'>"Newest first"</option>
+          <option value='oldest'>"Oldest first"</option>
+          <option value='largest'>"Fullest piñata"</option>
+          <option value='smallest'>"Emptiest piñata"</option>
         </select>
       </div>
       {tab==='owned'&&(
         <>
           {!showCreate&&(
           <button onClick={()=>setShowCreate(true)} style={{width:'100%',padding:'13px',borderRadius:13,border:'1.5px dashed rgba(155,93,229,.35)',background:'rgba(155,93,229,.04)',color:'var(--violet2)',fontSize:13,fontWeight:700,cursor:'pointer',marginBottom:14,display:'flex',alignItems:'center',justifyContent:'center',gap:6}}>
-          <span style={{fontSize:18}}>+</span> Create New Gift Pool
+          <span style={{fontSize:18}}>+</span> Start New Piñata 🪅
           </button>
           )}
           {showCreate&&(
           <div style={{background:'var(--surface)',border:'1.5px solid rgba(155,93,229,.3)',borderRadius:16,padding:16,marginBottom:14}}>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,marginBottom:14,color:'var(--violet2)',display:'flex',alignItems:'center',gap:6}}>🎁 New Gift Pool</div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,marginBottom:14,color:'var(--violet2)',display:'flex',alignItems:'center',gap:6}}>🪅 New Piñata</div>
           <div style={{marginBottom:12}}>
-          <label style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',display:'block',marginBottom:6}}>{t('pools.whoIsGiftFor')}</label>
+          <label style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',display:'block',marginBottom:6}}>Whose birthday? 🎂</label>
           {selectedUser ? (
           <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:10,background:'rgba(155,93,229,.07)',border:'1px solid rgba(155,93,229,.3)'}}>
           <span style={{fontSize:22}}>{selectedUser.emoji||'🎂'}</span>
@@ -7445,9 +8175,9 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           </div>
           )}
           </div>
-          <label style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',display:'block',marginBottom:6}}>{t('pools.poolName')}</label>
+          <label style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',display:'block',marginBottom:6}}>Piñata Name 🪅</label>
           <input value={newName} onChange={e=>setNewName(e.target.value)}
-          placeholder={`e.g. "The Squad", "Work Crew"`}
+          placeholder={`e.g. "The Crew", "Work Crew"`}
           style={{width:'100%',marginBottom:10,fontSize:13}}/>
           <label style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',display:'block',marginBottom:6}}>
           Fundraising Goal <span style={{fontWeight:400,textTransform:'none',fontSize:10}}>(optional)</span>
@@ -7460,7 +8190,7 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           background:selectedUser&&newName.trim()?'var(--violet)':'rgba(155,93,229,.25)',
           color:'#fff',fontWeight:800,fontSize:13,cursor:selectedUser&&newName.trim()?'pointer':'not-allowed',
           fontFamily:"'Plus Jakarta Sans',sans-serif"
-          }}>{t('pools.createPool')}</button>
+          }}>{"🪅 Create Piñata"}</button>
           <button onClick={()=>{setShowCreate(false);setSelectedUser(null);setSearchQ('');setNewName('');setNewGoal('');}}
           style={{padding:'11px 14px',borderRadius:10,border:'1px solid var(--border)',background:'none',color:'var(--muted)',cursor:'pointer',fontSize:13}}>
           Cancel
@@ -7472,7 +8202,7 @@ const PoolsScreen = ({profile, onViewProfile}) => {
           {sortPools(ownedPools).length===0&&!showCreate ? (
           <div style={{textAlign:'center',padding:'48px 20px',color:'var(--muted)'}}>
           <div style={{fontSize:48,marginBottom:12}}>🎁</div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:16,fontWeight:800,marginBottom:6,color:'var(--text)'}}>{t('pools.noPoolsYet')}</div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:16,fontWeight:800,marginBottom:6,color:'var(--text)'}}>{"No piñatas yet 🪅"}</div>
           <div style={{fontSize:13,lineHeight:1.5}}>Create a pool to pool money from friends for someone's birthday gift!</div>
           </div>
           ) : sortPools(ownedPools).map(p=><PoolCard key={p.id} pool={p} isOwner={true}/>)}
@@ -7482,10 +8212,66 @@ const PoolsScreen = ({profile, onViewProfile}) => {
         sortPools(memberPools).length===0 ? (
           <div style={{textAlign:'center',padding:'48px 20px',color:'var(--muted)'}}>
           <div style={{fontSize:48,marginBottom:12}}>👥</div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:16,fontWeight:800,marginBottom:6,color:'var(--text)'}}>{t('pools.noPoolsYet')}</div>
-          <div style={{fontSize:13,lineHeight:1.5}}>{t('pools.poolsAppearHere')}</div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:16,fontWeight:800,marginBottom:6,color:'var(--text)'}}>{"No piñatas yet 🪅"}</div>
+          <div style={{fontSize:13,lineHeight:1.5}}>"When a friend starts a piñata for you, it'll appear here on your birthday! 🪅"</div>
           </div>
         ) : sortPools(memberPools).map(p=><PoolCard key={p.id} pool={p} isOwner={false}/>)
+      )}
+      {tab==='received'&&(
+        receivedPools.length===0 ? (
+          <div style={{textAlign:'center',padding:'40px 20px',color:'var(--muted)'}}>
+            <div style={{fontSize:48,marginBottom:12}}>🪅</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:16,fontWeight:800,marginBottom:6,color:'var(--text)'}}>No popped piñatas yet</div>
+            <div style={{fontSize:13,lineHeight:1.5}}>When friends fill a piñata for your birthday and you pop it, it shows up here 🎊</div>
+          </div>
+        ) : (
+          <div>
+            <div style={{fontSize:11,color:'var(--muted)',fontWeight:700,textTransform:'uppercase',letterSpacing:'.06em',marginBottom:12}}>🎊 {receivedPools.length} piñata{receivedPools.length!==1?'s':''} received</div>
+            {receivedPools.slice().sort((a,b)=>(b.releasedAt||0)-(a.releasedAt||0)).map(pool=>{
+              const total = pool.contributions.reduce((s,c)=>s+(c.net||c.amount||0),0);
+              const releasedDate = pool.releasedAt ? new Date(pool.releasedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : 'Your birthday';
+              return (
+                <div key={pool.id} style={{background:'var(--surface)',borderRadius:18,padding:'18px 16px',marginBottom:14,border:'1px solid rgba(255,209,102,.3)',boxShadow:'0 2px 16px rgba(255,209,102,.08)'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:14}}>
+                    <div>
+                      <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:16,color:'var(--text)',marginBottom:3}}>🪅 {pool.name}</div>
+                      <div style={{fontSize:11,color:'var(--muted)'}}>Popped · {releasedDate}</div>
+                    </div>
+                    <div style={{textAlign:'right'}}>
+                      <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:22,color:'var(--mint)',lineHeight:1}}>{fmt$(total)}</div>
+                      <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{pool.contributions.length} friend{pool.contributions.length!==1?'s':''}</div>
+                    </div>
+                  </div>
+                  <div style={{borderTop:'1px solid var(--border)',paddingTop:12}}>
+                    <div style={{fontSize:11,fontWeight:800,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:10}}>Candy droppers 🍬</div>
+                    <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                      {pool.contributions.map((c,i)=>{
+                        const u = DB.users[c.userId];
+                        const name = c.isAnonymous ? 'Anonymous Friend' : (c.displayName||u?.name||'A friend');
+                        const emoji = c.isAnonymous ? '🎁' : (u?.emoji||'🎊');
+                        const amt = c.net||c.amount||0;
+                        return (
+                          <div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 10px',background:'rgba(255,209,102,.05)',borderRadius:10,border:'1px solid rgba(255,209,102,.12)'}}>
+                            <div style={{width:32,height:32,borderRadius:10,background:'rgba(255,209,102,.15)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,flexShrink:0}}>{emoji}</div>
+                            <div style={{flex:1,minWidth:0}}>
+                              <div style={{fontWeight:700,fontSize:13,color:'var(--text)'}}>{name}</div>
+                              {c.note&&<div style={{fontSize:11,color:'var(--muted)',marginTop:1,fontStyle:'italic',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>"{c.note}"</div>}
+                            </div>
+                            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--mint)',flexShrink:0}}>{fmt$(amt)}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div style={{marginTop:12,padding:'10px 12px',background:'linear-gradient(135deg,rgba(6,214,160,.08),rgba(255,209,102,.06))',borderRadius:10,border:'1px solid rgba(6,214,160,.2)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                      <span style={{fontSize:12,fontWeight:700,color:'var(--muted)'}}>Total received</span>
+                      <span style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:16,color:'var(--mint)'}}>{fmt$(total)} 🎊</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
       )}
     </div>
   );
@@ -8212,7 +8998,7 @@ const GroupPoolPanel = ({profile, currentUserId, onViewProfile}) => {
           <div key={pool.id} style={{background:'var(--surface)',border:'1px solid rgba(155,93,229,.3)',borderRadius:16,padding:'14px 16px',marginBottom:10}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}>
           <div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--violet2)'}}>🎁 {pool.name}</div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--violet2)'}}>🪅 {pool.name}</div>
           <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{pool.members.length} contributor{pool.members.length!==1?'s':''}
            {isOwner&&<>
             <span style={{color:'var(--mint)',marginLeft:6,fontSize:10}}>· owner only</span>
@@ -8240,17 +9026,17 @@ const GroupPoolPanel = ({profile, currentUserId, onViewProfile}) => {
       {currentUserId&&!isOwner&&(
         creating ? (
           <div style={{background:'var(--surface)',border:'1px solid rgba(155,93,229,.25)',borderRadius:16,padding:16}}>
-          <div style={{fontWeight:800,fontSize:14,marginBottom:12}}>🎁 Create a Gift Pool</div>
+          <div style={{fontWeight:800,fontSize:14,marginBottom:12}}>🪅 Create a Piñata</div>
           <input value={newName} onChange={e=>setNewName(e.target.value)} placeholder={`e.g. "The Squad", "Work Fam"`} style={{width:'100%',marginBottom:10,fontSize:13}}/>
           <input value={newGoal} onChange={e=>setNewGoal(e.target.value)} type="number" placeholder="Goal amount (optional)" style={{width:'100%',marginBottom:12,fontSize:13}}/>
           <div style={{display:'flex',gap:8}}>
-          <button onClick={createPool} style={{flex:1,padding:'10px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontWeight:800,fontSize:13,cursor:'pointer',fontFamily:"'Plus Jakarta Sans',sans-serif"}}>{t('pools.createPool')}</button>
+          <button onClick={createPool} style={{flex:1,padding:'10px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontWeight:800,fontSize:13,cursor:'pointer',fontFamily:"'Plus Jakarta Sans',sans-serif"}}>{"🪅 Create Piñata"}</button>
           <button onClick={()=>setCreating(false)} style={{padding:'10px 14px',borderRadius:10,border:'1px solid var(--border)',background:'none',color:'var(--muted)',cursor:'pointer',fontSize:13}}>{t('common.cancel')}</button>
           </div>
           </div>
         ) : (
           <button onClick={()=>setCreating(true)} style={{width:'100%',padding:'11px',borderRadius:12,border:'1px dashed rgba(155,93,229,.35)',background:'rgba(155,93,229,.04)',color:'var(--violet2)',fontSize:13,fontWeight:700,cursor:'pointer'}}>
-          🎁 Start a group gift pool for {profile.name}
+          🪅 Start a piñata for {profile.name}
           </button>
         )
       )}
@@ -8267,22 +9053,199 @@ const SentGiftStore = {
   getAll(userId) { return (DB.sentGifts||{})[userId]||[]; },
 };
 const ClaimedItemStore = {
-  add(claimerUserId, ownerUserId, ownerName, item) {
+  // ── Core claim operations ─────────────────────────────────────────────────
+  add(claimerUserId, ownerUserId, ownerName, item, ownerDob=null) {
     if(!DB._claimedItems) DB._claimedItems = {};
     if(!DB._claimedItems[claimerUserId]) DB._claimedItems[claimerUserId] = [];
-    DB._claimedItems[claimerUserId].unshift({
+    const claim = {
       id: Date.now(), ts: Date.now(),
       ownerUserId, ownerName,
+      ownerDob: ownerDob||null,
       itemTitle: item.title||'Gift',
+      itemUrl: item.url||null,
       price: item.price||null,
       isAmazon: item.isAmazon||false,
       itemId: item.id,
-    });
+      status: 'claimed',          // 'claimed' | 'purchased' | 'done_elsewhere'
+      confirmed: false,
+      purchasedAt: null,
+      purchasedNote: null,
+      remindersSent: 0,
+      lastReminderAt: null,
+      birthdayYear: ownerDob ? getBirthdayYear(ownerDob) : new Date().getFullYear(),
+    };
+    DB._claimedItems[claimerUserId].unshift(claim);
+    // Archive to claim history
+    this._archiveToHistory(claimerUserId, claim);
+    // Register in group claims if user is in a gift group with the owner
+    this._registerGroupClaim(claimerUserId, ownerUserId, item.id);
   },
+
   getAll(claimerUserId) { return (DB._claimedItems||{})[claimerUserId]||[]; },
+
+  // Mark as purchased (confirmed bought on platform)
+  confirmPurchase(claimerUserId, itemId, note='') {
+    if(!DB._claimedItems?.[claimerUserId]) return;
+    DB._claimedItems[claimerUserId] = DB._claimedItems[claimerUserId].map(x =>
+      x.itemId===itemId ? {...x, status:'purchased', confirmed:true, purchasedAt:Date.now(), purchasedNote:note} : x
+    );
+    this._updateHistory(claimerUserId, itemId, {status:'purchased', purchasedAt:Date.now(), purchasedNote:note});
+  },
+
+  // "I bought this elsewhere" — marks done without platform purchase
+  markBoughtElsewhere(claimerUserId, itemId, note='') {
+    if(!DB._claimedItems?.[claimerUserId]) return;
+    DB._claimedItems[claimerUserId] = DB._claimedItems[claimerUserId].map(x =>
+      x.itemId===itemId ? {...x, status:'done_elsewhere', confirmed:true, purchasedAt:Date.now(), purchasedNote:note||'Bought outside the app'} : x
+    );
+    this._updateHistory(claimerUserId, itemId, {status:'done_elsewhere', purchasedAt:Date.now()});
+  },
+
   remove(claimerUserId, itemId) {
     if(!DB._claimedItems?.[claimerUserId]) return;
     DB._claimedItems[claimerUserId] = DB._claimedItems[claimerUserId].filter(x=>x.itemId!==itemId);
+    // Remove from group claims too
+    Object.keys(DB.groupClaims||{}).forEach(listId => {
+      DB.groupClaims[listId] = (DB.groupClaims[listId]||[]).filter(c => !(c.itemId===itemId && c.claimedBy===claimerUserId));
+    });
+  },
+
+  // ── History & archive ─────────────────────────────────────────────────────
+  _archiveToHistory(userId, claim) {
+    if(!DB.claimHistory[userId]) DB.claimHistory[userId] = [];
+    const existing = DB.claimHistory[userId].findIndex(h => h.itemId === claim.itemId);
+    if(existing >= 0) return; // already in history
+    DB.claimHistory[userId].unshift({...claim});
+  },
+
+  _updateHistory(userId, itemId, updates) {
+    if(!DB.claimHistory[userId]) return;
+    DB.claimHistory[userId] = DB.claimHistory[userId].map(h =>
+      h.itemId===itemId ? {...h, ...updates} : h
+    );
+  },
+
+  getHistory(userId) { return (DB.claimHistory||{})[userId]||[]; },
+
+  // ── Group claims (trust groups via Lists) ─────────────────────────────────
+  _registerGroupClaim(claimerUserId, ownerUserId, itemId) {
+    const userLists = ListsStore.getLists(claimerUserId);
+    userLists.forEach(list => {
+      if(!DB.giftGroups[list.id]?.isGiftGroup) return;
+      // Only register if owner is NOT in the list (owner can't see their own claims)
+      if(list.members.includes(ownerUserId)) return;
+      if(!DB.groupClaims[list.id]) DB.groupClaims[list.id] = [];
+      const claimerUser = DB.users[claimerUserId];
+      DB.groupClaims[list.id].push({
+        itemId, ownerUserId, claimedBy: claimerUserId,
+        claimedByName: claimerUser?.name||'Someone',
+        ts: Date.now(),
+      });
+    });
+  },
+
+  getGroupClaimsForItem(viewerUserId, ownerUserId, itemId) {
+    const userLists = ListsStore.getLists(viewerUserId);
+    const claims = [];
+    userLists.forEach(list => {
+      if(!DB.giftGroups[list.id]?.isGiftGroup) return;
+      if(list.members.includes(ownerUserId)) return; // owner can't see
+      (DB.groupClaims[list.id]||[]).forEach(c => {
+        if(c.itemId===itemId && c.claimedBy!==viewerUserId) claims.push(c);
+      });
+    });
+    return claims;
+  },
+
+  // How many people are "interested" in an item (claimed or group-visible)
+  getInterestedCount(viewerUserId, ownerUserId, itemId) {
+    const groupClaims = this.getGroupClaimsForItem(viewerUserId, ownerUserId, itemId);
+    return groupClaims.length;
+  },
+
+  // ── Shopping queue ────────────────────────────────────────────────────────
+  addToQueue(userId, item) {
+    if(!DB.shoppingQueue[userId]) DB.shoppingQueue[userId] = [];
+    const existing = DB.shoppingQueue[userId].find(q => q.itemId===item.id && q.ownerProfileId===item.ownerProfileId);
+    if(existing) return; // no duplicates
+    DB.shoppingQueue[userId].unshift({
+      itemId: item.id,
+      ownerProfileId: item.ownerProfileId,
+      ownerName: item.ownerName,
+      ownerDob: item.ownerDob||null,
+      itemTitle: item.title||'Gift',
+      price: item.price||null,
+      link: item.url||null,
+      isAmazon: item.isAmazon||false,
+      savedAt: Date.now(),
+    });
+  },
+
+  removeFromQueue(userId, itemId, ownerProfileId) {
+    if(!DB.shoppingQueue[userId]) return;
+    DB.shoppingQueue[userId] = DB.shoppingQueue[userId].filter(
+      q => !(q.itemId===itemId && q.ownerProfileId===ownerProfileId)
+    );
+  },
+
+  getQueue(userId) { return (DB.shoppingQueue||{})[userId]||[]; },
+
+  // ── Budget tracking ───────────────────────────────────────────────────────
+  getBudgetSummary(userId) {
+    const claims = this.getAll(userId);
+    const queue = this.getQueue(userId);
+    const committed = claims
+      .filter(c => c.status==='claimed' && c.price)
+      .reduce((s,c) => s + parseFloat(c.price||0), 0);
+    const purchased = claims
+      .filter(c => (c.status==='purchased'||c.status==='done_elsewhere') && c.price)
+      .reduce((s,c) => s + parseFloat(c.price||0), 0);
+    const queued = queue
+      .filter(q => q.price)
+      .reduce((s,q) => s + parseFloat(q.price||0), 0);
+    const prefs = DB.wishlistPrefs[userId] || {};
+    return {
+      committed: +committed.toFixed(2),
+      purchased: +purchased.toFixed(2),
+      queued:    +queued.toFixed(2),
+      total:     +(committed + purchased).toFixed(2),
+      budget:    prefs.budgetMonthly || null,
+      overBudget: prefs.budgetMonthly ? (committed + purchased) > prefs.budgetMonthly : false,
+    };
+  },
+
+  // ── Reminders ────────────────────────────────────────────────────────────
+  getPendingReminders(claimerUserId) {
+    const claims = this.getAll(claimerUserId);
+    const prefs = DB.wishlistPrefs[claimerUserId] || {};
+    const triggerPoints = prefs.reminderDays || [14, 3, 1];
+    const now = Date.now();
+    return claims.filter(c => {
+      if(c.status==='purchased'||c.status==='done_elsewhere') return false;
+      if(!c.ownerDob) return false;
+      const bday = nextBirthday(c.ownerDob);
+      const daysLeft = Math.ceil((bday - now) / 864e5);
+      return triggerPoints.includes(daysLeft);
+    });
+  },
+
+  // ── Staleness nudges ──────────────────────────────────────────────────────
+  getStaleItems(ownerUserId, staleDays=90) {
+    const items = DB.wishlists[ownerUserId]||[];
+    const threshold = Date.now() - staleDays * 864e5;
+    return items.filter(item => {
+      if(item.claimed || item.received) return false;
+      const lastActivity = item.addedAt || item.updatedAt || 0;
+      if(lastActivity > threshold) return false;
+      const lastNudge = (DB.itemStaleness[item.id]||{}).lastNudgedAt || 0;
+      if(lastNudge > Date.now() - 30*864e5) return false; // don't nudge more than once/month
+      return true;
+    });
+  },
+
+  markStaleNudged(itemId) {
+    if(!DB.itemStaleness[itemId]) DB.itemStaleness[itemId] = {};
+    DB.itemStaleness[itemId].lastNudgedAt = Date.now();
   },
 };
 const AIGiftConcierge = ({recipient, giftHistory=[], wishlists=[]}) => {
@@ -8439,7 +9402,7 @@ const MyPoolsPanel = ({userId}) => {
         <div style={{display:'flex',alignItems:'center',gap:10}}>
           <span style={{fontSize:20}}>🎁</span>
           <div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14}}>{t('gift.mySentGiftPools')}</div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14}}>{"Filling For 🪅"}</div>
           <div style={{fontSize:12,color:'var(--muted)',marginTop:1}}>{myPools.length} pool{myPools.length!==1?'s':''} you're part of</div>
           </div>
         </div>
@@ -8455,7 +9418,7 @@ const MyPoolsPanel = ({userId}) => {
           <div key={pool.id} onClick={()=>{ if(window._goToPools) window._goToPools(pool.id); }} style={{padding:'12px 14px',background:'var(--surface)',borderRadius:12,marginBottom:8,border:'1px solid var(--border)',boxShadow:'0 1px 8px rgba(0,0,0,.06)',cursor:'pointer',transition:'all .15s'}} className="hover-lift">
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:4}}>
           <div>
-          <div style={{fontWeight:700,fontSize:13}}>🎁 {pool.name}</div>
+          <div style={{fontWeight:700,fontSize:13}}>🪅 {pool.name}</div>
           <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>
            {isOwner?'You created this':'You joined'} · For {recipient?.name||'Unknown'} · {pool.members.length} member{pool.members.length!==1?'s':''}
           </div>
@@ -9139,7 +10102,7 @@ const FamilyAccountPanel = ({profile, onViewProfile, demoMode=false}) => {
           Manage birthday pages for your whole family from one place. Anyone 14+ can create a family group.
         </p>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,maxWidth:340,margin:'0 auto',textAlign:'left'}}>
-          {[['\ud83d\udcc5','Family Calendar','Every birthday in one view'],['\ud83c\udf81','Group Gift Pools','Coordinate gifts together'],['\ud83d\udc76','Child Profiles','Safe managed pages for under-13'],['\ud83d\udd14','Birthday Alerts','Never miss a family birthday']].map(([icon,title,desc])=>(
+          {[['\ud83d\udcc5','Family Calendar','Every birthday in one view'],['\ud83c\udf81','Piñatas 🪅','Coordinate gifts together'],['\ud83d\udc76','Child Profiles','Safe managed pages for under-13'],['\ud83d\udd14','Birthday Alerts','Never miss a family birthday']].map(([icon,title,desc])=>(
           <div key={title} style={{background:'var(--s2)',border:'1px solid var(--border)',borderRadius:12,padding:12}}>
             <div style={{fontSize:20,marginBottom:4}}>{icon}</div>
             <div style={{fontSize:12,fontWeight:700,color:'var(--text)',marginBottom:2}}>{title}</div>
@@ -11226,7 +12189,7 @@ const PhotoBackgroundPicker = ({onSelect, onClose}) => {
 
 const BackgroundPicker = ({value, onChange}) => {
   const { t } = useTranslation();
-  const [activeCat, setActiveCat] = useState('Minimal');
+  const [activeCat, setActiveCat] = useState('Solid');
   const [uploadErr, setUploadErr] = useState('');
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const fileRef = useRef();
@@ -11600,7 +12563,7 @@ const ProfileForm = ({initial, authUser, onSave, onCancel, initialTab='identity'
         {formTab==="page"&&(
           <div style={{background:"var(--surface)",borderRadius:20,padding:24,border:"1px solid var(--border)",display:"flex",flexDirection:"column",gap:16}}>
           <div>
-          <label style={{fontSize:12,color:"var(--muted)",display:"block",marginBottom:6,fontWeight:700,textTransform:"uppercase",letterSpacing:".05em"}}>{t('pools.squadGoalOptional')}</label>
+          <label style={{fontSize:12,color:"var(--muted)",display:"block",marginBottom:6,fontWeight:700,textTransform:"uppercase",letterSpacing:".05em"}}>{"Piñata goal (optional)"}</label>
           <input type="number" value={goal} onChange={e=>setGoal(e.target.value)} placeholder="e.g. 200 — rally everyone around a target"/>
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:"var(--s2)",borderRadius:12,padding:"13px 16px",border:"1px solid var(--border)"}}>
@@ -11985,6 +12948,38 @@ const BirthdayMeCard = ({user, balance, onClose}) => {
 
 const CASHOUT_MIN  = 5.00;
 const HOLD_HOURS   = 48;
+const CASHOUT_WINDOW_DAYS = 7; // Withdraw up to 7 days before birthday
+const BELATED_GRACE_DAYS  = 7; // Gifts within 7 days after birthday apply to that year
+
+// Which birthday year does a contribution belong to?
+const getBirthdayYear = (recipientDob) => {
+  if(!recipientDob) return new Date().getFullYear();
+  const today = new Date();
+  const dob = new Date(recipientDob);
+  const thisYearBday = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+  const daysAfter = Math.floor((today - thisYearBday) / 86400000);
+  // On or before birthday, or within grace period after → this year's birthday
+  if(daysAfter <= BELATED_GRACE_DAYS) return today.getFullYear();
+  // After grace period → next birthday year
+  return today.getFullYear() + 1;
+};
+
+// Returns {allowed, daysUntilWindow, daysUntilBirthday} for withdrawal window logic
+const getBirthdayWithdrawWindow = (dob) => {
+  if(!dob) return {allowed:true, daysUntilWindow:0, daysUntilBirthday:0};
+  const now = new Date();
+  const b = new Date(dob);
+  // Next birthday this year or next
+  let next = new Date(now.getFullYear(), b.getMonth(), b.getDate());
+  if(next < now) next.setFullYear(now.getFullYear() + 1);
+  const msUntilBirthday = next - now;
+  const daysUntilBirthday = Math.ceil(msUntilBirthday / 86400000);
+  const windowOpensAt = new Date(next);
+  windowOpensAt.setDate(windowOpensAt.getDate() - CASHOUT_WINDOW_DAYS);
+  const allowed = now >= windowOpensAt; // within 7-day window OR past birthday
+  const daysUntilWindow = allowed ? 0 : Math.ceil((windowOpensAt - now) / 86400000);
+  return {allowed, daysUntilWindow, daysUntilBirthday};
+};
 
 const BalanceStore = {
   _ensure(userId) {
@@ -11992,22 +12987,43 @@ const BalanceStore = {
     if(!DB.balances[userId]) DB.balances[userId] = {
       available: 0, pending: 0, withdrawn: 0,
       history: [], lastPayout: null,
+      years: {},
     };
+    if(!DB.balances[userId].years) DB.balances[userId].years = {};
     return DB.balances[userId];
   },
-  addContribution(userId, amount, fromName, note='') {
+
+  _ensureYear(userId, year) {
     const rec = this._ensure(userId);
+    if(!rec.years[year]) rec.years[year] = {
+      raised: 0, withdrawn: 0, contributorCount: 0,
+      contributions: [], withdrawals: [],
+    };
+    return rec.years[year];
+  },
+
+  addContribution(userId, amount, fromName, note='', birthdayYear=null) {
+    const rec = this._ensure(userId);
+    const user = DB.users[userId];
+    const year = birthdayYear || getBirthdayYear(user?.dob);
+    const yearWallet = this._ensureYear(userId, year);
     const item = {
       id: Date.now() + Math.random(),
       amount, from: fromName, note,
       ts: Date.now(),
       releaseAt: Date.now() + HOLD_HOURS * 3600000,
       status: 'pending',
+      birthdayYear: year,
     };
-    rec.pending   = +(rec.pending + amount).toFixed(2);
+    rec.pending = +(rec.pending + amount).toFixed(2);
     rec.history.unshift(item);
+    yearWallet.raised = +(yearWallet.raised + amount).toFixed(2);
+    yearWallet.contributions.push({from:fromName, amount, note, ts:item.ts});
+    const uniqueFroms = new Set(yearWallet.contributions.map(c=>c.from));
+    yearWallet.contributorCount = uniqueFroms.size;
     return item;
   },
+
   releasePending(userId) {
     const rec = this._ensure(userId);
     const now = Date.now();
@@ -12024,28 +13040,59 @@ const BalanceStore = {
       rec.pending   = Math.max(0, +(rec.pending   - released).toFixed(2));
     }
   },
+
   withdraw(userId, amount) {
     this.releasePending(userId);
     const rec = this._ensure(userId);
     if(amount < CASHOUT_MIN) return {success:false, reason:`Minimum withdrawal is ${fmt$(CASHOUT_MIN)}`};
     if(amount > rec.available) return {success:false, reason:'Insufficient available balance'};
+    const user = DB.users[userId];
+    const win = getBirthdayWithdrawWindow(user?.dob);
+    if(!win.allowed) return {success:false, reason:`Withdrawals unlock ${win.daysUntilWindow} day${win.daysUntilWindow!==1?'s':''} before your birthday 🎂`};
     rec.available  = +(rec.available  - amount).toFixed(2);
     rec.withdrawn  = +(rec.withdrawn  + amount).toFixed(2);
     rec.lastPayout = Date.now();
     rec.history.unshift({id:Date.now(),amount:-amount,from:'Withdrawal',note:'Bank transfer',ts:Date.now(),status:'withdrawn'});
+    const activeYear = getBirthdayYear(user?.dob);
+    const yearWallet = this._ensureYear(userId, activeYear);
+    yearWallet.withdrawn = +(yearWallet.withdrawn + amount).toFixed(2);
+    yearWallet.withdrawals.push({amount, ts:Date.now()});
     return {success:true, amount};
   },
+
+  getYearStats(userId) {
+    const rec = this._ensure(userId);
+    return Object.entries(rec.years||{})
+      .map(([year, w]) => ({
+        year: parseInt(year),
+        raised: w.raised||0,
+        withdrawn: w.withdrawn||0,
+        contributorCount: w.contributorCount||0,
+        avgGift: w.contributions?.length>0 ? +(w.raised/w.contributions.length).toFixed(2) : 0,
+        biggestGift: w.contributions?.length>0 ? Math.max(...w.contributions.map(c=>c.amount)) : 0,
+        contributions: w.contributions||[],
+      }))
+      .sort((a,b)=>b.year-a.year);
+  },
+
   summary(userId) {
     this.releasePending(userId);
     const rec = this._ensure(userId);
+    const user = DB.users[userId];
+    const win = getBirthdayWithdrawWindow(user?.dob);
+    const activeYear = getBirthdayYear(user?.dob);
     return {
-      available:   rec.available,
-      pending:     rec.pending,
-      total:       +(rec.available + rec.pending).toFixed(2),
-      withdrawn:   rec.withdrawn,
-      canWithdraw: rec.available >= CASHOUT_MIN,
-      history:     rec.history.slice(0, 20),
-      lastPayout:  rec.lastPayout,
+      available:         rec.available,
+      pending:           rec.pending,
+      total:             +(rec.available + rec.pending).toFixed(2),
+      withdrawn:         rec.withdrawn,
+      canWithdraw:       rec.available >= CASHOUT_MIN && win.allowed,
+      windowAllowed:     win.allowed,
+      daysUntilWindow:   win.daysUntilWindow,
+      daysUntilBirthday: win.daysUntilBirthday,
+      activeYear,
+      history:           rec.history.slice(0, 20),
+      lastPayout:        rec.lastPayout,
     };
   },
 };
@@ -12306,11 +13353,24 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
     const diff = Math.floor((today-bday)/86400000);
     return diff > 0 ? diff : -1;
   })();
-  const belatedWindow = DB.pointsConfig?.belated_gift_window_days ?? 14;
+  const belatedWindow = DB.pointsConfig?.belated_gift_window_days ?? 7;
   const isBelated = daysSinceBirthday > 0 && daysSinceBirthday <= belatedWindow;
+  // Which birthday year & ordinal this gift applies to
+  const giftBirthdayYear = getBirthdayYear(profile?.dob);
+  const giftAge = (() => {
+    if(!profile?.dob) return age;
+    const d = new Date(profile.dob);
+    const today = new Date();
+    const thisYearBday = new Date(today.getFullYear(), d.getMonth(), d.getDate());
+    // Belated: age they just turned; Future: age they will turn
+    if(isBelated) return today.getFullYear() - d.getFullYear();
+    return today.getFullYear() - d.getFullYear() + (today >= thisYearBday ? 1 : 0);
+  })();
+  const ordinal = (n) => { const s=['th','st','nd','rd']; const v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
   const isBlockedByProfile = currentUserId && BlockStore.isBlocked(profile.id, currentUserId);
   const hasBlockedProfile = currentUserId && BlockStore.isBlocked(currentUserId, profile.id);
-  const [slider,setSlider]=useState(0.25); const [mode,setMode]=useState("slider");
+  const sliderMin = age<=CHILD_AGE_THRESHOLD ? CHILD_SLIDER_MIN_RATE : SLIDER_MIN_RATE;
+  const [slider,setSlider]=useState(sliderMin); const [mode,setMode]=useState("slider");
   const [fixed,setFixed]=useState(null); const [custom,setCustom]=useState("");
   const [note,setNote]=useState(""); const [guestName,setGuestName]=useState("");
   const [isAnon,setIsAnon]=useState(false);
@@ -12323,7 +13383,7 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
   const [confirmChecked,setConfirmChecked]=useState(false);
   const [botCheck,setBotCheck]=useState("");
   const [botAnswer] = useState(()=>{ const a=Math.ceil(Math.random()*9), b=Math.ceil(Math.random()*9); return {a,b,sum:a+b}; });
-  const [tab,setTab]=useState("gift");
+  const [tab,setTab]=useState("wishlist");
   const [showJoin,setShowJoin]=useState(false);
   const [showCard, setShowCard] = useState(false);
   const [entered, setEntered] = useState(false);
@@ -12337,11 +13397,10 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
   const stripeFee = fees.stripeFee;
 
   const openConfirm=()=>{ haptic([15,50,15]);
-    const ageMin = getMinGift(age);
     const maxGift = currentUserId
       ? (DB.pointsConfig?.max_gift || 5000)
       : (DB.pointsConfig?.max_guest_gift || 200);
-    if(!base||base<ageMin){setErr(`Minimum gift is ${fmt$(ageMin)}${age<=CHILD_AGE_THRESHOLD?' (age 13 & under)':` (age ${age} × $0.25/yr rate)`}`);return;}
+    if(!base||base<=0){setErr('Enter an amount to send');return;}
     if(base>maxGift){setErr(`Maximum gift is ${fmt$(maxGift)}${!currentUserId?' for guest senders':''}`);return;}
     // Velocity check — dynamic incoming limit based on recipient's follower count
     if(currentUserId && profile?.id) {
@@ -12395,9 +13454,9 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
       color:"var(--mint)"
     });
     if(profile.goal && profile.raised>=profile.goal){
-      NotifStore.push(profile.id,{icon:"🎯",text:"You hit your Squad Goal! 🎉",color:"var(--gold)",route:"analytics"});
+      NotifStore.push(profile.id,{icon:"🎊",text:"🎊 Your piñata is stuffed!",color:"var(--gold)",route:"home"});
     } else if(profile.goal && profile.raised>0 && (profile.raised/profile.goal)>=0.8 && (profile.raised/profile.goal)<1) {
-      NotifStore.push(profile.id,{icon:"🎯",text:`Squad Goal is ${Math.round((profile.raised/profile.goal)*100)}% there — almost!`,sub:"Share your link to push it over",color:"var(--mint)",route:"analytics"});
+      NotifStore.push(profile.id,{icon:"🪅",text:`🪅 Piñata is ${Math.round((profile.raised/profile.goal)*100)}% full — almost!`,sub:"Drop in more candy! 🍬",color:"var(--mint)",route:"pools"});
     }
     setLoading(false);
     setPaidAmount(base);
@@ -12412,7 +13471,7 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
     NotifStore.push(profile.id,{icon:"💸",text:`${guestName||"Someone"} sent you ${fmt$(net)}!`,sub:"Check your balance",color:"var(--mint)",route:"cashout"});
     // If birthday was within last 7 days — belated celebration notification
     const daysAfter = (() => { if(!profile.dob) return -1; const today=new Date(),d=new Date(profile.dob); const bday=new Date(today.getFullYear(),d.getMonth(),d.getDate()); return Math.floor((today-bday)/86400000); })();
-    const belatedWindow = DB.pointsConfig?.belated_gift_window_days ?? 14;
+    const belatedWindow = DB.pointsConfig?.belated_gift_window_days ?? 7;
     if(daysAfter>0 && daysAfter<=belatedWindow && currentUserId) {
       NotifStore.push(currentUserId,{icon:"🎊",text:`Belated gift sent to ${profile.name}!`,sub:"Better late than never 💝",color:"var(--violet2)",route:"community"});
     }
@@ -12706,8 +13765,8 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           </EliteRing>
           </BirthdayHalo>
           </div>
-          <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,marginBottom:2}}>
-          <h1 style={{fontSize:26,color:nameColor,margin:0}}>{profile.name}</h1>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,marginBottom:2,textAlign:'center',width:'100%'}}>
+          <h1 style={{fontSize:26,color:nameColor,margin:0,textAlign:'center'}}>{profile.name}</h1>
           {(profile.is_verified||profile.is_vip)&&<VerifiedBadge user={profile} size={20} showLabel={profile.is_vip}/>}
           </div>
           {(profile.username||profile.slug)&&<div style={{fontSize:12,color:usernameColor,marginBottom:3,fontWeight:600,letterSpacing:'.01em'}}>@{profile.username||profile.slug}</div>}
@@ -12719,13 +13778,6 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           {currentUserId && <ProfileStats profile={profile} small onViewProfile={(u)=>{if(window._navigateTo){onBack&&onBack();setTimeout(()=>window._navigateTo(u),80);}}}/>}
           <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:8,alignItems:"center",flexWrap:"wrap"}}>
           <FollowButton followerId={currentUserId} targetId={profile.id} viewerId={currentUserId}/>
-          <button onClick={()=>setShowCard(true)} style={{
-          padding:"6px 14px",borderRadius:20,border:"1px solid var(--violet)44",
-          background:"rgba(155,93,229,.1)",color:"var(--violet2)",fontSize:12,fontWeight:700,
-          display:"flex",alignItems:"center",gap:6
-          }}>
-          <Icon n="envelope" size={13}/>Send E-Card
-          </button>
           <BlockMenu viewerId={currentUserId} targetId={profile.id} targetName={profile.name} onBlocked={onBack}/>
           <button onClick={()=>setShowShareModal(true)} style={{
           width:34,height:34,borderRadius:"50%",border:"1px solid rgba(255,94,91,.3)",
@@ -12764,15 +13816,11 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
             </div>
           </div>
         )}
-        <SquadBar goal={profile.goal} raised={profile.raised||0} count={profile.giverCount||0} surpriseMode={profile.surpriseMode}/>
-        <div style={{display:"flex",gap:4,background:"var(--s2)",borderRadius:10,padding:3,border:"1px solid var(--border)",marginBottom:14}}>
-          {[[`gift`, isOwner?"📊 Earnings": profile.birthday_cause ? "🎁 Give" : "🎁 Send"],["wishlist","🛍 Wishlist"],["wall","🎉 Wall"]].map(([t,l])=>(
-          <button key={t} onClick={()=>setTab(t)} style={{flex:1,padding:"9px 4px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,
-          background:tab===t?"var(--coral)":"transparent",color:tab===t?"#fff":"var(--muted)",transition:"all .2s"}}>{l}</button>
-          ))}
-        </div>
+        {/* Visitors/contributors see piñata fill status; recipient (owner) never sees it here */}
+        {!isOwner && <SquadBar goal={profile.goal} raised={profile.raised||0} count={profile.giverCount||0} surpriseMode={profile.surpriseMode} poolName={(()=>{ const pools=GroupPoolStore.get(profile.id); const active=pools.find(p=>!p.released)||pools[0]; return active?.name; })()}/>}
 
-        {tab==="gift"&&(
+        {/* ── Gift payment card: always visible at top for visitors; earnings for owner ── */}
+        {(
           isOwner ? (
           /* ── Owner View: show earnings summary instead of contribution UI ── */
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
@@ -12785,28 +13833,44 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           const b=BalanceStore.summary(profile.id);
           if(b.total<=0) return null;
           const canCash = b.available >= CASHOUT_MIN;
+          const locked = !b.windowAllowed;
           return(
-          <button
-          onClick={()=>{if(!canCash)return; haptic([8]); ModalBus.closeAll('cashout');window.dispatchEvent(new CustomEvent('open-cashout'));}}
-          title={!canCash?`Minimum ${fmt$(CASHOUT_MIN)} to withdraw`:''}
-          disabled={!b.canWithdraw}
-          style={{
-          width:"100%",padding:"12px",borderRadius:12,marginBottom:2,
-          background:b.canWithdraw?"linear-gradient(135deg,var(--gold),#F59E0B)":"rgba(255,209,102,.07)",
-          color:b.canWithdraw?"#000":"var(--gold)",fontWeight:800,fontSize:13,
-          fontFamily:"'Plus Jakarta Sans',sans-serif",display:"flex",alignItems:"center",
-          justifyContent:"center",gap:8,
-          border:b.canWithdraw?"none":"1px solid rgba(255,209,102,.2)",
-          opacity:canCash?1:.55, cursor:canCash?'pointer':'not-allowed',
-          }}>
-          💸 {b.canWithdraw?`Withdraw ${fmt$(b.available)} →`:`${fmt$(b.pending)} pending · releases in 48 hrs`}
-          </button>);
+          <div>
+            {locked && (
+              <div style={{background:'rgba(255,209,102,.08)',border:'1px solid rgba(255,209,102,.2)',borderRadius:10,padding:'10px 14px',marginBottom:8,display:'flex',alignItems:'center',gap:8}}>
+                <span style={{fontSize:18}}>🔐</span>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:12,fontWeight:800,color:'var(--gold)'}}>Withdrawals unlock in {b.daysUntilWindow} day{b.daysUntilWindow!==1?'s':''}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',marginTop:1}}>Available 7 days before your birthday — plan for your weekend! 🎉</div>
+                </div>
+              </div>
+            )}
+            <button
+            onClick={()=>{if(!canCash||locked)return; haptic([8]); ModalBus.closeAll('cashout');window.dispatchEvent(new CustomEvent('open-cashout'));}}
+            title={locked?`Unlocks ${b.daysUntilWindow} days before your birthday`:!canCash?`Minimum ${fmt$(CASHOUT_MIN)} to withdraw`:''}
+            disabled={!b.canWithdraw}
+            style={{
+            width:"100%",padding:"12px",borderRadius:12,marginBottom:2,
+            background:b.canWithdraw?"linear-gradient(135deg,var(--gold),#F59E0B)":locked?"rgba(255,209,102,.05)":"rgba(255,209,102,.07)",
+            color:b.canWithdraw?"#000":"var(--gold)",fontWeight:800,fontSize:13,
+            fontFamily:"'Plus Jakarta Sans',sans-serif",display:"flex",alignItems:"center",
+            justifyContent:"center",gap:8,
+            border:b.canWithdraw?"none":"1px solid rgba(255,209,102,.2)",
+            opacity:b.canWithdraw?1:.55, cursor:b.canWithdraw?'pointer':'not-allowed',
+            }}>
+            {b.canWithdraw
+              ? `💸 Withdraw ${fmt$(b.available)} →`
+              : locked
+                ? `🔐 Unlocks in ${b.daysUntilWindow} day${b.daysUntilWindow!==1?'s':''}`
+                : `⏳ ${fmt$(b.pending)} pending · releases in 48 hrs`}
+            </button>
+          </div>);
           })()}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           <div style={{background:"var(--s2)",borderRadius:12,padding:14,border:"1px solid var(--border)",textAlign:"center"}}>
           <div style={{fontSize:10,fontWeight:700,color:"var(--muted)",marginBottom:4,textTransform:"uppercase",letterSpacing:".04em"}}>{t('wallet.platformFee')}</div>
           <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:22,fontWeight:800,color:"var(--coral)"}}>{fmt$(+((profile.raised||0)*PLATFORM_FEE/(1-PLATFORM_FEE)).toFixed(2))}</div>
-          <div style={{fontSize:10,color:"var(--muted)",marginTop:2}}>15% of gross</div>
+          <div style={{fontSize:10,color:"var(--muted)",marginTop:2}}>15% platform fee</div>
           </div>
           <div style={{background:"var(--s2)",borderRadius:12,padding:14,border:"1px solid var(--border)",textAlign:"center"}}>
           <div style={{fontSize:10,fontWeight:700,color:"var(--muted)",marginBottom:4,textTransform:"uppercase",letterSpacing:".04em"}}>{t('wallet.netToYou')}</div>
@@ -12819,6 +13883,80 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           <div style={{fontFamily:"monospace",fontSize:13,color:"var(--gold)",fontWeight:700}}>{makeShortUrl(profile.slug||profile.id)}</div>
           <div style={{fontSize:11,color:"var(--muted)",marginTop:4}}>{t('wallet.shareToReceive')}</div>
           </div>
+          {/* ── Year-over-year birthday wallet stats ── */}
+          {(()=>{
+            const yearStats = BalanceStore.getYearStats(profile.id);
+            if(yearStats.length === 0) return null;
+            const ordinal = (n) => { const s=['th','st','nd','rd']; const v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
+            const dob = new Date(profile.dob);
+            return (
+              <div style={{background:"var(--surface)",borderRadius:14,border:"1px solid var(--border)",overflow:"hidden"}}>
+                <div style={{padding:"12px 16px",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:"var(--text)"}}>🎂 Birthday Wallet History</div>
+                  <div style={{fontSize:11,color:"var(--muted)"}}>Year over year</div>
+                </div>
+                {yearStats.map((y, i) => {
+                  const prev = yearStats[i+1];
+                  const growth = prev && prev.raised > 0 ? Math.round(((y.raised - prev.raised) / prev.raised) * 100) : null;
+                  const age = y.year - dob.getFullYear();
+                  const isActive = y.year === BalanceStore.summary(profile.id).activeYear;
+                  return (
+                    <div key={y.year} style={{padding:"14px 16px",borderBottom:i<yearStats.length-1?"1px solid var(--border)":"none",background:isActive?"rgba(255,209,102,.03)":"transparent"}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                        <div>
+                          <div style={{display:"flex",alignItems:"center",gap:8}}>
+                            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:"var(--text)"}}>
+                              {ordinal(age)} Birthday · {y.year}
+                            </div>
+                            {isActive && <span style={{fontSize:10,fontWeight:800,color:"var(--mint)",background:"rgba(6,214,160,.12)",border:"1px solid rgba(6,214,160,.25)",borderRadius:20,padding:"2px 8px"}}>ACTIVE</span>}
+                          </div>
+                          <div style={{fontSize:11,color:"var(--muted)",marginTop:2}}>{y.contributorCount} contributor{y.contributorCount!==1?"s":""}</div>
+                        </div>
+                        <div style={{textAlign:"right"}}>
+                          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:20,color:"var(--gold)",lineHeight:1}}>{fmt$(y.raised)}</div>
+                          {growth !== null && (
+                            <div style={{fontSize:11,fontWeight:700,marginTop:3,color:growth>=0?"var(--mint)":"var(--coral)"}}>
+                              {growth>=0?"↑":"↓"} {Math.abs(growth)}% vs prior
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {/* Mini stat chips */}
+                      <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                        {y.avgGift > 0 && (
+                          <span style={{fontSize:10,color:"var(--muted)",background:"var(--s2)",borderRadius:20,padding:"2px 8px",border:"1px solid var(--border)"}}>
+                            avg {fmt$(y.avgGift)}
+                          </span>
+                        )}
+                        {y.biggestGift > 0 && (
+                          <span style={{fontSize:10,color:"var(--muted)",background:"var(--s2)",borderRadius:20,padding:"2px 8px",border:"1px solid var(--border)"}}>
+                            🏆 top {fmt$(y.biggestGift)}
+                          </span>
+                        )}
+                        {y.withdrawn > 0 && (
+                          <span style={{fontSize:10,color:"var(--mint)",background:"rgba(6,214,160,.08)",borderRadius:20,padding:"2px 8px",border:"1px solid rgba(6,214,160,.2)"}}>
+                            ✓ withdrawn {fmt$(y.withdrawn)}
+                          </span>
+                        )}
+                        {y.withdrawn === 0 && y.raised > 0 && !isActive && (
+                          <span style={{fontSize:10,color:"var(--gold)",background:"rgba(255,209,102,.08)",borderRadius:20,padding:"2px 8px",border:"1px solid rgba(255,209,102,.2)"}}>
+                            💸 available to withdraw
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+                {/* All-time total */}
+                <div style={{padding:"12px 16px",background:"var(--s2)",borderTop:"1px solid var(--border)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{fontSize:12,fontWeight:700,color:"var(--muted)"}}>All-time total</div>
+                  <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:16,color:"var(--gold)"}}>
+                    {fmt$(yearStats.reduce((s,y)=>s+y.raised,0))}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
           <div style={{padding:"10px",background:"rgba(155,93,229,.08)",borderRadius:10,border:"1px solid rgba(155,93,229,.2)",textAlign:"center"}}>
           <div style={{fontSize:12,color:"var(--violet2)"}}>👀 This is how your profile looks to visitors</div>
           <div style={{fontSize:11,color:"var(--muted)",marginTop:2}}>{t('wallet.guestFormNote')}</div>
@@ -12839,16 +13977,18 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
             <div style={{background:"linear-gradient(135deg,rgba(155,93,229,.1),rgba(255,94,91,.08))",border:"1px solid rgba(155,93,229,.25)",borderRadius:14,padding:"12px 16px",marginBottom:12,textAlign:"center"}}>
               <div style={{fontSize:20,marginBottom:4}}>🎊</div>
               <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:15,color:"var(--violet2)"}}>Send a belated birthday gift!</div>
-              <div style={{fontSize:12,color:"var(--muted)",marginTop:3}}>{profile.name.split(" ")[0]}'s birthday was {daysSinceBirthday} day{daysSinceBirthday!==1?"s":""} ago — it's not too late 🎂</div>
+              <div style={{fontSize:12,color:"var(--muted)",marginTop:3}}>
+                {profile.name.split(" ")[0]}'s birthday was {daysSinceBirthday} day{daysSinceBirthday!==1?"s":""} ago — it's not too late 🎂
+              </div>
+              <div style={{fontSize:11,color:"var(--violet2)",fontWeight:700,marginTop:6,background:"rgba(155,93,229,.1)",borderRadius:8,padding:"4px 10px",display:"inline-block"}}>
+                🎁 Applies to {profile.name.split(" ")[0]}'s {ordinal(giftAge)} birthday ({giftBirthdayYear})
+              </div>
             </div>
           )}
-          {FEATURE_FLAGS.GIFT_INTELLIGENCE && (
-            <SmartGiftRecommendations
-              senderId={currentUserId}
-              recipientId={profile.id}
-              recipientProfile={profile}
-              onSelectStore={(biz)=>{ /* store click tracked inside component */ }}
-            />
+          {!isBelated && daysSinceBirthday > belatedWindow && (
+            <div style={{background:"rgba(6,214,160,.06)",border:"1px solid rgba(6,214,160,.2)",borderRadius:10,padding:"8px 12px",marginBottom:12,textAlign:"center",fontSize:11,color:"var(--mint)",fontWeight:700}}>
+              🎂 Contributing to {profile.name.split(" ")[0]}'s {ordinal(giftAge)} birthday ({giftBirthdayYear})
+            </div>
           )}
           <div style={{marginBottom:12}}>
             <div style={{display:'flex',gap:8,marginBottom:6}}>
@@ -12892,12 +14032,12 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           </div>
           <div style={{position:"relative",padding:"10px 0"}}>
            <div style={{height:4,background:"var(--s3)",borderRadius:2}}>
-            <div style={{height:"100%",width:`${((slider-.25)/.75)*100}%`,background:"linear-gradient(90deg,var(--coral),var(--gold))",borderRadius:2,transition:"width .05s"}}/>
+            <div style={{height:"100%",width:`${((slider-(age<=CHILD_AGE_THRESHOLD?CHILD_SLIDER_MIN_RATE:SLIDER_MIN_RATE))/(1-(age<=CHILD_AGE_THRESHOLD?CHILD_SLIDER_MIN_RATE:SLIDER_MIN_RATE)))*100}%`,background:"linear-gradient(90deg,var(--coral),var(--gold))",borderRadius:2,transition:"width .05s"}}/>
            </div>
-           <input type="range" min={.25} max={1.00} step={.05} value={slider} onChange={e=>setSlider(parseFloat(e.target.value))} style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",opacity:0,cursor:"pointer",margin:0,padding:0}}/>
+           <input type="range" min={age<=CHILD_AGE_THRESHOLD?CHILD_SLIDER_MIN_RATE:SLIDER_MIN_RATE} max={1.00} step={.05} value={slider} onChange={e=>setSlider(parseFloat(e.target.value))} style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",opacity:0,cursor:"pointer",margin:0,padding:0}}/>
            <div style={{position:"absolute",top:"50%",left:`${((slider-.25)/.75)*100}%`,transform:"translate(-50%,-50%)",width:20,height:20,borderRadius:"50%",background:"var(--gold)",border:"3px solid var(--bg)",boxShadow:"0 0 10px rgba(255,209,102,.7)",pointerEvents:"none",transition:"left .05s"}}/>
           </div>
-          <div style={{display:"flex",justifyContent:"space-between",fontSize:11,color:"var(--muted)",marginTop:4}}><span>$0.25</span><span>$1.00</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",fontSize:11,color:"var(--muted)",marginTop:4}}><span>{age<=CHILD_AGE_THRESHOLD?"$0.50":"$0.25"}</span><span>$1.00</span></div>
           </div>
           ):(
           <div>
@@ -12912,11 +14052,11 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           <input type="number" placeholder="Custom amount $" value={custom} onChange={e=>{setCustom(e.target.value);setFixed(null)}}/>
           </div>
           )}
-          {base>=0.5&&(
+          {base>0&&(
           <div style={{fontSize:11,color:"var(--muted)",marginTop:10,textAlign:"center",lineHeight:1.6}}>
           <span style={{color:"var(--text)",fontWeight:600}}>{fmt$(net)}</span> to {profile.name}
-          {" · "}<span>{fmt$(fee)} platform fee (10% · net to recipient after 10% fee)</span>
-          {fees.isNegative&&<div style={{color:"var(--coral)",marginTop:2,fontSize:10}}>⚠ Minimum: {fmt$(getMinGift(age))}{age<=CHILD_AGE_THRESHOLD?' (age 13 & under)':''}</div>}
+          {" · "}<span>{fmt$(fee)} platform fee · recipient receives 85%</span>
+          
           </div>
           )}
           </div>
@@ -12924,22 +14064,22 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="Add a birthday note 💬" rows={2} style={{resize:"none",fontSize:13}}/>
           </div>
           {err&&<div style={{color:"var(--coral)",fontSize:13,textAlign:"center",marginBottom:8}}>{err}</div>}
-          <button onClick={openConfirm} disabled={loading||base<getMinGift(age)}
-          className={base>=getMinGift(age)?"btn-pressable gift-cta-btn":""}
+          <button onClick={openConfirm} disabled={loading||base<=0}
+          className={base>0?"btn-pressable gift-cta-btn":""}
           style={{
           width:"100%",padding:"15px",borderRadius:14,border:"none",
           background:base>=getMinGift(age)?milestone?`linear-gradient(135deg,${milestone.colors.accent},${milestone.colors.primary})`:"linear-gradient(135deg,var(--coral),#FF8A4A)":"var(--s2)",
           color:base>=getMinGift(age)?"#fff":"var(--muted)",fontWeight:800,fontSize:16,
           fontFamily:"'Plus Jakarta Sans',sans-serif",
           display:"flex",alignItems:"center",justifyContent:"center",gap:10,
-          cursor:base>=getMinGift(age)?"pointer":"default",
+          cursor:base>0?"pointer":"default",
           transition:"filter .15s, transform .1s",
           }}>
           {loading
           ? <><div className="loader"/>{t('gift.processing')}</>
-          : base>=0.50
+          : base>0
           ? <><span style={{fontSize:18}}>🎁</span> Send {fmt$(base)} →</>
-          : "Enter your name & amount above"
+          : "Enter an amount above"
           }
           </button>
           <div style={{textAlign:"center",fontSize:11,marginTop:8,display:"flex",alignItems:"center",justifyContent:"center",gap:5,
@@ -12948,9 +14088,39 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
           }}>
             🔒 Payments are encrypted and secure
           </div>
+          {/* ── Send E-Card: demoted below cash gift ── */}
+          {currentUserId&&!isOwner&&(
+          <button onClick={()=>setShowCard(true)} style={{
+            width:"100%",marginTop:10,padding:"11px",borderRadius:12,
+            border:"1px solid rgba(155,93,229,.3)",
+            background:"rgba(155,93,229,.06)",color:"var(--violet2)",
+            fontSize:13,fontWeight:700,cursor:"pointer",
+            display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+          }}>
+            <Icon n="envelope" size={14}/>Send a Birthday E-Card also
+          </button>
+          )}
+          {/* ── Gift ideas & smart recommendations ── */}
+          {FEATURE_FLAGS.GIFT_INTELLIGENCE && (
+            <div style={{marginTop:14}}>
+            <SmartGiftRecommendations
+              senderId={currentUserId}
+              recipientId={profile.id}
+              recipientProfile={profile}
+              onSelectStore={(biz)=>{ /* store click tracked inside component */ }}
+            />
+            </div>
+          )}
           </div>
           )
         )}
+        {/* ── Wishlist / Wall tabs (+ Earnings for owner) ── */}
+        <div style={{display:"flex",gap:4,background:"var(--s2)",borderRadius:10,padding:3,border:"1px solid var(--border)",marginBottom:14,marginTop:4}}>
+          {(isOwner ? [["gift","📊 Earnings"],["wishlist","🛍 Wishlist"],["wall","🎉 Wall"]] : [["wishlist","🛍 Wishlist"],["wall","🎉 Wall"]]).map(([tid,lbl])=>(
+          <button key={tid} onClick={()=>setTab(tid)} style={{flex:1,padding:"9px 4px",borderRadius:8,border:"none",fontSize:12,fontWeight:700,
+          background:tab===tid?"var(--coral)":"transparent",color:tab===tid?"#fff":"var(--muted)",transition:"all .2s"}}>{lbl}</button>
+          ))}
+        </div>
         {tab==="wishlist"&&(
           profile.privateProfile && !FollowStore.isFollowing(currentUserId, profile.id) && currentUserId !== profile.id ? (
             <div style={{padding:"40px 20px",textAlign:"center",color:"var(--muted)"}}>
@@ -12960,7 +14130,6 @@ const GiftPage = ({profile, onBack, sourceProfileId=null, currentUserId=null, is
             </div>
           ) : <Wishlist pid={profile.id} editable={false} ownerDob={profile.dob} currentUserId={currentUserId} ownerName={profile.name}/>
         )}
-          <SocialLinkBadges profile={profile}/>
         {tab==="wall"&&(
         profile.privateProfile && !FollowStore.isFollowing(currentUserId, profile.id) && currentUserId !== profile.id ? (
           <div style={{padding:"40px 20px",textAlign:"center",color:"var(--muted)"}}>
@@ -13333,7 +14502,7 @@ const CARD_FONTS = [
 ];
 
 // ── Pool mechanics ────────────────────────────────────────────────────────────
-const POOL_FEE_RATE = 0.10; // 10% platform fee taken at contribution time
+const POOL_FEE_RATE = 0.15; // 15% platform fee taken at contribution time
 const calcPoolNet = (gross) => +(gross * (1 - POOL_FEE_RATE)).toFixed(2);
 const calcPoolGross = (net) => +(net / (1 - POOL_FEE_RATE)).toFixed(2);
 
@@ -13740,6 +14909,140 @@ const CardSigningPanel = ({cardId, currentUserId, currentUserName, currentUserna
   );
 };
 
+/* ── UnsplashCardPicker: photo search for birthday card backgrounds ─────── */
+const BIRTHDAY_DEFAULT_QUERIES = ['birthday celebration','confetti party','flowers colorful','cake sparkle','bokeh lights'];
+const UnsplashCardPicker = ({photoUrl, unsplashKey, onSelect, onRemove, onUpload}) => {
+  const [query, setQuery] = React.useState('');
+  const [results, setResults] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [loaded, setLoaded] = React.useState(false);
+  const [err, setErr] = React.useState('');
+  const fileInputRef = React.useRef(null);
+
+  // Load birthday defaults on first render
+  React.useEffect(() => {
+    if(loaded) return;
+    const q = BIRTHDAY_DEFAULT_QUERIES[Math.floor(Math.random()*BIRTHDAY_DEFAULT_QUERIES.length)];
+    searchUnsplash(q, true);
+    setLoaded(true);
+  }, []);
+
+  const searchUnsplash = async (q = query, silent = false) => {
+    if(!q.trim()) return;
+    if(!unsplashKey) {
+      setErr('Add VITE_UNSPLASH_ACCESS_KEY to your .env file to enable photo search');
+      return;
+    }
+    if(!silent) setLoading(true);
+    setErr('');
+    try {
+      const r = await fetch(
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=15&orientation=landscape&content_filter=high`,
+        { headers: { Authorization: `Client-ID ${unsplashKey}` } }
+      );
+      const d = await r.json();
+      if(d.errors) { setErr(d.errors[0]||'Search failed'); setLoading(false); return; }
+      setResults((d.results||[]).map(p=>({
+        id: p.id,
+        thumb: p.urls.small,
+        full: p.urls.regular,
+        name: p.user.name,
+        url: p.user.links.html,
+        // Trigger Unsplash download tracking (required by API terms)
+        downloadUrl: p.links.download_location,
+      })));
+    } catch { setErr('Search failed — check your connection'); }
+    setLoading(false);
+  };
+
+  const handleSelect = async (photo) => {
+    // Trigger download tracking as required by Unsplash API guidelines
+    if(photo.downloadUrl && unsplashKey) {
+      fetch(`${photo.downloadUrl}&client_id=${unsplashKey}`).catch(()=>{});
+    }
+    onSelect(photo.full, { name: photo.name, url: photo.url, source: 'unsplash' });
+  };
+
+  const handleFile = (file) => {
+    if(!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => onUpload(e.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  if(photoUrl) return (
+    <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',background:'var(--s2)',borderRadius:12,border:'1px solid var(--border)',marginTop:6}}>
+      <div style={{width:56,height:42,borderRadius:8,overflow:'hidden',flexShrink:0,border:'1px solid var(--border)'}}>
+        <img src={photoUrl} style={{width:'100%',height:'100%',objectFit:'cover'}} alt=""/>
+      </div>
+      <div style={{flex:1}}>
+        <div style={{fontSize:12,fontWeight:700,color:'var(--mint)'}}>✓ Background photo set</div>
+        <div style={{fontSize:10,color:'var(--muted)'}}>Tap remove to choose another</div>
+      </div>
+      <button onClick={onRemove} style={{background:'var(--coral)',border:'none',borderRadius:8,padding:'5px 10px',color:'#fff',fontSize:11,fontWeight:700,cursor:'pointer',flexShrink:0}}>
+        Remove
+      </button>
+    </div>
+  );
+
+  return (
+    <div style={{marginTop:8}}>
+      {/* Search bar */}
+      <div style={{display:'flex',gap:6,marginBottom:10}}>
+        <input
+          value={query}
+          onChange={e=>setQuery(e.target.value)}
+          onKeyDown={e=>e.key==='Enter'&&searchUnsplash()}
+          placeholder="Search photos… celebration, flowers, confetti"
+          style={{flex:1,padding:'8px 12px',borderRadius:10,border:'1.5px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,outline:'none'}}
+        />
+        <button onClick={()=>searchUnsplash()} disabled={loading}
+          style={{padding:'8px 14px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontSize:12,fontWeight:700,cursor:loading?'wait':'pointer',flexShrink:0,opacity:loading?.6:1}}>
+          {loading ? '…' : '🔍'}
+        </button>
+      </div>
+
+      {err && <div style={{fontSize:11,color:'var(--coral)',marginBottom:8,padding:'8px 10px',background:'rgba(255,94,91,.08)',borderRadius:8}}>{err}</div>}
+
+      {/* Photo grid */}
+      {results.length > 0 && (
+        <>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:5,marginBottom:6}}>
+          {results.map(p=>(
+            <div key={p.id} onClick={()=>handleSelect(p)}
+              style={{aspectRatio:'4/3',borderRadius:8,overflow:'hidden',cursor:'pointer',position:'relative',border:'2px solid transparent',transition:'all .12s'}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--violet)';e.currentTarget.style.transform='scale(1.03)';}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor='transparent';e.currentTarget.style.transform='scale(1)';}}>
+              <img src={p.thumb} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} alt={p.name} loading="lazy"/>
+              <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(transparent,rgba(0,0,0,.55))',padding:'10px 5px 4px',fontSize:8,color:'rgba(255,255,255,.7)',textAlign:'right',lineHeight:1.2}}>
+                {p.name}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{fontSize:9,color:'var(--muted)',textAlign:'right',lineHeight:1.6}}>
+          Photos by creators on{' '}
+          <a href="https://unsplash.com?utm_source=birthdayme&utm_medium=referral" target="_blank" rel="noopener noreferrer" style={{color:'var(--violet2)'}}>Unsplash</a>
+        </div>
+        </>
+      )}
+
+      {/* Upload from device fallback */}
+      <div style={{marginTop:10,display:'flex',alignItems:'center',gap:6}}>
+        <div style={{flex:1,height:1,background:'var(--border)'}}/>
+        <span style={{fontSize:10,color:'var(--muted)',whiteSpace:'nowrap'}}>or upload your own</span>
+        <div style={{flex:1,height:1,background:'var(--border)'}}/>
+      </div>
+      <button onClick={()=>fileInputRef.current?.click()}
+        style={{width:'100%',marginTop:8,padding:'9px',borderRadius:10,border:'1.5px solid var(--border)',background:'var(--surface)',color:'var(--text)',fontSize:12,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:7}}>
+        📁 Upload from device
+      </button>
+      <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp"
+        style={{display:'none'}} onChange={e=>handleFile(e.target.files[0])}/>
+    </div>
+  );
+};
+
 const ECardGenerator = ({senderName, recipientName, recipientDob, onSend, onClose}) => {
   const { t } = useTranslation();
   const [theme, setTheme] = useState(CARD_THEMES[0]);
@@ -13749,13 +15052,25 @@ const ECardGenerator = ({senderName, recipientName, recipientDob, onSend, onClos
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
+  const [photoCredit, setPhotoCredit] = useState(null); // {name, url, source}
   const [photoDragging, setPhotoDragging] = useState(false);
   const age = recipientDob ? calcAge(recipientDob) : null;
   const milestone = age ? getMilestone(age) : null;
   const z = null;
+  const UNSPLASH_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY || '';
+
   const selectTheme = (t) => {
     setTheme(t);
-    if(!t.isPhotoTheme) setPhotoUrl(null);
+    if(!t.isPhotoTheme) { setPhotoUrl(null); setPhotoCredit(null); }
+  };
+
+  // When Photos category is selected, auto-switch to photo theme + load birthday defaults
+  const selectCategory = (cat) => {
+    setCardCat(cat);
+    if(cat === 'Photos') {
+      const photoTheme = CARD_THEMES.find(t => t.isPhotoTheme);
+      if(photoTheme) setTheme(photoTheme);
+    }
   };
 
   const handlePhotoFile = (file) => {
@@ -13857,7 +15172,7 @@ const ECardGenerator = ({senderName, recipientName, recipientDob, onSend, onClos
             const isPhoto = cat==='Photos';
             const isActive = cardCat===cat;
             return (
-            <button key={cat} onClick={()=>setCardCat(cat)} style={{
+            <button key={cat} onClick={()=>selectCategory(cat)} style={{
               padding:"5px 12px",borderRadius:20,flexShrink:0,transition:"all .15s",whiteSpace:"nowrap",
               border:`1.5px solid ${isActive?(isPhoto?'#A78BFA':'var(--gold)'):'var(--border)'}`,
               background:isActive?(isPhoto?'rgba(167,139,250,.15)':'rgba(255,209,102,.1)'):'var(--s2)',
@@ -13870,6 +15185,7 @@ const ECardGenerator = ({senderName, recipientName, recipientDob, onSend, onClos
             </button>);
           })}
         </div>
+        {cardCat !== 'Photos' && (
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
           {CARD_THEMES.filter(tb=>tb.cat===cardCat).map(tb=>(
           <button key={tb.id} onClick={()=>selectTheme(tb)} style={{
@@ -13879,23 +15195,29 @@ const ECardGenerator = ({senderName, recipientName, recipientDob, onSend, onClos
           transition:"all .15s",cursor:"pointer",minHeight:64,position:"relative",
           }}>
           {tb.animated&&<div style={{position:"absolute",top:4,right:4,width:6,height:6,borderRadius:"50%",background:tb.accent,boxShadow:`0 0 4px ${tb.accent}`}}/>}
-          {t.isPhotoTheme&&photoUrl&&<div style={{position:"absolute",inset:0,backgroundImage:`url(${photoUrl})`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:10,opacity:.7}}/>}
           <span style={{fontSize:20,position:'relative',zIndex:1}}>{tb.icon}</span>
           <span style={{fontSize:10,fontWeight:700,color:tb.accent,textAlign:"center",lineHeight:1.3,position:'relative',zIndex:1}}>{tb.label}</span>
           </button>
           ))}
         </div>
-        {theme.isPhotoTheme&&(
-          <PhotoUploadPanel
-            id="card-photo-input"
+        )}
+        {cardCat === 'Photos' && (
+          <UnsplashCardPicker
             photoUrl={photoUrl}
-            onPhotoChange={url=>setPhotoUrl(url)}
-            onPhotoRemove={()=>setPhotoUrl(null)}
-            showSearch={true}
-            label="Add card background photo"
+            unsplashKey={UNSPLASH_KEY}
+            onSelect={(url, credit) => { setPhotoUrl(url); setPhotoCredit(credit); }}
+            onRemove={() => { setPhotoUrl(null); setPhotoCredit(null); }}
+            onUpload={(url) => { setPhotoUrl(url); setPhotoCredit(null); }}
           />
         )}
       </div>
+      {/* Photographer attribution on card */}
+      {photoCredit && (
+        <div style={{fontSize:10,color:'var(--muted)',textAlign:'right',lineHeight:1.6}}>
+          Photo by <a href={`${photoCredit.url}?utm_source=birthdayme&utm_medium=referral`} target="_blank" rel="noopener noreferrer" style={{color:'var(--muted)',textDecoration:'underline'}}>{photoCredit.name}</a>
+          {' '}on <a href="https://unsplash.com?utm_source=birthdayme&utm_medium=referral" target="_blank" rel="noopener noreferrer" style={{color:'var(--muted)',textDecoration:'underline'}}>Unsplash</a>
+        </div>
+      )}
       <div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".05em"}}>{t('cards.messageLabel')}</div>
@@ -14128,43 +15450,24 @@ const ECardInbox = ({userId}) => {
 
   return (
     <div>
-      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:12,alignItems:'center'}}>
-        <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
-          {[
-          ['all',      `All (${totalReceived+totalSent})`],
-          ['received', `💌 Received${unreadCount>0?` · ${unreadCount} new`:` (${totalReceived})`}`],
-          ['sent',     `📤 Sent (${totalSent})`],
-          ].map(([id,label])=>(
-          <button key={`type-${id}`} onClick={()=>pickType(id)} style={{
-          padding:'5px 11px',borderRadius:20,fontSize:11,fontWeight:700,cursor:'pointer',
-          border:`1px solid ${typeFilter===id?'var(--coral)':'var(--border)'}`,
-          background:typeFilter===id?'rgba(255,94,91,.12)':'var(--s2)',
-          color:typeFilter===id?'var(--coral)':'var(--muted2)',
-          transition:'all .15s',whiteSpace:'nowrap',
-          }}>{label}</button>
-          ))}
-        </div>
-        <div style={{flex:1}}/>
-        <div style={{display:'flex',gap:4}}>
-          {[['all','All'],['unread','Unread'],['read','Read']].map(([id,label])=>(
-          <button key={`read-${id}`} onClick={()=>pickRead(id)} style={{
-          padding:'5px 10px',borderRadius:20,fontSize:11,fontWeight:700,cursor:'pointer',
-          border:`1px solid ${readFilter===id?'var(--violet2)':'var(--border)'}`,
-          background:readFilter===id?'rgba(155,93,229,.1)':'var(--s2)',
-          color:readFilter===id?'var(--violet2)':'var(--muted2)',
-          transition:'all .15s',
-          }}>{label}</button>
-          ))}
-        </div>
-      </div>
-      <div style={{display:'flex',alignItems:'center',justifyContent:'flex-end',marginBottom:10}}>
-        <button onClick={pickSort} style={{
-          padding:'4px 10px',borderRadius:8,border:'1px solid var(--border)',
-          background:'var(--s2)',color:'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer',
-          display:'flex',alignItems:'center',gap:4,
-        }}>
-          {sortOrder==='newest'?'↓ '+t('common.newest'):'↑ '+t('common.oldest')}
-        </button>
+      <div style={{display:'flex',gap:8,marginBottom:12,alignItems:'center',flexWrap:'wrap'}}>
+        <select value={typeFilter} onChange={e=>pickType(e.target.value)}
+          style={{padding:'7px 10px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer',flex:1,minWidth:0}}>
+          <option value="all">All ({totalReceived+totalSent})</option>
+          <option value="received">💌 Received ({totalReceived}){unreadCount>0?` · ${unreadCount} new`:''}</option>
+          <option value="sent">📤 Sent ({totalSent})</option>
+        </select>
+        <select value={readFilter} onChange={e=>pickRead(e.target.value)}
+          style={{padding:'7px 10px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer',flexShrink:0}}>
+          <option value="all">All</option>
+          <option value="unread">Unread</option>
+          <option value="read">Read</option>
+        </select>
+        <select value={sortOrder} onChange={e=>{ if(e.target.value==='newest') { if(sortOrder!=='newest') pickSort(); } else { if(sortOrder==='newest') pickSort(); } }}
+          style={{padding:'7px 10px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer',flexShrink:0}}>
+          <option value="newest">↓ Newest</option>
+          <option value="oldest">↑ Oldest</option>
+        </select>
       </div>
       <div key={`cards-${ver}-${typeFilter}-${readFilter}-${sortOrder}`}>
         {combined.length===0?(
@@ -14719,7 +16022,7 @@ const WallHub = ({profile, onViewProfile, onViewLists, initialTab='mywall'}) => 
   const feedUsers = allFeedUsers.filter(u=>u.daysLeft>=0||u.isToday)
     .sort((a,b)=>sortOrder==='soonest'?a.daysLeft-b.daysLeft:sortOrder==='newest'?b.joinedTs-a.joinedTs:a.joinedTs-b.joinedTs);
 
-  const passedUsers = allFeedUsers.filter(u=>!u.isToday&&u.daysPassed_>0&&u.daysPassed_<=14)
+  const passedUsers = allFeedUsers.filter(u=>!u.isToday&&u.daysPassed_>0&&u.daysPassed_<=7)
     .sort((a,b)=>a.daysPassed_-b.daysPassed_);
 
   useEffect(()=>{
@@ -14810,16 +16113,27 @@ const WallHub = ({profile, onViewProfile, onViewLists, initialTab='mywall'}) => 
               ))}
               {lists.length===0&&<button onClick={()=>onViewLists&&onViewLists()} style={{fontSize:12,color:'var(--muted)',alignSelf:'center',paddingLeft:4,background:'none',border:'none',cursor:'pointer',textDecoration:'underline'}}>+ Create a list to filter</button>}
             </div>
-            <div style={{display:'flex',gap:6,marginBottom:12,flexWrap:'wrap',alignItems:'center'}}>
-              <span style={{fontSize:11,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em'}}>{t('common.sortBy')}</span>
-              {[['soonest','✓ Soonest'],['newest','Newest joined'],['oldest','Oldest joined']].map(([s,l])=>(
-                <button key={s} onClick={()=>setSortOrder(s)} style={{padding:'5px 12px',borderRadius:20,border:`1px solid ${sortOrder===s?'var(--coral)':'var(--border)'}`,background:sortOrder===s?'rgba(255,94,91,.08)':'var(--s2)',color:sortOrder===s?'var(--coral)':'var(--muted2)',fontSize:12,fontWeight:700,cursor:'pointer'}}>{l}</button>
-              ))}
-            </div>
-            <div style={{display:'flex',gap:6,overflowX:'auto',paddingBottom:6,marginBottom:14,scrollbarWidth:'none'}}>
-              {[{id:'all',label:`All (${feedUsers.length+grouped.passed.length})`},{id:'passed',label:`⏰ Just Passed (${grouped.passed.length})`},{id:'today',label:`⚡ This Week (${grouped.today.length+grouped.soon.length})`},{id:'month',label:`📅 This Month (${grouped.month.length})`},{id:'later',label:`📆 Later (${grouped.later.length})`}].map(({id,label})=>(
-                <button key={id} onClick={()=>setFeedSection(id)} style={{padding:'6px 12px',borderRadius:20,border:`1px solid ${feedSection===id?'var(--coral)':'var(--border)'}`,background:feedSection===id?'rgba(255,94,91,.1)':'var(--s2)',color:feedSection===id?'var(--coral)':'var(--muted2)',fontSize:12,fontWeight:700,cursor:'pointer',flexShrink:0,whiteSpace:'nowrap',transition:'all .2s'}}>{label}</button>
-              ))}
+            <div style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap',alignItems:'center'}}>
+              <div style={{display:'flex',alignItems:'center',gap:6,flex:'1 1 130px'}}>
+                <span style={{fontSize:11,color:'var(--muted)',fontWeight:700,whiteSpace:'nowrap'}}>↕ {t('common.sortBy')}</span>
+                <select value={sortOrder} onChange={e=>setSortOrder(e.target.value)}
+                  style={{flex:1,padding:'7px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+                  <option value="soonest">🎂 Soonest</option>
+                  <option value="newest">Newest joined</option>
+                  <option value="oldest">Oldest joined</option>
+                </select>
+              </div>
+              <div style={{display:'flex',alignItems:'center',gap:6,flex:'1 1 140px'}}>
+                <span style={{fontSize:11,color:'var(--muted)',fontWeight:700,whiteSpace:'nowrap'}}>📅 When</span>
+                <select value={feedSection} onChange={e=>setFeedSection(e.target.value)}
+                  style={{flex:1,padding:'7px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+                  <option value="all">All ({feedUsers.length+grouped.passed.length})</option>
+                  <option value="passed">⏰ Just Passed ({grouped.passed.length})</option>
+                  <option value="today">⚡ This Week ({grouped.today.length+grouped.soon.length})</option>
+                  <option value="month">📅 This Month ({grouped.month.length})</option>
+                  <option value="later">📆 Later ({grouped.later.length})</option>
+                </select>
+              </div>
             </div>
           </>}
           {feedView==='calendar'&&(
@@ -15045,10 +16359,66 @@ const SkeletonCard = ({lines=3}) => (
     </div>
   </div>
 );
+/* ── BirthdayWalletHistory: year-over-year wallet stats ─────────────────── */
+const BirthdayWalletHistory = ({profile, compact=false}) => {
+  const ordinal = n => { const s=['th','st','nd','rd']; const v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
+  const yearStats = BalanceStore.getYearStats(profile.id);
+  const activeYear = BalanceStore.summary(profile.id).activeYear;
+  if(yearStats.length===0) return (
+    <div style={{textAlign:'center',padding:'28px 20px',color:'var(--muted)',background:'var(--s2)',borderRadius:14,border:'1px dashed var(--border)'}}>
+      <div style={{fontSize:36,marginBottom:8}}>🎂</div>
+      <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>No wallet history yet</div>
+      <div style={{fontSize:12}}>Your birthday earnings will appear here year over year</div>
+    </div>
+  );
+  const dob = new Date(profile.dob);
+  const allTimeTotal = yearStats.reduce((s,y)=>s+y.raised,0);
+  return (
+    <div style={{background:'var(--surface)',borderRadius:14,border:'1px solid var(--border)',overflow:'hidden'}}>
+      <div style={{padding:'12px 16px',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14}}>🎂 Birthday Wallet History</div>
+        <div style={{fontSize:11,color:'var(--muted)'}}>All time: <strong style={{color:'var(--gold)'}}>{fmt$(allTimeTotal)}</strong></div>
+      </div>
+      {yearStats.map((y,i)=>{
+        const prev = yearStats[i+1];
+        const growth = prev&&prev.raised>0 ? Math.round(((y.raised-prev.raised)/prev.raised)*100) : null;
+        const age = y.year - dob.getFullYear();
+        const isActive = y.year===activeYear;
+        const fullyWithdrawn = y.withdrawn>=y.raised && y.raised>0;
+        return (
+          <div key={y.year} style={{padding:compact?'12px 16px':'14px 16px',borderBottom:i<yearStats.length-1?'1px solid var(--border)':'none',background:isActive?'rgba(255,209,102,.03)':'transparent'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:6}}>
+              <div>
+                <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+                  <span style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:13,color:'var(--text)'}}>{ordinal(age)} Birthday · {y.year}</span>
+                  {isActive&&<span style={{fontSize:9,fontWeight:800,color:'var(--mint)',background:'rgba(6,214,160,.12)',border:'1px solid rgba(6,214,160,.25)',borderRadius:20,padding:'1px 7px'}}>ACTIVE</span>}
+                  {fullyWithdrawn&&<span style={{fontSize:9,fontWeight:800,color:'var(--muted)',background:'var(--s2)',border:'1px solid var(--border)',borderRadius:20,padding:'1px 7px'}}>WITHDRAWN</span>}
+                </div>
+                <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{y.contributorCount} contributor{y.contributorCount!==1?'s':''}</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:18,color:'var(--gold)',lineHeight:1}}>{fmt$(y.raised)}</div>
+                {growth!==null&&<div style={{fontSize:11,fontWeight:700,marginTop:3,color:growth>=0?'var(--mint)':'var(--coral)'}}>{growth>=0?'↑':'↓'} {Math.abs(growth)}% vs prior</div>}
+              </div>
+            </div>
+            {/* Stat chips */}
+            {!compact&&<div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+              {y.avgGift>0&&<span style={{fontSize:10,color:'var(--muted)',background:'var(--s2)',borderRadius:20,padding:'2px 8px',border:'1px solid var(--border)'}}>avg {fmt$(y.avgGift)}</span>}
+              {y.biggestGift>0&&<span style={{fontSize:10,color:'var(--muted)',background:'var(--s2)',borderRadius:20,padding:'2px 8px',border:'1px solid var(--border)'}}>🏆 top {fmt$(y.biggestGift)}</span>}
+              {y.withdrawn>0&&<span style={{fontSize:10,color:'var(--mint)',background:'rgba(6,214,160,.08)',borderRadius:20,padding:'2px 8px',border:'1px solid rgba(6,214,160,.2)'}}>✓ withdrawn {fmt$(y.withdrawn)}</span>}
+              {y.withdrawn===0&&y.raised>0&&!isActive&&<span style={{fontSize:10,color:'var(--gold)',background:'rgba(255,209,102,.08)',borderRadius:20,padding:'2px 8px',border:'1px solid rgba(255,209,102,.2)'}}>💸 available</span>}
+            </div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const CashoutSheet = ({profile, onClose}) => {
   const [showCardModal, setShowCardModal] = React.useState(false);
   const { t } = useTranslation();
-  const [step, setStep]             = useState('choice');   // choice | cash | giftcard | donate | regift | fundraiser | processing | done | error
+  const [step, setStep]             = useState('choice');   // choice | cash | giftcard | donate | regift | fundraiser | processing | done | error | history
   React.useEffect(()=>{ window._setCashoutStep = (s)=>setStep(s); return ()=>{ delete window._setCashoutStep; }; },[]);
   const [customAmt, setCustomAmt]   = useState(false);
   const [inputAmt, setInputAmt]     = useState('');
@@ -15179,12 +16549,24 @@ const CashoutSheet = ({profile, onClose}) => {
           <h3 style={{fontSize:18,marginBottom:2}}>💰 Birthday Balance</h3>
           <div style={{fontSize:12,color:'var(--muted)'}}>{t('wallet.securedByStripe')}</div>
           </div>
-          <button onClick={onClose} style={{background:'var(--s2)',border:'1px solid var(--border)',color:'var(--muted2)',borderRadius:10,padding:'6px 12px',fontSize:13,cursor:'pointer',fontWeight:700}}>✕</button>
+          <div style={{display:'flex',gap:6,alignItems:'center'}}>
+            <button onClick={()=>setStep(step==='history'?'choice':'history')}
+              style={{padding:'6px 12px',borderRadius:10,border:`1px solid ${step==='history'?'var(--gold)':'var(--border)'}`,background:step==='history'?'rgba(255,209,102,.1)':'var(--s2)',color:step==='history'?'var(--gold)':'var(--muted)',fontSize:11,fontWeight:700,cursor:'pointer'}}>
+              📊 History
+            </button>
+            <button onClick={onClose} style={{background:'var(--s2)',border:'1px solid var(--border)',color:'var(--muted2)',borderRadius:10,padding:'6px 12px',fontSize:13,cursor:'pointer',fontWeight:700}}>✕</button>
+          </div>
         </div>
 
         <div style={{flex:1,overflowY:'auto',padding:'0 20px 40px'}}>
 
           {/* ── CHOICE SCREEN ────────────────────────────────────────── */}
+          {step==='history' && (
+            <div style={{padding:'4px 0 8px'}}>
+              <BirthdayWalletHistory profile={profile}/>
+            </div>
+          )}
+
           {step==='choice' && (<>
           <div style={{textAlign:'center',marginBottom:20}}>
             <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:28,fontWeight:900,color:'var(--gold)',lineHeight:1}}>{fmt$(bal.available)}</div>
@@ -15216,7 +16598,11 @@ const CashoutSheet = ({profile, onClose}) => {
               </button>
             ))}
           </div>
-          {!bal.canWithdraw&&<div style={{fontSize:11,color:'var(--muted)',textAlign:'center',marginBottom:12}}>Need {fmt$(+(CASHOUT_MIN-bal.available).toFixed(2))} more to cash out · Fundraiser available anytime</div>}
+          {!bal.canWithdraw&&<div style={{fontSize:11,color:'var(--muted)',textAlign:'center',marginBottom:12}}>
+            {!bal.windowAllowed
+              ? `🔐 Withdrawals unlock ${bal.daysUntilWindow} day${bal.daysUntilWindow!==1?'s':''} before your birthday · Fundraiser available anytime`
+              : `Need ${fmt$(+(CASHOUT_MIN-bal.available).toFixed(2))} more to cash out · Fundraiser available anytime`}
+          </div>}
           </>)}
 
           {/* ── CASH OUT FLOW ─────────────────────────────────────────── */}
@@ -15435,7 +16821,9 @@ const CashoutSheet = ({profile, onClose}) => {
           <div style={{fontSize:10,color:'rgba(255,209,102,.75)',fontWeight:700,textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>{t('wallet.available')}</div>
           <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:26,fontWeight:900,color:'var(--gold)',lineHeight:1}}>{fmt$(bal.available)}</div>
           <div style={{fontSize:11,color:'rgba(255,209,102,.65)',marginTop:5}}>
-          {bal.canWithdraw ? 'Ready to withdraw' : `Need ${fmt$(+(CASHOUT_MIN-bal.available).toFixed(2))} more`}
+          {!bal.windowAllowed
+            ? `🔐 Unlocks in ${bal.daysUntilWindow} day${bal.daysUntilWindow!==1?'s':''}`
+            : bal.canWithdraw ? 'Ready to withdraw' : `Need ${fmt$(+(CASHOUT_MIN-bal.available).toFixed(2))} more`}
           </div>
           </div>
           <div style={{background:'rgba(100,100,120,.07)',border:'1px solid var(--border)',borderRadius:16,padding:16}}>
@@ -15489,7 +16877,11 @@ const CashoutSheet = ({profile, onClose}) => {
           color:bal.canWithdraw?'#000':'var(--muted)',
           fontWeight:800,fontSize:15,cursor:bal.canWithdraw?'pointer':'not-allowed',
           fontFamily:"'Plus Jakarta Sans',sans-serif"}}>
-          {bal.canWithdraw ? '💸 Withdraw to Bank →' : `Need ${fmt$(+(CASHOUT_MIN-bal.available).toFixed(2))} more to withdraw`}
+          {bal.canWithdraw
+            ? '💸 Withdraw to Bank →'
+            : !bal.windowAllowed
+              ? `🔐 Unlocks in ${bal.daysUntilWindow} day${bal.daysUntilWindow!==1?'s':''}`
+              : `Need ${fmt$(+(CASHOUT_MIN-bal.available).toFixed(2))} more to withdraw`}
           </button>
           <div style={{fontSize:11,color:'var(--muted)',marginTop:8,textAlign:'center'}}>1–2 business days · No withdrawal fees · Secured by Stripe</div>
           </div>
@@ -16359,9 +17751,9 @@ const CommunityTab = ({profile, onViewProfile}) => {
       .slice(0,3);
   },[]);
 
-  // ── Squad momentum ────────────────────────────────────────────────────────
-  const squadTotal = following.reduce((sum,u)=>sum+(u.raised||0),0);
-  const squadGifts = following.reduce((sum,u)=>sum+(u.giverCount||0),0);
+  // ── Circle momentum ────────────────────────────────────────────────────────
+  const circleTotal = following.reduce((sum,u)=>sum+(u.raised||0),0);
+  const circleGifts = following.reduce((sum,u)=>sum+(u.giverCount||0),0);
 
   // ── Friend suggestions (shared gifting history) ───────────────────────────
   const suggestions = React.useMemo(()=>{
@@ -16548,16 +17940,16 @@ const CommunityTab = ({profile, onViewProfile}) => {
       </div>
       )}
 
-      {/* ── Squad momentum ─────────────────────────────────────────────── */}
+      {/* ── Circle momentum ─────────────────────────────────────────────── */}
       <div style={{background:'linear-gradient(135deg,rgba(155,93,229,.06),rgba(6,182,212,.04))',borderRadius:16,padding:16,border:'1px solid rgba(155,93,229,.15)'}}>
-        <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:15,marginBottom:12}}>🌟 Your squad this month</div>
+        <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:15,marginBottom:12}}>🌟 Your circle this month</div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
           <div style={{background:'var(--surface)',borderRadius:12,padding:'12px 14px',border:'1px solid var(--border)',textAlign:'center'}}>
-            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:22,color:'var(--mint)'}}>{fmt$(squadTotal)}</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:22,color:'var(--mint)'}}>{fmt$(circleTotal)}</div>
             <div style={{fontSize:11,color:'var(--muted)',marginTop:2,fontWeight:700}}>TOTAL GIFTED</div>
           </div>
           <div style={{background:'var(--surface)',borderRadius:12,padding:'12px 14px',border:'1px solid var(--border)',textAlign:'center'}}>
-            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:22,color:'var(--gold)'}}>{squadGifts}</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:22,color:'var(--gold)'}}>{circleGifts}</div>
             <div style={{fontSize:11,color:'var(--muted)',marginTop:2,fontWeight:700}}>GIFTS SENT</div>
           </div>
         </div>
@@ -16666,19 +18058,6 @@ const DashHomeTabSection = ({profile, onViewProfile, onViewWall, currentUserId, 
       <MyPoolsPanel userId={profile.id}/>
       <ReferralLeaderboard profile={profile}/>
       <div style={{background:'var(--surface)',borderRadius:16,padding:16,border:'1px solid var(--border)',marginBottom:14}}>
-        <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:15,marginBottom:10}}>Social Links</div>
-        <SocialLinksEditor profile={profile} onSave={p=>{DB.users[profile.id]={...profile,...p};}}/>
-        {Object.values(profile.socialLinks||{}).some(Boolean)&&(
-        <div style={{marginTop:14}}>
-          <div style={{fontSize:12,color:'var(--muted)',marginBottom:8}}>{t('profile.previewOnPage')}</div>
-          <SocialLinkBadges profile={profile}/>
-          <div style={{width:'100%',marginTop:8}}>
-          <PreBirthdayPledge profile={profile} isOwner={isOwner} onEdit={()=>setShowPledgeEditor(true)}/>
-          </div>
-        </div>
-        )}
-      </div>
-      <div style={{background:'var(--surface)',borderRadius:16,padding:16,border:'1px solid var(--border)',marginBottom:14}}>
         <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:15,marginBottom:10}}>Share & Embed</div>
         <EmbedWidget profile={profile} profileUrl={profileUrl}/>
       </div>
@@ -16696,6 +18075,10 @@ const DashHomeTabSection = ({profile, onViewProfile, onViewWall, currentUserId, 
         </div>
       </div>
       )}
+      {/* Birthday wallet year-over-year history */}
+      <div style={{marginBottom:14}}>
+        <BirthdayWalletHistory profile={profile}/>
+      </div>
       <AnalyticsDashboard profile={profile}/>
     </div>
     )}
@@ -16731,6 +18114,11 @@ const DashHome = ({profile, profileUrl, onEdit, onViewProfile, onViewWall, curre
   const [showQR,setShowQR]=useState(false);
   const [wallUserModal, setWallUserModal]=useState(null);
   const [showPoolModal, setShowPoolModal]=useState(false);
+  const [poolModalPrefill, setPoolModalPrefill]=useState(null);
+  React.useEffect(()=>{
+    window._openPoolModalWithPrefill = (prefill={}) => { setPoolModalPrefill(prefill); setShowPoolModal(true); };
+    return ()=>{ delete window._openPoolModalWithPrefill; };
+  },[]);
   const age=calcAge(profile.dob); const z=null;
   const milestone=getMilestone(age);
   const earned=profile.badges||[];
@@ -16835,8 +18223,8 @@ const DashHome = ({profile, profileUrl, onEdit, onViewProfile, onViewWall, curre
           </EliteRing>
           </BirthdayHalo>
           <div style={{width:"100%",textAlign:"center",marginTop:12}}>
-          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:5}}>
-          <h2 style={{fontSize:22,fontWeight:800,lineHeight:1.2,margin:0}}>{profile.name}</h2>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,marginBottom:5}}>
+          <h2 style={{fontSize:22,fontWeight:800,lineHeight:1.2,margin:0,textAlign:'center'}}>{profile.name}</h2>
           {(profile.is_verified||profile.is_vip)&&<VerifiedBadge user={profile} size={18} showLabel={profile.is_vip}/>}
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,flexWrap:"wrap",marginBottom:6}}>
@@ -16869,8 +18257,55 @@ const DashHome = ({profile, profileUrl, onEdit, onViewProfile, onViewWall, curre
           </div>
           <Countdown dob={profile.dob}/>
         </div>
-        <SquadBar goal={profile.goal} raised={profile.raised||0} count={profile.giverCount||0} surpriseMode={profile.surpriseMode} onOpen={()=>setShowPoolModal(true)}/>
-        {showPoolModal&&<GroupPoolModal profile={profile} currentUserId={currentUserId||profile.id} onClose={()=>setShowPoolModal(false)} onGoToPools={()=>{setShowPoolModal(false);if(window._goToPools)window._goToPools();}}/>}
+        {/* Piñata: hidden from owner until their birthday — then they can pop it!
+            In demo mode, always show so users can test the pop animation. */}
+        {(isBirthday(profile.dob) || profile.id==='demo-user') ? (
+          <PiñataBar profile={profile} isOwner={true} onPopped={()=>{}}/>
+        ) : (
+          /* Owner sees nothing — it's a surprise from their squad */
+          null
+        )}
+        {/* ── Piñatas you're actively managing — teaser on own profile ── */}
+        {(()=>{
+          const activePools = Object.values(DB.groupPools||{}).flat()
+            .filter(p => p.ownerId===profile.id && !p.released && p.status!=='released');
+          if(activePools.length===0) return null;
+          const top = activePools.sort((a,b)=>{
+            const ta = b.contributions.reduce((s,c)=>s+(c.net||c.amount||0),0);
+            const tb2 = a.contributions.reduce((s,c)=>s+(c.net||c.amount||0),0);
+            return ta-tb2;
+          })[0];
+          const topTotal = top.contributions.reduce((s,c)=>s+(c.net||c.amount||0),0);
+          const topPct = top.goal>0 ? Math.min(100,Math.round(topTotal/top.goal*100)) : null;
+          const recipient = DB.users[top.recipientId];
+          return (
+            <div onClick={()=>{ if(window._goToPools) window._goToPools(top.id); }}
+              style={{background:'var(--surface)',borderRadius:14,padding:'12px 14px',marginBottom:14,
+                border:'1px solid rgba(155,93,229,.25)',cursor:'pointer',
+                boxShadow:'0 2px 10px rgba(155,93,229,.08)',transition:'all .15s'}}
+              className="hover-lift">
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+                <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:13,color:'var(--violet2)',display:'flex',alignItems:'center',gap:6}}>
+                  🪅 {top.name}
+                  {activePools.length>1&&<span style={{fontSize:10,color:'var(--muted)',fontWeight:500}}>+{activePools.length-1} more</span>}
+                </div>
+                <span style={{fontSize:11,color:'var(--muted)',fontWeight:600}}>for {recipient?.name?.split(' ')[0]||'friend'} →</span>
+              </div>
+              {topPct!==null&&(
+                <div>
+                  <div style={{height:5,background:'var(--s3)',borderRadius:3,overflow:'hidden',marginBottom:4}}>
+                    <div style={{height:'100%',width:`${topPct}%`,background:'linear-gradient(90deg,var(--violet),var(--mint))',borderRadius:3,transition:'width 1s'}}/>
+                  </div>
+                  <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:'var(--muted)'}}>
+                    <span style={{color:'var(--violet2)',fontWeight:700}}>{fmt$(topTotal)} stuffed</span>
+                    <span>{topPct}% full · tap to manage</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+        {showPoolModal&&<GroupPoolModal profile={profile} currentUserId={currentUserId||profile.id} prefillName={poolModalPrefill?.name} prefillGoal={poolModalPrefill?.goal} onClose={()=>{setShowPoolModal(false);setPoolModalPrefill(null);}} onGoToPools={()=>{setShowPoolModal(false);setPoolModalPrefill(null);if(window._goToPools)window._goToPools();}}/>}
         {profile.surpriseMode&&(
           <div style={{display:"flex",alignItems:"center",gap:8,fontSize:12,color:"var(--violet2)",marginBottom:12,background:"rgba(155,93,229,.08)",padding:"8px 12px",borderRadius:8,border:"1px solid rgba(155,93,229,.2)"}}>
           🎭 <span><strong>{t('profile.surpriseModeOn')}</strong> — contributor names hidden until your birthday</span>
@@ -17609,143 +19044,6 @@ const SettingsPanel = ({profile, profileUrl, onClose, onEditProfile, onEditProfi
     </div>
   );
 };
-const FollowersPage = ({profile, initialTab='followers', onViewProfile, onBack}) => {
-  const { t } = useTranslation();
-  const [tab, setTab] = useState(initialTab);
-  const [tierFilter, setTierFilter] = useState('all');
-  const [selected, setSelected] = useState(new Set());
-  const [selectMode, setSelectMode] = useState(false);
-  const [, forceUpdate] = useState(0);
-  const pageTopRef = useRef(null);
-
-  useEffect(()=>{ setTab(initialTab); },[initialTab]);
-  useEffect(()=>{
-    if(pageTopRef.current){
-      let el=pageTopRef.current;
-      while(el){ const s=window.getComputedStyle(el); if(s.overflowY==='auto'||s.overflowY==='scroll'){el.scrollTop=0;break;} el=el.parentElement; }
-    }
-  },[tab]);
-
-  const followers = FollowStore.getFollowers(profile.id).map(id=>DB.users[id]).filter(Boolean);
-  const following = FollowStore.getFollowing(profile.id).map(id=>DB.users[id]).filter(Boolean);
-
-  const applyTierFilter = (users) => {
-    if(tierFilter==='all') return users;
-    return users.filter(u=>getEliteTier(u.raised||0)?.id===tierFilter);
-  };
-
-  const toggleSelect = (uid) => {
-    const s = new Set(selected);
-    s.has(uid)?s.delete(uid):s.add(uid);
-    setSelected(s);
-  };
-
-  const list = applyTierFilter(tab==='followers'?followers:following);
-
-  const TIERS = [{id:'all',label:t('common.all')},{id:'diamond',label:'💎 Diamond'},{id:'gold',label:'🥇 Gold'},{id:'silver',label:'🥈 Silver'},{id:'bronze',label:'🥉 Bronze'}];
-
-  return (
-    <div ref={pageTopRef} className="page-wrap" style={{padding:'16px 20px 20px'}}>
-      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
-        <button onClick={onBack} style={{width:34,height:34,borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',flexShrink:0}}>
-          <Icon n="arrowLeft" size={16} color="var(--muted2)"/>
-        </button>
-        <div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:20}}>
-          {tab==='followers'?'👥 Followers':'➕ Following'}
-          </div>
-          <div style={{fontSize:12,color:'var(--muted)',marginTop:1}}>{list.length} {tab==='followers'?'people follow you':'people you follow'}</div>
-        </div>
-      </div>
-      <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:13,padding:3,border:'1px solid var(--border)',marginBottom:14}}>
-        {[{id:'followers',label:`👥 Followers (${followers.length})`},{id:'following',label:`➕ Following (${following.length})`}].map(tb=>(
-          <button key={tb.id} onClick={()=>{ setTab(tb.id); setSelected(new Set()); setSelectMode(false); }} style={{
-          flex:1,padding:'9px 6px',borderRadius:10,border:'none',
-          background:tab===tb.id?'var(--surface)':'transparent',
-          color:tab===tb.id?'var(--text)':'var(--muted)',
-          fontSize:13,fontWeight:700,cursor:'pointer',
-          boxShadow:tab===tb.id?'0 1px 6px rgba(0,0,0,.18)':'none',transition:'all .18s',
-          }}>{tb.label}</button>
-        ))}
-      </div>
-      <div style={{display:'flex',gap:6,overflowX:'auto',paddingBottom:4,marginBottom:12,scrollbarWidth:'none'}}>
-        {TIERS.map(tb=>(
-          <button key={tb.id} onClick={()=>setTierFilter(tb.id)} style={{
-          padding:'6px 14px',borderRadius:20,border:`1px solid ${tierFilter===tb.id?'var(--coral)':'var(--border)'}`,
-          background:tierFilter===tb.id?'rgba(255,94,91,.08)':'var(--s2)',
-          color:tierFilter===tb.id?'var(--coral)':'var(--muted2)',
-          fontSize:12,fontWeight:700,cursor:'pointer',flexShrink:0,whiteSpace:'nowrap',transition:'all .2s',
-          }}>{tb.label}</button>
-        ))}
-      </div>
-      {list.length>0&&(
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
-          <button onClick={()=>{ setSelectMode(s=>!s); setSelected(new Set()); }} style={{
-          padding:'6px 12px',borderRadius:8,border:'1px solid var(--border)',
-          background:selectMode?'var(--coral)':'var(--s2)',color:selectMode?'#fff':'var(--muted2)',
-          fontSize:12,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:5,
-          }}>
-          <Icon n="check" size={12}/> {selectMode?`${selected.size} selected`:'Select'}
-          </button>
-          {selectMode&&selected.size>0&&(
-          <div style={{display:'flex',gap:6}}>
-          <button onClick={()=>{ selected.forEach(uid=>{ FollowStore.removeFollower(profile.id,uid); }); setSelected(new Set()); setSelectMode(false); forceUpdate(n=>n+1); }} style={{padding:'6px 12px',borderRadius:8,border:'none',background:'var(--coral)',color:'#fff',fontSize:12,fontWeight:700,cursor:'pointer'}}>{t('common.remove')}</button>
-          </div>
-          )}
-        </div>
-      )}
-      {list.length===0?(
-        <div style={{textAlign:'center',padding:'48px 0',color:'var(--muted)'}}>
-          <div style={{fontSize:40,marginBottom:10}}>👀</div>
-          <div style={{fontWeight:700,fontSize:15,marginBottom:4}}>No {tab} {tierFilter!=='all'?'in this tier':''}</div>
-          <div style={{fontSize:13}}>{tab==='followers'?'Share your link to get followers!':'Follow people to see their birthdays'}</div>
-        </div>
-      ):(
-        <div style={{background:'var(--surface)',borderRadius:16,border:'1px solid var(--border)',overflow:'hidden'}}>
-          {list.map((u,i)=>{
-          const tier = getEliteTier(u.raised||0);
-          const isSel = selected.has(u.id);
-          return (
-          <div key={u.id} className="hover-row" onClick={()=>selectMode?toggleSelect(u.id):onViewProfile(u)}
-          style={{display:'flex',alignItems:'center',gap:12,padding:'12px 14px',borderBottom:i<list.length-1?'1px solid var(--border)':'none',cursor:'pointer',background:isSel?'rgba(255,94,91,.06)':'transparent',transition:'background .15s'}}>
-          {selectMode&&(
-          <div style={{width:18,height:18,borderRadius:5,border:`2px solid ${isSel?'var(--coral)':'var(--border)'}`,background:isSel?'var(--coral)':'transparent',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-          {isSel&&<Icon n="check" size={11} color="#fff"/>}
-          </div>
-          )}
-          <div style={{width:40,height:40,borderRadius:'50%',background:`hsl(${(u.name.charCodeAt(0)||50)*7},55%,38%)`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:u.photoUrl?0:18,flexShrink:0,overflow:'hidden',border:'2px solid var(--border)'}}>
-          {u.photoUrl?<img src={u.photoUrl} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:(u.emoji||u.name[0]||'?')}
-          </div>
-          <div style={{flex:1,minWidth:0}}>
-          <div style={{fontWeight:700,fontSize:13,display:'flex',alignItems:'center',gap:6}}>
-          {u.name}
-          {tier&&<span style={{fontSize:10}}>{tier.badge}</span>}
-          </div>
-          <div style={{fontSize:11,color:'var(--muted)',marginTop:1}}>@{u.username||u.slug||u.id} · {tier?.label||'Member'}</div>
-          </div>
-          {!selectMode&&(
-          <div style={{display:'flex',gap:6,flexShrink:0}}>
-          <button onClick={e=>{e.stopPropagation();onViewProfile(u);}} style={{padding:'5px 12px',borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer'}}>View →</button>
-          {tab==='followers'&&(
-           <button onClick={e=>{e.stopPropagation(); FollowStore.removeFollower(profile.id,u.id); forceUpdate(n=>n+1);}} style={{width:28,height:28,borderRadius:8,border:'1px solid rgba(255,94,91,.3)',background:'rgba(255,94,91,.06)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}} title="Remove follower">
-            <Icon n="close" size={12} color="var(--coral)"/>
-           </button>
-          )}
-          {tab==='following'&&(
-           <button onClick={e=>{e.stopPropagation(); FollowStore.unfollow(profile.id,u.id); forceUpdate(n=>n+1);}} style={{width:28,height:28,borderRadius:8,border:'1px solid rgba(255,94,91,.3)',background:'rgba(255,94,91,.06)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}} title={t('social.unfollow')}>
-            <Icon n="close" size={12} color="var(--coral)"/>
-           </button>
-          )}
-          </div>
-          )}
-          </div>
-          );
-          })}
-        </div>
-      )}
-    </div>
-  );
-};
 const InviteShareModal = ({profile, refLink, onClose}) => {
   const { t } = useTranslation();
   const [tab, setTab] = useState('link');
@@ -17913,11 +19211,17 @@ const SocialHub = ({profile, profileUrl, initialTab='friends', onViewProfile}) =
   const [tab, setTab] = useState(initialTab);
   const [friendsSubTab, setFriendsSubTab] = useState('followers');
   const [tierFilter, setTierFilter] = useState('all');
+  const [search, setSearch] = useState('');
+  const [menuUser, setMenuUser] = useState(null);
+  const [menuSub, setMenuSub] = useState(null); // 'pinata' | 'list' | null
   const [selected, setSelected] = useState(new Set());
   const [selectMode, setSelectMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showRefShare, setShowRefShare] = useState(false);
   const [, forceUpdate] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
+  const [bulkAction, setBulkAction] = useState(null); // 'list'|'pinata'|null (for bulk sub-screens)
   const hubTopRef = useRef(null);
   useEffect(()=>{
     window._setSocialTab = setTab;
@@ -17935,9 +19239,131 @@ const SocialHub = ({profile, profileUrl, initialTab='friends', onViewProfile}) =
 
   const followers = FollowStore.getFollowers(profile.id).map(id=>DB.users[id]).filter(Boolean);
   const following = FollowStore.getFollowing(profile.id).map(id=>DB.users[id]).filter(Boolean);
-  const applyTierFilter = (users) => tierFilter==='all'?users:users.filter(u=>getEliteTier(u.raised||0)?.id===tierFilter);
-  const list = applyTierFilter(friendsSubTab==='followers'?followers:following);
+  const applyFilters = (users) => {
+    let out = tierFilter==='all'?users:users.filter(u=>getEliteTier(u.raised||0)?.id===tierFilter);
+    if(search.trim()) out = out.filter(u=>(u.name||'').toLowerCase().includes(search.toLowerCase())||(u.username||u.slug||'').toLowerCase().includes(search.toLowerCase()));
+    return out;
+  };
+  const filteredList = applyFilters(friendsSubTab==='followers'?followers:following);
+  const totalPages = Math.ceil(filteredList.length / pageSize);
+  const list = filteredList.slice((page-1)*pageSize, page*pageSize);
 
+  const TIERS = [{id:'all',label:'All'},{id:'diamond',label:'💎 Diamond'},{id:'gold',label:'🥇 Gold'},{id:'silver',label:'🥈 Silver'},{id:'bronze',label:'🥉 Bronze'}];
+
+  const MenuOverlay = menuUser ? (()=>{
+    const u = menuUser;
+    const isMutual = FollowStore.isFollowing(profile.id, u.id);
+    const isFollowerTab = friendsSubTab==='followers';
+    return (
+      <div style={{position:'fixed',inset:0,zIndex:900,background:'rgba(0,0,0,.65)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>{ setMenuUser(null); setMenuSub(null); }}>
+        <div style={{background:'var(--surface)',borderRadius:20,width:'min(400px,94vw)',maxHeight:'85vh',overflowY:'auto',border:'1px solid var(--border)',boxShadow:'0 8px 40px rgba(0,0,0,.4)'}} onClick={e=>e.stopPropagation()}>
+          {/* User header */}
+          <div style={{display:'flex',alignItems:'center',gap:12,padding:'18px 20px 14px',borderBottom:'1px solid var(--border)'}}>
+            <div style={{width:46,height:46,borderRadius:'50%',background:`hsl(${(u.name.charCodeAt(0)||50)*7},55%,38%)`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,overflow:'hidden',flexShrink:0}}>
+              {u.photoUrl?<img src={u.photoUrl} style={{width:'100%',height:'100%',objectFit:'cover'}} alt=""/>:(u.emoji||u.name[0])}
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:800,fontSize:16}}>{u.name}</div>
+              <div style={{fontSize:12,color:'var(--muted)'}}>@{u.username||u.slug||u.id}{isMutual?' · ↔ Mutual':''}</div>
+            </div>
+            <button onClick={()=>{ setMenuUser(null); setMenuSub(null); }} style={{width:28,height:28,borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',cursor:'pointer',fontSize:14,color:'var(--muted)',display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
+          </div>
+          {/* Sub-screen: Piñata invite */}
+          {menuSub==='pinata'&&(()=>{
+            const myPools = GroupPoolStore.get(profile.id).filter(p=>!p.released&&p.ownerId===profile.id);
+            return (
+              <div style={{padding:'14px 20px 20px'}}>
+                <button onClick={()=>setMenuSub(null)} style={{background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:13,marginBottom:12,display:'flex',alignItems:'center',gap:5,padding:0}}>← Back</button>
+                <div style={{fontWeight:800,fontSize:15,marginBottom:4}}>🪅 Invite to Piñata</div>
+                <div style={{fontSize:12,color:'var(--muted)',marginBottom:14}}>Choose a piñata to invite {u.name.split(' ')[0]} to:</div>
+                {myPools.length===0?(
+                  <div style={{textAlign:'center',padding:'20px 0',color:'var(--muted)'}}>
+                    <div style={{fontSize:32,marginBottom:8}}>🪅</div>
+                    <div style={{fontSize:13,marginBottom:12}}>No active piñatas yet</div>
+                    <button onClick={()=>{ setMenuUser(null); setMenuSub(null); if(window._goToPoolsCreate) window._goToPoolsCreate({name:`🪅 ${u.name.split(' ')[0]}'s Birthday`}); }} style={{padding:'9px 18px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontWeight:700,fontSize:13,cursor:'pointer'}}>Create a Piñata →</button>
+                  </div>
+                ):(
+                  <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                    {myPools.map(pool=>{
+                      const total = GroupPoolStore.getTotal(pool.id);
+                      const alreadyInvited = pool.pendingInvites?.some(i=>i.userId===u.id)||pool.members?.includes(u.id);
+                      return (
+                        <button key={pool.id} disabled={alreadyInvited} onClick={()=>{ GroupPoolStore.invite(pool.id,u.id,profile.id); setMenuUser(null); setMenuSub(null); NotifStore.push(profile.id,{icon:'🪅',text:`Invited ${u.name.split(' ')[0]} to "${pool.name}"`,color:'var(--violet2)'}); }}
+                          style={{padding:'12px 14px',borderRadius:12,border:`1px solid ${alreadyInvited?'var(--border)':'rgba(155,93,229,.3)'}`,background:alreadyInvited?'var(--s2)':'rgba(155,93,229,.06)',cursor:alreadyInvited?'not-allowed':'pointer',textAlign:'left',opacity:alreadyInvited?.6:1}}>
+                          <div style={{fontWeight:700,fontSize:13}}>{pool.name}</div>
+                          <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{fmt$(total)} raised · {pool.members?.length||0} filling{alreadyInvited?' · Already invited':''}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+          {/* Sub-screen: Add to list */}
+          {menuSub==='list'&&(()=>{
+            const myLists = ListsStore.getLists(profile.id);
+            return (
+              <div style={{padding:'14px 20px 20px'}}>
+                <button onClick={()=>setMenuSub(null)} style={{background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:13,marginBottom:12,display:'flex',alignItems:'center',gap:5,padding:0}}>← Back</button>
+                <div style={{fontWeight:800,fontSize:15,marginBottom:4}}>📋 Add to List</div>
+                <div style={{fontSize:12,color:'var(--muted)',marginBottom:14}}>Add {u.name.split(' ')[0]} to one of your lists:</div>
+                {myLists.length===0?(
+                  <div style={{textAlign:'center',padding:'20px 0',color:'var(--muted)'}}>
+                    <div style={{fontSize:32,marginBottom:8}}>📋</div>
+                    <div style={{fontSize:13,marginBottom:12}}>No lists yet</div>
+                    <button onClick={()=>{ setMenuUser(null); setMenuSub(null); if(window._setDashTab) window._setDashTab('lists'); }} style={{padding:'9px 18px',borderRadius:10,border:'none',background:'var(--violet)',color:'#fff',fontWeight:700,fontSize:13,cursor:'pointer'}}>Create a List →</button>
+                  </div>
+                ):(
+                  <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                    {myLists.map(list=>{
+                      const already = list.members?.includes(u.id);
+                      return (
+                        <button key={list.id} disabled={already} onClick={()=>{ ListsStore.addMember(profile.id,list.id,u.id); setMenuUser(null); setMenuSub(null); NotifStore.push(profile.id,{icon:'📋',text:`Added ${u.name.split(' ')[0]} to "${list.name}"`,color:'var(--mint)'}); }}
+                          style={{padding:'12px 14px',borderRadius:12,border:`1px solid ${already?'var(--border)':'rgba(6,214,160,.3)'}`,background:already?'var(--s2)':'rgba(6,214,160,.06)',cursor:already?'not-allowed':'pointer',textAlign:'left',opacity:already?.6:1,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                          <div>
+                            <div style={{fontWeight:700,fontSize:13}}>{list.name}{ListsStore.isGiftGroup(list.id)?' 🎁':''}</div>
+                            <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{list.members?.length||0} member{(list.members?.length||0)!==1?'s':''}{already?' · Already in list':''}</div>
+                          </div>
+                          {!already&&<span style={{color:'var(--mint)',fontSize:20,fontWeight:300}}>+</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+          {/* Main action list */}
+          {!menuSub&&(
+            <div style={{padding:'6px 0 8px'}}>
+              {[
+                {icon:'👤',label:'View profile',action:()=>{ setMenuUser(null);setMenuSub(null);onViewProfile(u); }},
+                {icon:'🎁',label:'Send a gift',action:()=>{ setMenuUser(null);setMenuSub(null);onViewProfile(u); }},
+                {icon:'💌',label:'Send e-card',action:()=>{ setMenuUser(null);setMenuSub(null);onViewProfile(u);setTimeout(()=>{ if(window._openECard) window._openECard(); },400); }},
+                {icon:'🪅',label:'Invite to piñata',sub:true,action:()=>setMenuSub('pinata')},
+                {icon:'📋',label:'Add to list',sub:true,action:()=>setMenuSub('list')},
+                {icon:'↔',label:isMutual?'Unfollow':'Follow back',color:'var(--sky)',action:()=>{ isMutual?FollowStore.unfollow(profile.id,u.id):FollowStore.follow(profile.id,u.id);forceUpdate(n=>n+1);setMenuUser(null);setMenuSub(null); }},
+                isFollowerTab
+                  ?{icon:'✕',label:'Remove follower',color:'var(--coral)',action:()=>{ if(window.confirm(`Remove ${u.name}?`)){FollowStore.removeFollower(profile.id,u.id);forceUpdate(n=>n+1);setMenuUser(null);setMenuSub(null);} }}
+                  :{icon:'✕',label:'Unfollow',color:'var(--coral)',action:()=>{ if(window.confirm(`Unfollow ${u.name}?`)){FollowStore.unfollow(profile.id,u.id);forceUpdate(n=>n+1);setMenuUser(null);setMenuSub(null);} }},
+                {icon:'🚫',label:'Block',color:'var(--coral)',action:()=>{ if(window.confirm(`Block ${u.name}?`)){BlockStore.block(profile.id,u.id);FollowStore.removeFollower(profile.id,u.id);FollowStore.unfollow(profile.id,u.id);forceUpdate(n=>n+1);setMenuUser(null);setMenuSub(null);} }},
+                {icon:'⚑',label:'Report',color:'var(--muted)',action:()=>{ NotifStore.push(profile.id,{icon:'✅',text:'Report submitted',sub:'Our team will review shortly',color:'var(--mint)'}); setMenuUser(null);setMenuSub(null); }},
+              ].map((item,i)=>(
+                <button key={i} onClick={item.action} style={{width:'100%',padding:'13px 20px',border:'none',background:'none',display:'flex',alignItems:'center',gap:14,cursor:'pointer',textAlign:'left',color:item.color||'var(--text)',fontSize:14,fontWeight:600}}
+                  onMouseEnter={e=>e.currentTarget.style.background='var(--s2)'}
+                  onMouseLeave={e=>e.currentTarget.style.background='none'}>
+                  <span style={{width:26,textAlign:'center',fontSize:18,flexShrink:0}}>{item.icon}</span>
+                  <span style={{flex:1}}>{item.label}</span>
+                  {item.sub&&<span style={{color:'var(--muted)',fontSize:18}}>›</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  })() : null;
   const refs = DB.referrals[profile.id]||[];
   const credits = refs.filter(r=>r.converted).length * 2;
   const refLink = `${profileUrl}&ref=${profile.id}`;
@@ -17955,9 +19381,8 @@ const SocialHub = ({profile, profileUrl, initialTab='friends', onViewProfile}) =
     setCopied(true); setTimeout(()=>setCopied(false), 2000);
   };
 
-  const TIERS = [{id:'all',label:t('common.all')},{id:'diamond',label:'💎 Diamond'},{id:'gold',label:'🥇 Gold'},{id:'silver',label:'🥈 Silver'},{id:'bronze',label:'🥉 Bronze'}];
 
-  const toggleSelect = (uid) => { const s=new Set(selected); s.has(uid)?s.delete(uid):s.add(uid); setSelected(s); };
+
 
   const board = ReferralStore.getLeaderboard();
   const myRank = board.findIndex(e=>e.uid===profile.id)+1;
@@ -17965,6 +19390,7 @@ const SocialHub = ({profile, profileUrl, initialTab='friends', onViewProfile}) =
 
   return (
     <div ref={hubTopRef} className="page-wrap" style={{padding:'16px 20px 20px'}}>
+      {MenuOverlay}
       <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:13,padding:3,border:'1px solid var(--border)',marginBottom:18}}>
         {[{id:'friends',label:'👥 Friends'},{id:'invite',label:'📣 Invite'}].map(tb=>(
           <button key={tb.id} onClick={()=>setTab(tb.id)} style={{
@@ -17977,118 +19403,253 @@ const SocialHub = ({profile, profileUrl, initialTab='friends', onViewProfile}) =
         ))}
       </div>
       {tab==='friends'&&(
-        <div>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
-          <div>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:20}}>
-          {friendsSubTab==='followers'?'👥 Followers':'➕ Following'}
+        <div style={{paddingBottom: selectMode && selected.size>0 ? 130 : 0}}>
+          {/* Header */}
+          <div style={{marginBottom:12}}>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:20}}>
+              {friendsSubTab==='followers'?'👥 Followers':'➕ Following'}
+            </div>
+            <div style={{fontSize:12,color:'var(--muted)',marginTop:1}}>
+              {friendsSubTab==='followers'?`${followers.length} people follow you`:`${following.length} people you follow`}
+              {filteredList.length !== (friendsSubTab==='followers'?followers:following).length && ` · ${filteredList.length} matching`}
+            </div>
           </div>
-          <div style={{fontSize:12,color:'var(--muted)',marginTop:1}}>
-          {friendsSubTab==='followers'?`${followers.length} people follow you`:`${following.length} people you follow`}
-          </div>
-          </div>
-          </div>
+
+          {/* Followers / Following switcher */}
           <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:12,padding:3,border:'1px solid var(--border)',marginBottom:12}}>
-          {[{id:'followers',label:`Followers (${followers.length})`},{id:'following',label:`Following (${following.length})`}].map(tb=>(
-          <button key={tb.id} onClick={()=>{ setFriendsSubTab(tb.id); setSelected(new Set()); setSelectMode(false); }} style={{
-          flex:1,padding:'8px 6px',borderRadius:9,border:'none',
-          background:friendsSubTab===tb.id?'var(--surface)':'transparent',
-          color:friendsSubTab===tb.id?'var(--text)':'var(--muted)',
-          fontSize:12,fontWeight:700,cursor:'pointer',
-          boxShadow:friendsSubTab===tb.id?'0 1px 4px rgba(0,0,0,.15)':'none',transition:'all .15s',
-          }}>{tb.label}</button>
-          ))}
+            {[{id:'followers',label:`Followers (${followers.length})`},{id:'following',label:`Following (${following.length})`}].map(tb=>(
+              <button key={tb.id} onClick={()=>{ setFriendsSubTab(tb.id); setSelected(new Set()); setSelectMode(false); setPage(1); }} style={{
+                flex:1,padding:'8px 6px',borderRadius:9,border:'none',
+                background:friendsSubTab===tb.id?'var(--surface)':'transparent',
+                color:friendsSubTab===tb.id?'var(--text)':'var(--muted)',
+                fontSize:12,fontWeight:700,cursor:'pointer',
+                boxShadow:friendsSubTab===tb.id?'0 1px 4px rgba(0,0,0,.15)':'none',transition:'all .15s',
+              }}>{tb.label}</button>
+            ))}
           </div>
-          <div style={{display:'flex',gap:6,overflowX:'auto',paddingBottom:4,marginBottom:12,scrollbarWidth:'none'}}>
-          {TIERS.map(tr=>(
-          <button key={tr.id} onClick={()=>setTierFilter(tr.id)} style={{
-          padding:'5px 12px',borderRadius:20,border:`1px solid ${tierFilter===tr.id?'var(--coral)':'var(--border)'}`,
-          background:tierFilter===tr.id?'rgba(255,94,91,.08)':'var(--s2)',
-          color:tierFilter===tr.id?'var(--coral)':'var(--muted2)',
-          fontSize:11,fontWeight:700,cursor:'pointer',flexShrink:0,whiteSpace:'nowrap',transition:'all .2s',
-          }}>{tr.label}</button>
-          ))}
+
+          {/* Search + Tier filter + Page size */}
+          <div style={{display:'flex',gap:8,marginBottom:10,alignItems:'center'}}>
+            {/* Search takes left side */}
+            <input value={search} onChange={e=>{setSearch(e.target.value);setPage(1);}} placeholder="🔍 Search name or @username"
+              style={{flex:1,minWidth:0,padding:'7px 10px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12}}/>
+            {/* Compact right-side controls */}
+            <div style={{display:'flex',gap:5,alignItems:'center',flexShrink:0}}>
+              <select value={tierFilter} onChange={e=>{setTierFilter(e.target.value);setPage(1);}}
+                style={{padding:'7px 8px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:11,fontWeight:600,cursor:'pointer',maxWidth:110}}>
+                {TIERS.map(tr=><option key={tr.id} value={tr.id}>{tr.label}</option>)}
+              </select>
+              <select value={pageSize} onChange={e=>{setPageSize(Number(e.target.value));setPage(1);}}
+                style={{padding:'7px 8px',borderRadius:10,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:11,fontWeight:600,cursor:'pointer',width:60}}>
+                {[10,25,50,100].map(n=><option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
           </div>
-          {list.length>0&&(
+
+          {/* Select mode toggle */}
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
-          <button onClick={()=>{ setSelectMode(s=>!s); setSelected(new Set()); }} style={{
-          padding:'5px 12px',borderRadius:8,border:'1px solid var(--border)',
-          background:selectMode?'var(--coral)':'var(--s2)',color:selectMode?'#fff':'var(--muted2)',
-          fontSize:12,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:5,
-          }}>
-          <Icon n="check" size={12}/> {selectMode?`${selected.size} selected`:'Select'}
-          </button>
-          {selectMode&&selected.size>0&&(
-          <button onClick={()=>{ selected.forEach(uid=>FollowStore.removeFollower(profile.id,uid)); setSelected(new Set()); setSelectMode(false); forceUpdate(n=>n+1); }} style={{padding:'5px 12px',borderRadius:8,border:'none',background:'var(--coral)',color:'#fff',fontSize:12,fontWeight:700,cursor:'pointer'}}>
-          Remove {selected.size}
-          </button>
-          )}
-          </div>
-          )}
-          {list.length===0?(
-          <div style={{textAlign:'center',padding:'40px 0'}}>
-            <div style={{fontSize:40,marginBottom:10}}>👀</div>
-            <div style={{fontWeight:700,fontSize:15,marginBottom:4,color:'var(--text)'}}>
-              {friendsSubTab==='followers'?'No followers yet':'Not following anyone yet'}
-            </div>
-            <div style={{fontSize:13,color:'var(--muted)',marginBottom:20}}>
-              {friendsSubTab==='followers'?'Share your birthday link to get followers!':'Find friends to follow their birthdays'}
-            </div>
-            {friendsSubTab==='followers'&&(
-              <button onClick={()=>{ if(window._openShareModal) window._openShareModal(); }} style={{
-                padding:'12px 24px',borderRadius:12,border:'none',
-                background:'linear-gradient(135deg,var(--coral),var(--gold))',
-                color:'#fff',fontWeight:800,fontSize:14,cursor:'pointer',
-                fontFamily:"'Plus Jakarta Sans',sans-serif",
-                display:'inline-flex',alignItems:'center',gap:8,
-              }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                Share Your Birthday Link
+            <button onClick={()=>{ setSelectMode(s=>!s); setSelected(new Set()); setBulkAction(null); }} style={{
+              padding:'5px 12px',borderRadius:8,border:`1px solid ${selectMode?'var(--coral)':'var(--border)'}`,
+              background:selectMode?'rgba(255,94,91,.08)':'var(--s2)',color:selectMode?'var(--coral)':'var(--muted2)',
+              fontSize:12,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:5,
+            }}>
+              <Icon n="check" size={12}/> {selectMode ? (selected.size>0?`${selected.size} selected`:'Select mode') : 'Select'}
+            </button>
+            {selectMode&&list.length>0&&(
+              <button onClick={()=>{
+                if(selected.size===filteredList.length) setSelected(new Set());
+                else setSelected(new Set(filteredList.map(u=>u.id)));
+              }} style={{fontSize:12,color:'var(--muted2)',background:'none',border:'none',cursor:'pointer',fontWeight:600}}>
+                {selected.size===filteredList.length?`Deselect all (${filteredList.length})`:`Select all (${filteredList.length})`}
               </button>
             )}
           </div>
+
+          {/* Empty state */}
+          {filteredList.length===0?(
+            <div style={{textAlign:'center',padding:'40px 0'}}>
+              <div style={{fontSize:40,marginBottom:10}}>👀</div>
+              <div style={{fontWeight:700,fontSize:15,marginBottom:4,color:'var(--text)'}}>
+                {search?`No results for "${search}"`:(friendsSubTab==='followers'?'No followers yet':'Not following anyone yet')}
+              </div>
+              <div style={{fontSize:13,color:'var(--muted)',marginBottom:20}}>
+                {search?'Try a different name or username':(friendsSubTab==='followers'?'Share your birthday link to get followers!':'Find friends to follow their birthdays')}
+              </div>
+              {friendsSubTab==='followers'&&!search&&(
+                <button onClick={()=>{ if(window._openShareModal) window._openShareModal(); }} style={{
+                  padding:'12px 24px',borderRadius:12,border:'none',
+                  background:'linear-gradient(135deg,var(--coral),var(--gold))',
+                  color:'#fff',fontWeight:800,fontSize:14,cursor:'pointer',
+                  fontFamily:"'Plus Jakarta Sans',sans-serif",display:'inline-flex',alignItems:'center',gap:8,
+                }}>Share Your Birthday Link</button>
+              )}
+            </div>
           ):(
-          <div style={{background:'var(--surface)',borderRadius:16,border:'1px solid var(--border)',overflow:'hidden'}}>
-          {list.map((u,i)=>{
-          const tier=getEliteTier(u.raised||0);
-          const isSel=selected.has(u.id);
-          return (
-          <div key={u.id} className="hover-row" onClick={()=>selectMode?toggleSelect(u.id):onViewProfile(u)}
-          style={{display:'flex',alignItems:'center',gap:12,padding:'12px 14px',borderBottom:i<list.length-1?'1px solid var(--border)':'none',cursor:'pointer',background:isSel?'rgba(255,94,91,.06)':'transparent',transition:'background .15s'}}>
-          {selectMode&&(
-           <div style={{width:18,height:18,borderRadius:5,border:`2px solid ${isSel?'var(--coral)':'var(--border)'}`,background:isSel?'var(--coral)':'transparent',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-            {isSel&&<Icon n="check" size={11} color="#fff"/>}
-           </div>
-          )}
-          <div style={{width:40,height:40,borderRadius:'50%',background:`hsl(${(u.name.charCodeAt(0)||50)*7},55%,38%)`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:u.photoUrl?0:18,flexShrink:0,overflow:'hidden',border:'2px solid var(--border)'}}>
-           {u.photoUrl?<img src={u.photoUrl} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:(u.emoji||u.name[0]||'?')}
-          </div>
-          <div style={{flex:1,minWidth:0}}>
-           <div style={{fontWeight:700,fontSize:13,display:'flex',alignItems:'center',gap:5}}>
-            {u.name}{tier&&<span style={{fontSize:10}}>{tier.badge}</span>}
-           </div>
-           <div style={{fontSize:11,color:'var(--muted)',marginTop:1}}>@{u.username||u.slug||u.id} · {tier?.label||'Member'}</div>
-          </div>
-          {!selectMode&&(
-           <div style={{display:'flex',gap:6,flexShrink:0}}>
-            <button onClick={e=>{e.stopPropagation();onViewProfile(u);}} style={{padding:'5px 12px',borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer'}}>View →</button>
-            {friendsSubTab==='followers'&&(
-             <button onClick={e=>{e.stopPropagation();FollowStore.removeFollower(profile.id,u.id);forceUpdate(n=>n+1);}} style={{width:28,height:28,borderRadius:8,border:'1px solid rgba(255,94,91,.3)',background:'rgba(255,94,91,.06)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}} title="Remove follower">
-              <Icon n="close" size={12} color="var(--coral)"/>
-             </button>
+            <>
+            {/* User list */}
+            <div style={{background:'var(--surface)',borderRadius:16,border:'1px solid var(--border)',overflow:'hidden',marginBottom:12}}>
+              {list.map((u,i)=>{
+                const tier = getEliteTier(u.raised||0);
+                const isSel = selected.has(u.id);
+                const isMutual = friendsSubTab==='followers' && FollowStore.isFollowing(profile.id, u.id);
+                const bdayDays = u.dob ? daysUntil(u.dob) : null;
+                const bdayColor = bdayDays===null?null:bdayDays===0?'var(--coral)':bdayDays<=3?'var(--coral)':bdayDays<=7?'var(--gold)':bdayDays<=14?'#F59E0B':'var(--muted)';
+                const bdayLabel = bdayDays===null?null:bdayDays===0?'🎂 TODAY!':bdayDays===1?'Tomorrow!':bdayDays<0&&Math.abs(bdayDays)<=7?`${Math.abs(bdayDays)}d ago`:`${bdayDays}d`;
+                const glowStyle = bdayDays===0?{boxShadow:'0 0 0 2.5px var(--coral),0 0 10px rgba(255,94,91,.4)'}:bdayDays<=3?{boxShadow:'0 0 0 2px var(--coral)'}:bdayDays<=7?{boxShadow:'0 0 0 2px var(--gold)'}:bdayDays<=14?{boxShadow:'0 0 0 1.5px rgba(245,158,11,.4)'}:{};
+                return (
+                  <div key={u.id} className="hover-row"
+                    onClick={()=>{ if(selectMode){ setSelected(prev=>{ const s=new Set(prev); s.has(u.id)?s.delete(u.id):s.add(u.id); return s; }); } else onViewProfile(u); }}
+                    style={{display:'flex',alignItems:'center',gap:12,padding:'12px 14px',borderBottom:i<list.length-1?'1px solid var(--border)':'none',cursor:'pointer',background:isSel?'rgba(255,94,91,.06)':'transparent',transition:'background .15s'}}>
+                    {/* Checkbox */}
+                    {selectMode&&(
+                      <div style={{width:20,height:20,borderRadius:6,border:`2px solid ${isSel?'var(--coral)':'var(--border)'}`,background:isSel?'var(--coral)':'transparent',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all .15s'}}>
+                        {isSel&&<Icon n="check" size={12} color="#fff"/>}
+                      </div>
+                    )}
+                    {/* Avatar */}
+                    <div style={{width:42,height:42,borderRadius:'50%',background:`hsl(${(u.name.charCodeAt(0)||50)*7},55%,38%)`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:u.photoUrl?0:18,flexShrink:0,overflow:'hidden',...glowStyle}}>
+                      {u.photoUrl?<img src={u.photoUrl} style={{width:'100%',height:'100%',objectFit:'cover'}} alt=""/>:(u.emoji||u.name[0]||'?')}
+                    </div>
+                    {/* Info */}
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontWeight:700,fontSize:13,display:'flex',alignItems:'center',gap:5,flexWrap:'wrap'}}>
+                        {u.name}
+                        {tier&&<span style={{fontSize:10}}>{tier.badge}</span>}
+                        {isMutual&&<span style={{fontSize:9,fontWeight:800,color:'var(--sky)',background:'rgba(56,189,248,.12)',border:'1px solid rgba(56,189,248,.25)',borderRadius:8,padding:'1px 5px'}}>↔ Mutual</span>}
+                      </div>
+                      <div style={{fontSize:11,color:'var(--muted)',marginTop:1,display:'flex',alignItems:'center',gap:4,flexWrap:'wrap'}}>
+                        <span>@{u.username||u.slug||u.id}</span>
+                        {tier&&<span>· {tier.label}</span>}
+                        {bdayLabel&&bdayDays!==null&&(bdayDays>=0||bdayDays>=-7)&&(
+                          <span style={{color:bdayColor,fontWeight:bdayDays<=7?700:400}}>· 🎂 {bdayDays<0?`Birthday ${bdayLabel}`:`Birthday in ${bdayLabel}`}</span>
+                        )}
+                      </div>
+                    </div>
+                    {/* Actions */}
+                    {!selectMode&&(
+                      <div style={{display:'flex',gap:5,flexShrink:0}}>
+                        <button onClick={e=>{e.stopPropagation();onViewProfile(u);}}
+                          style={{padding:'5px 10px',borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer'}}>View →</button>
+                        <button onClick={e=>{e.stopPropagation();setMenuUser(u);setMenuSub(null);}}
+                          style={{width:30,height:30,borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',fontSize:17,color:'var(--muted2)'}}>⋯</button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:8}}>
+                <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}
+                  style={{padding:'7px 14px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:page===1?'var(--muted)':'var(--text)',fontSize:12,fontWeight:700,cursor:page===1?'not-allowed':'pointer',opacity:page===1?.5:1}}>← Prev</button>
+                <div style={{display:'flex',alignItems:'center',gap:4}}>
+                  {Array.from({length:Math.min(totalPages,5)},(_,i)=>{
+                    // Show pages around current
+                    let p;
+                    if(totalPages<=5) p=i+1;
+                    else if(page<=3) p=i+1;
+                    else if(page>=totalPages-2) p=totalPages-4+i;
+                    else p=page-2+i;
+                    return (
+                      <button key={p} onClick={()=>setPage(p)} style={{
+                        width:32,height:32,borderRadius:8,border:`1px solid ${page===p?'var(--coral)':'var(--border)'}`,
+                        background:page===p?'var(--coral)':'var(--s2)',color:page===p?'#fff':'var(--muted2)',
+                        fontSize:12,fontWeight:700,cursor:'pointer',
+                      }}>{p}</button>
+                    );
+                  })}
+                </div>
+                <button onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page===totalPages}
+                  style={{padding:'7px 14px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:page===totalPages?'var(--muted)':'var(--text)',fontSize:12,fontWeight:700,cursor:page===totalPages?'not-allowed':'pointer',opacity:page===totalPages?.5:1}}>Next →</button>
+              </div>
             )}
-            {friendsSubTab==='following'&&(
-             <button onClick={e=>{e.stopPropagation();FollowStore.unfollow(profile.id,u.id);forceUpdate(n=>n+1);}} style={{width:28,height:28,borderRadius:8,border:'1px solid rgba(255,94,91,.3)',background:'rgba(255,94,91,.06)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}} title={t('social.unfollow')}>
-              <Icon n="close" size={12} color="var(--coral)"/>
-             </button>
-            )}
-           </div>
+            {/* Page info */}
+            <div style={{fontSize:11,color:'var(--muted)',textAlign:'center',marginBottom:4}}>
+              Showing {Math.min((page-1)*pageSize+1,filteredList.length)}–{Math.min(page*pageSize,filteredList.length)} of {filteredList.length}
+            </div>
+            </>
           )}
-          </div>
-          );
-          })}
-          </div>
+
+          {/* ── Bulk action bottom bar ── */}
+          {selectMode&&selected.size>0&&!bulkAction&&(
+            <div style={{position:'fixed',bottom:'calc(56px + env(safe-area-inset-bottom, 0px))',left:0,right:0,zIndex:200,background:'var(--surface)',borderTop:'1px solid var(--border)',borderBottom:'1px solid var(--border)',padding:'10px 16px',display:'flex',alignItems:'center',gap:8,boxShadow:'0 -4px 20px rgba(0,0,0,.12)'}}>
+              <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:13,color:'var(--coral)',flexShrink:0}}>
+                {selected.size} selected
+              </div>
+              <div style={{display:'flex',gap:6,flex:1,overflowX:'auto',scrollbarWidth:'none'}}>
+                {[
+                  {icon:'📋',label:'Add to list',action:()=>setBulkAction('list')},
+                  {icon:'🪅',label:'Piñata',action:()=>setBulkAction('pinata')},
+                  friendsSubTab==='followers'
+                    ? {icon:'✕',label:'Remove',color:'var(--coral)',action:()=>{ if(window.confirm(`Remove ${selected.size} followers?`)){selected.forEach(uid=>FollowStore.removeFollower(profile.id,uid));setSelected(new Set());setSelectMode(false);forceUpdate(n=>n+1);} }}
+                    : {icon:'✕',label:'Unfollow',color:'var(--coral)',action:()=>{ if(window.confirm(`Unfollow ${selected.size} people?`)){selected.forEach(uid=>FollowStore.unfollow(profile.id,uid));setSelected(new Set());setSelectMode(false);forceUpdate(n=>n+1);} }},
+                  {icon:'🚫',label:'Block',color:'var(--coral)',action:()=>{ if(window.confirm(`Block ${selected.size} users?`)){selected.forEach(uid=>{BlockStore.block(profile.id,uid);FollowStore.removeFollower(profile.id,uid);FollowStore.unfollow(profile.id,uid);});setSelected(new Set());setSelectMode(false);forceUpdate(n=>n+1);} }},
+                ].map((a,i)=>(
+                  <button key={i} onClick={a.action} style={{
+                    padding:'7px 12px',borderRadius:9,border:`1px solid ${a.color?'rgba(255,94,91,.3)':'var(--border)'}`,
+                    background:a.color?'rgba(255,94,91,.06)':'var(--s2)',color:a.color||'var(--text)',
+                    fontSize:12,fontWeight:700,cursor:'pointer',flexShrink:0,display:'flex',alignItems:'center',gap:5,whiteSpace:'nowrap',
+                  }}><span>{a.icon}</span>{a.label}</button>
+                ))}
+              </div>
+              <button onClick={()=>{setSelectMode(false);setSelected(new Set());setBulkAction(null);}} style={{padding:'7px 10px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted)',fontSize:11,fontWeight:700,cursor:'pointer',flexShrink:0}}>Cancel</button>
+            </div>
           )}
+
+          {/* Bulk: Add to list */}
+          {selectMode&&bulkAction==='list'&&(()=>{
+            const myLists = ListsStore.getLists(profile.id);
+            return (
+              <div style={{position:'fixed',inset:0,zIndex:600,background:'rgba(0,0,0,.65)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setBulkAction(null)}>
+                <div style={{background:'var(--surface)',borderRadius:20,width:'min(380px,94vw)',maxHeight:'75vh',overflowY:'auto',border:'1px solid var(--border)',boxShadow:'0 8px 40px rgba(0,0,0,.4)'}} onClick={e=>e.stopPropagation()}>
+                  <div style={{padding:'18px 20px 14px',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <div><div style={{fontWeight:800,fontSize:16}}>📋 Add to List</div><div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Adding {selected.size} people</div></div>
+                    <button onClick={()=>setBulkAction(null)} style={{width:28,height:28,borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',cursor:'pointer',fontSize:14,color:'var(--muted)',display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
+                  </div>
+                  <div style={{padding:'12px 20px 20px',display:'flex',flexDirection:'column',gap:8}}>
+                    {myLists.length===0?(<div style={{textAlign:'center',padding:'20px 0',color:'var(--muted)',fontSize:13}}>No lists yet — <button onClick={()=>{setBulkAction(null);setSelectMode(false);if(window._setDashTab)window._setDashTab('lists');}} style={{background:'none',border:'none',color:'var(--violet2)',fontWeight:700,cursor:'pointer'}}>create one</button></div>
+                    ):myLists.map(list=>(
+                      <button key={list.id} onClick={()=>{ selected.forEach(uid=>ListsStore.addMember(profile.id,list.id,uid)); setBulkAction(null); setSelectMode(false); setSelected(new Set()); NotifStore.push(profile.id,{icon:'📋',text:`Added ${selected.size} people to "${list.name}"`,color:'var(--mint)'}); }}
+                        style={{padding:'12px 14px',borderRadius:12,border:'1px solid rgba(6,214,160,.25)',background:'rgba(6,214,160,.05)',cursor:'pointer',textAlign:'left',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                        <div><div style={{fontWeight:700,fontSize:13}}>{list.name}{ListsStore.isGiftGroup(list.id)?' 🎁':''}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{list.members?.length||0} members</div></div>
+                        <span style={{color:'var(--mint)',fontSize:20,fontWeight:300}}>+</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Bulk: Invite to piñata */}
+          {selectMode&&bulkAction==='pinata'&&(()=>{
+            const myPools = GroupPoolStore.get(profile.id).filter(p=>!p.released&&p.ownerId===profile.id);
+            return (
+              <div style={{position:'fixed',inset:0,zIndex:600,background:'rgba(0,0,0,.65)',display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setBulkAction(null)}>
+                <div style={{background:'var(--surface)',borderRadius:20,width:'min(380px,94vw)',maxHeight:'75vh',overflowY:'auto',border:'1px solid var(--border)',boxShadow:'0 8px 40px rgba(0,0,0,.4)'}} onClick={e=>e.stopPropagation()}>
+                  <div style={{padding:'18px 20px 14px',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <div><div style={{fontWeight:800,fontSize:16}}>🪅 Invite to Piñata</div><div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Inviting {selected.size} people</div></div>
+                    <button onClick={()=>setBulkAction(null)} style={{width:28,height:28,borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',cursor:'pointer',fontSize:14,color:'var(--muted)',display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
+                  </div>
+                  <div style={{padding:'12px 20px 20px',display:'flex',flexDirection:'column',gap:8}}>
+                    {myPools.length===0?(<div style={{textAlign:'center',padding:'20px 0',color:'var(--muted)',fontSize:13}}>No active piñatas — <button onClick={()=>{setBulkAction(null);setSelectMode(false);if(window._goToPools)window._goToPools();}} style={{background:'none',border:'none',color:'var(--violet2)',fontWeight:700,cursor:'pointer'}}>create one</button></div>
+                    ):myPools.map(pool=>{
+                      const total = GroupPoolStore.getTotal(pool.id);
+                      return (
+                        <button key={pool.id} onClick={()=>{ selected.forEach(uid=>GroupPoolStore.invite(pool.id,uid,profile.id)); setBulkAction(null); setSelectMode(false); setSelected(new Set()); NotifStore.push(profile.id,{icon:'🪅',text:`Invited ${selected.size} people to "${pool.name}"`,color:'var(--violet2)'}); }}
+                          style={{padding:'12px 14px',borderRadius:12,border:'1px solid rgba(155,93,229,.25)',background:'rgba(155,93,229,.05)',cursor:'pointer',textAlign:'left',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                          <div><div style={{fontWeight:700,fontSize:13}}>{pool.name}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{fmt$(total)} raised · {pool.members?.length||0} filling</div></div>
+                          <span style={{color:'var(--violet2)',fontSize:20,fontWeight:300}}>+</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
       {tab==='invite'&&(
@@ -18193,167 +19754,445 @@ const SocialHub = ({profile, profileUrl, initialTab='friends', onViewProfile}) =
 };
 const WishlistHub = ({profile, initialTab='wishlist', onTabChange}) => {
   const { t } = useTranslation();
-  const [tab, setTab] = useState(initialTab);
-  const [giftView, setGiftView] = useState('received'); // 'received' | 'sent'
-  const [giftSort, setGiftSort] = useState('newest');
-  const [giftFilter, setGiftFilter] = useState('all'); // 'all'|'month'|'year'
+  const [tab, setTab] = useState(initialTab==='gifts'?'claimed':initialTab);
+  const [claimView, setClaimView] = useState('giving'); // 'giving' | 'receiving'
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all'|'claimed'|'purchased'|'done_elsewhere'
+  const [sortMode, setSortMode] = useState('urgency'); // 'urgency'|'newest'|'price'|'person'
+  const [dateRange, setDateRange] = useState('all'); // 'all'|'week'|'30'|'60'|'custom'
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
+  const [showQueue, setShowQueue] = useState(false);
+  const [showBudgetSetup, setShowBudgetSetup] = useState(false);
+  const [budgetInput, setBudgetInput] = useState('');
+  const [markingPurchased, setMarkingPurchased] = useState(null); // itemId being confirmed
+  const [purchaseNote, setPurchaseNote] = useState('');
+  const [showUnclaimWarning, setShowUnclaimWarning] = useState(null); // claim being unclaimed
   const hubTopRef = useRef(null);
 
-  useEffect(()=>{
-    setTab(initialTab);
-  },[initialTab]);
-
+  useEffect(()=>{ setTab(initialTab==='gifts'?'claimed':initialTab); },[initialTab]);
   useEffect(()=>{
     onTabChange&&onTabChange(tab);
-    if(hubTopRef.current){
-      let el=hubTopRef.current;
-      while(el){ const s=window.getComputedStyle(el); if(s.overflowY==='auto'||s.overflowY==='scroll'){el.scrollTop=0;break;} el=el.parentElement; }
-    }
+    if(hubTopRef.current){ let el=hubTopRef.current; while(el){ const s=window.getComputedStyle(el); if(s.overflowY==='auto'||s.overflowY==='scroll'){el.scrollTop=0;break;} el=el.parentElement; } }
     window.scrollTo(0,0);
   },[tab]);
 
-  const received = (DB.giftHistory[profile.id]||[]).map(g=>({...g, _type:'cash'}));
-  const sent = SentGiftStore.getAll(profile.id).map(g=>({...g, _type:'cash'}));
-  const wishlistReceived = (DB.wishlists[profile.id]||[])
-    .filter(item=>item.claimed)
-    .map(item=>({
-      _type:'wishlist',
-      id: item.id,
-      ts: item.claimedAt||Date.now(),
-      from: item.claimedBy||'Someone',
-      itemTitle: item.title||'Wishlist Gift',
-      price: item.price||null,
-      isAmazon: item.isAmazon||false,
-    }));
-  const wishlistSent = ClaimedItemStore.getAll(profile.id);
+  const [, forceUpdate] = useState(0);
+  const refresh = () => forceUpdate(n=>n+1);
 
-  const applyFilter = (list) => {
+  // Data
+  const claimedByMe = ClaimedItemStore.getAll(profile.id);
+  const claimedForMe = (DB.wishlists[profile.id]||[]).filter(item=>item.claimed);
+  const queue = ClaimedItemStore.getQueue(profile.id);
+  const budget = ClaimedItemStore.getBudgetSummary(profile.id);
+  const prefs = DB.wishlistPrefs[profile.id]||{};
+
+  // Staleness check on mount
+  React.useEffect(()=>{
+    const stale = ClaimedItemStore.getStaleItems(profile.id);
+    if(stale.length > 0) {
+      stale.slice(0,3).forEach(item => {
+        ClaimedItemStore.markStaleNudged(item.id);
+      });
+      if(stale.length > 0) {
+        NotifStore.push(profile.id,{
+          icon:'🛍',
+          text:`${stale.length} wishlist item${stale.length!==1?'s are':' is'} over 90 days old`,
+          sub:'Still want these? Update your wishlist to keep it fresh',
+          color:'var(--muted2)', route:'wishlist',
+        });
+      }
+    }
+    // Pending purchase reminders
+    const reminders = ClaimedItemStore.getPendingReminders(profile.id);
+    reminders.forEach(claim => {
+      const bday = nextBirthday(claim.ownerDob);
+      const daysLeft = Math.ceil((bday - Date.now()) / 864e5);
+      const urgency = daysLeft <= 1 ? "⏰" : daysLeft <= 3 ? "🛍️" : "🎁";
+      const msg = daysLeft === 1
+        ? `${claim.ownerName||"Their"} birthday is TOMORROW — did you get "${claim.itemTitle}"?`
+        : `${claim.ownerName||"Their"} birthday is in ${daysLeft} days — did you order "${claim.itemTitle}"?`;
+      const todayKey = `reminder_${claim.itemId}_${daysLeft}`;
+      if(!DB._sentReminders) DB._sentReminders = new Set();
+      if(!DB._sentReminders.has(todayKey)) {
+        DB._sentReminders.add(todayKey);
+        NotifStore.push(profile.id,{icon:urgency,text:msg,sub:"Tap to confirm or release the claim",color:"var(--gold)",route:"wishlist"});
+      }
+    });
+  },[profile.id]);
+
+  // Filter helpers
+  const applyDateRange = (items, dobField='ownerDob') => {
+    if(dateRange==='all') return items;
     const now = Date.now();
-    let out = [...list];
-    if(giftFilter==='month') out = out.filter(g=>(now-(g.ts||0)) < 30*864e5);
-    else if(giftFilter==='year') out = out.filter(g=>(now-(g.ts||0)) < 365*864e5);
-    if(giftSort==='oldest') out = out.sort((a,b)=>(a.ts||0)-(b.ts||0));
-    else out = out.sort((a,b)=>(b.ts||0)-(a.ts||0));
-    return out;
+    return items.filter(item => {
+      const dob = item[dobField];
+      if(!dob) return dateRange==='all';
+      const bday = nextBirthday(new Date(dob));
+      const daysUntil = Math.ceil((bday - now) / 864e5);
+      if(dateRange==='week')   return daysUntil >= 0 && daysUntil <= 7;
+      if(dateRange==='30')     return daysUntil >= 0 && daysUntil <= 30;
+      if(dateRange==='60')     return daysUntil >= 0 && daysUntil <= 60;
+      if(dateRange==='custom' && customFrom && customTo) {
+        const from = new Date(customFrom).getTime();
+        const to   = new Date(customTo).getTime() + 864e5;
+        return bday >= from && bday <= to;
+      }
+      return true;
+    });
   };
 
-  const allReceived = [...received, ...wishlistReceived];
-  const allSent     = [...sent, ...wishlistSent];
-  const filteredReceived = applyFilter(allReceived);
-  const filteredSent     = applyFilter(allSent);
-  const totalReceived = received.reduce((s,g)=>s+(g.amount||0),0);
-  const totalSent     = sent.reduce((s,g)=>s+(g.amount||0),0);
-  const wishlistReceivedCount = wishlistReceived.length;
-  const wishlistSentCount     = wishlistSent.length;
-
-  const GiftRow = ({g, isSent=false}) => {
-    const isWishlist = g._type==='wishlist' || !!g.itemTitle;
-    const icon = isWishlist ? (g.isAmazon?'📦':'🛍') : '🎁';
-    const bgColor = isWishlist
-      ? (isSent?'rgba(255,209,102,.08)':'rgba(74,144,255,.08)')
-      : (isSent?'rgba(155,93,229,.1)':'rgba(6,214,160,.1)');
-    const borderColor = isWishlist
-      ? (isSent?'rgba(255,209,102,.25)':'rgba(74,144,255,.25)')
-      : (isSent?'rgba(155,93,229,.25)':'rgba(6,214,160,.25)');
-    const nameLabel = isSent
-      ? (g.ownerName||g.toName||'Someone')
-      : (g.from||'Someone');
-    const subLabel = isWishlist
-      ? (g.itemTitle||'Wishlist item')
-      : (g.note ? `"${g.note}"` : null);
-    const amountLabel = isWishlist
-      ? (g.price ? fmt$(g.price) : '🎁 Physical gift')
-      : `${isSent?'-':'+'}${fmt$(g.amount||0)}`;
-    const amountColor = isWishlist
-      ? (isSent?'var(--gold)':'var(--blue)')
-      : (isSent?'var(--violet2)':'var(--mint)');
-    return (
-      <div style={{display:'flex',alignItems:'center',gap:12,padding:'12px 0',borderBottom:'1px solid var(--border)'}}>
-        <div style={{width:40,height:40,borderRadius:10,background:bgColor,border:`1px solid ${borderColor}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}}>{icon}</div>
-        <div style={{flex:1,minWidth:0}}>
-          <div style={{fontWeight:700,fontSize:13,color:'var(--text)'}}>{nameLabel}</div>
-          {subLabel&&<div style={{fontSize:12,color:'var(--muted)',fontStyle:'italic',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{subLabel}</div>}
-          <div style={{display:'flex',alignItems:'center',gap:6,marginTop:1,flexWrap:'wrap'}}>
-          <span style={{fontSize:11,color:'var(--muted)'}}>{g.ts?formatTs(g.ts):''}</span>
-          {isWishlist&&<span style={{fontSize:10,fontWeight:700,padding:'2px 6px',borderRadius:8,background:'rgba(74,144,255,.1)',color:'var(--blue)'}}>{t('wishlist.wishlist')}</span>}
-          </div>
-        </div>
-        <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:15,color:amountColor,flexShrink:0,textAlign:'right'}}>{amountLabel}</div>
-      </div>
-    );
+  const applySort = (items) => {
+    const now = Date.now();
+    return [...items].sort((a,b) => {
+      if(sortMode==='urgency') {
+        const da = a.ownerDob ? Math.ceil((nextBirthday(new Date(a.ownerDob))-now)/864e5) : 999;
+        const db2= b.ownerDob ? Math.ceil((nextBirthday(new Date(b.ownerDob))-now)/864e5) : 999;
+        return da - db2;
+      }
+      if(sortMode==='newest') return (b.ts||b.claimedAt||0) - (a.ts||a.claimedAt||0);
+      if(sortMode==='price')  return (parseFloat(b.price||0)) - (parseFloat(a.price||0));
+      if(sortMode==='person') return (a.ownerName||'').localeCompare(b.ownerName||'');
+      return 0;
+    });
   };
+
+  const applyStatusFilter = (items) => {
+    if(statusFilter==='all') return items;
+    return items.filter(i => i.status===statusFilter);
+  };
+
+  const filteredGiving   = applySort(applyDateRange(applyStatusFilter(claimedByMe)));
+  const filteredReceiving = applySort(applyDateRange(claimedForMe, 'ownerDob'));
+
+  const ordinal = (n) => { const s=['th','st','nd','rd']; const v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
+
+  // Unclaim with warning if birthday is soon
+  const handleUnclaim = (claim) => {
+    if(!claim.ownerDob) { ClaimedItemStore.remove(profile.id, claim.itemId); const updated=(DB.wishlists[claim.ownerUserId]||[]).map(i=>i.id===claim.itemId?{...i,claimed:false,claimedBy:null,claimedAt:null}:i); DB.wishlists[claim.ownerUserId]=updated; refresh(); return; }
+    const bday = nextBirthday(new Date(claim.ownerDob));
+    const daysLeft = Math.ceil((bday - Date.now()) / 864e5);
+    if(daysLeft <= 14) { setShowUnclaimWarning(claim); return; }
+    ClaimedItemStore.remove(profile.id, claim.itemId);
+    const updated=(DB.wishlists[claim.ownerUserId]||[]).map(i=>i.id===claim.itemId?{...i,claimed:false,claimedBy:null,claimedAt:null}:i); DB.wishlists[claim.ownerUserId]=updated; refresh();
+  };
+
+  const confirmUnclaim = (claim) => {
+    ClaimedItemStore.remove(profile.id, claim.itemId);
+    const updated=(DB.wishlists[claim.ownerUserId]||[]).map(i=>i.id===claim.itemId?{...i,claimed:false,claimedBy:null,claimedAt:null}:i); DB.wishlists[claim.ownerUserId]=updated;
+    setShowUnclaimWarning(null); refresh();
+  };
+
+  const handleMarkPurchased = (claim) => { setMarkingPurchased(claim.itemId); setPurchaseNote(''); };
+  const confirmPurchased = (claim, elsewhere=false) => {
+    if(elsewhere) ClaimedItemStore.markBoughtElsewhere(profile.id, claim.itemId, purchaseNote);
+    else ClaimedItemStore.confirmPurchase(profile.id, claim.itemId, purchaseNote);
+    setMarkingPurchased(null); refresh();
+  };
+
+  const statusColor = (status) => status==='purchased'?'var(--mint)':status==='done_elsewhere'?'var(--sky)':'var(--violet2)';
+  const statusLabel = (status) => status==='purchased'?'✓ Purchased':status==='done_elsewhere'?'✓ Bought elsewhere':'🛍 Claimed';
+  const statusBg    = (status) => status==='purchased'?'rgba(6,214,160,.1)':status==='done_elsewhere'?'rgba(56,189,248,.1)':'rgba(155,93,229,.08)';
 
   return (
-    <div ref={hubTopRef} className="page-wrap" style={{padding:'16px 20px 20px'}}>
-      <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:13,padding:3,border:'1px solid var(--border)',marginBottom:18}}>
-        {[{id:'wishlist',label:'🛍 My Wishlist'},{id:'gifts',label:'🎁 '+t('nav.gifts')}].map(tb=>(
+    <div ref={hubTopRef} className="page-wrap" style={{padding:'16px 20px 100px'}}>
+
+      {/* ── Unclaim warning modal ── */}
+      {showUnclaimWarning&&(
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.7)',zIndex:700,display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setShowUnclaimWarning(null)}>
+          <div style={{background:'var(--surface)',borderRadius:20,padding:24,maxWidth:360,width:'100%',border:'1px solid var(--border)'}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:32,textAlign:'center',marginBottom:12}}>⚠️</div>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:17,textAlign:'center',marginBottom:8}}>Heads up!</div>
+            <div style={{fontSize:13,color:'var(--muted)',textAlign:'center',lineHeight:1.6,marginBottom:20}}>
+              {showUnclaimWarning.ownerName?.split(' ')[0]}'s birthday is in {Math.ceil((nextBirthday(new Date(showUnclaimWarning.ownerDob))-Date.now())/864e5)} days. If you unclaim, no one else may have time to get <strong>"{showUnclaimWarning.itemTitle}"</strong>.
+            </div>
+            <button onClick={()=>confirmUnclaim(showUnclaimWarning)} style={{width:'100%',padding:12,borderRadius:12,border:'none',background:'var(--coral)',color:'#fff',fontWeight:800,fontSize:14,cursor:'pointer',marginBottom:8}}>
+              Unclaim anyway
+            </button>
+            <button onClick={()=>setShowUnclaimWarning(null)} style={{width:'100%',padding:12,borderRadius:12,border:'1px solid var(--border)',background:'none',color:'var(--muted)',fontWeight:700,fontSize:14,cursor:'pointer'}}>
+              Keep my claim
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Purchase confirmation modal ── */}
+      {markingPurchased&&(()=>{
+        const claim = claimedByMe.find(c=>c.itemId===markingPurchased);
+        if(!claim) return null;
+        return (
+          <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.7)',zIndex:700,display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setMarkingPurchased(null)}>
+            <div style={{background:'var(--surface)',borderRadius:20,padding:24,maxWidth:360,width:'100%',border:'1px solid var(--border)'}} onClick={e=>e.stopPropagation()}>
+              <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:17,marginBottom:4}}>🎁 Mark as purchased</div>
+              <div style={{fontSize:13,color:'var(--muted)',marginBottom:16}}>{claim.itemTitle}</div>
+              <textarea value={purchaseNote} onChange={e=>setPurchaseNote(e.target.value)} placeholder="Add a note (optional) — e.g. 'Ordered from Amazon, arrives Friday'" rows={2} style={{width:'100%',resize:'none',fontSize:13,marginBottom:14,borderRadius:10,border:'1px solid var(--border)',padding:'8px 10px',background:'var(--s2)',color:'var(--text)'}}/>
+              <button onClick={()=>confirmPurchased(claim,false)} style={{width:'100%',padding:12,borderRadius:12,border:'none',background:'var(--mint)',color:'#000',fontWeight:800,fontSize:14,cursor:'pointer',marginBottom:8}}>
+                ✓ I bought it on BirthdayMe
+              </button>
+              <button onClick={()=>confirmPurchased(claim,true)} style={{width:'100%',padding:12,borderRadius:12,border:'1px solid var(--border)',background:'none',color:'var(--muted2)',fontWeight:700,fontSize:13,cursor:'pointer',marginBottom:8}}>
+                🛒 I bought it elsewhere (Amazon, etc.)
+              </button>
+              <button onClick={()=>setMarkingPurchased(null)} style={{width:'100%',padding:10,borderRadius:12,border:'none',background:'none',color:'var(--muted)',fontSize:12,cursor:'pointer'}}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ── Main tabs ── */}
+      <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:13,padding:3,border:'1px solid var(--border)',marginBottom:14}}>
+        {[
+          {id:'wishlist', label:'🛍 My Wishlist'},
+          {id:'claimed',  label:`🎁 Claimed (${claimedByMe.length + claimedForMe.length})`},
+          {id:'queue',    label:`📋 Queue (${queue.length})`},
+        ].map(tb=>(
           <button key={tb.id} onClick={()=>setTab(tb.id)} style={{
-          flex:1,padding:'9px 6px',borderRadius:10,border:'none',
-          background:tab===tb.id?'var(--surface)':'transparent',
-          color:tab===tb.id?'var(--text)':'var(--muted)',
-          fontSize:13,fontWeight:700,cursor:'pointer',
-          boxShadow:tab===tb.id?'0 1px 6px rgba(0,0,0,.18)':'none',transition:'all .18s',
+            flex:1,padding:'9px 4px',borderRadius:10,border:'none',
+            background:tab===tb.id?'var(--surface)':'transparent',
+            color:tab===tb.id?'var(--text)':'var(--muted)',
+            fontSize:12,fontWeight:700,cursor:'pointer',
+            boxShadow:tab===tb.id?'0 1px 6px rgba(0,0,0,.18)':'none',transition:'all .18s',
           }}>{tb.label}</button>
         ))}
       </div>
+
+      {/* ── My Wishlist tab ── */}
       {tab==='wishlist'&&(
         <div>
-          <div style={{marginBottom:16}}>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:20}}>🛍 My Wishlist</div>
-          <div style={{fontSize:13,color:'var(--muted)',marginTop:2}}>Paste Amazon links or add items manually. Claims are secret until your birthday! 🎭</div>
+          <div style={{marginBottom:14}}>
+            <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:20}}>🛍 My Wishlist</div>
+            <div style={{fontSize:13,color:'var(--muted)',marginTop:2}}>Paste Amazon links or add items. Claims are secret until your birthday! 🎭</div>
           </div>
+          {/* Staleness nudge */}
+          {(()=>{const stale=ClaimedItemStore.getStaleItems(profile.id); return stale.length>0&&(
+            <div style={{background:'rgba(255,209,102,.08)',border:'1px solid rgba(255,209,102,.2)',borderRadius:12,padding:'10px 14px',marginBottom:12,display:'flex',alignItems:'center',gap:10}}>
+              <span style={{fontSize:18}}>⏰</span>
+              <div style={{flex:1}}>
+                <div style={{fontSize:12,fontWeight:700,color:'var(--gold)'}}>{stale.length} item{stale.length!==1?'s are':' is'} over 90 days old</div>
+                <div style={{fontSize:11,color:'var(--muted)',marginTop:1}}>Still want these? Review your wishlist to keep it fresh.</div>
+              </div>
+            </div>
+          );})()}
           <Wishlist pid={profile.id} editable={true} ownerDob={profile.dob} currentUserId={profile.id}/>
         </div>
       )}
-      {tab==='gifts'&&(
+
+      {/* ── Claimed tab ── */}
+      {tab==='claimed'&&(
         <div>
-          <div style={{display:'flex',gap:10,marginBottom:16}}>
-          <div style={{flex:1,background:'var(--surface)',borderRadius:14,padding:'14px',border:'1px solid rgba(6,214,160,.25)',textAlign:'center'}}>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:20,color:'var(--mint)'}}>{fmt$(totalReceived)}</div>
-          <div style={{fontSize:11,color:'var(--muted)',fontWeight:700,marginTop:2}}>{t('social.received')}</div>
-          </div>
-          <div style={{flex:1,background:'var(--surface)',borderRadius:14,padding:'14px',border:'1px solid rgba(155,93,229,.25)',textAlign:'center'}}>
-          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:20,color:'var(--violet2)'}}>{fmt$(totalSent)}</div>
-          <div style={{fontSize:11,color:'var(--muted)',fontWeight:700,marginTop:2}}>{t('social.given')}</div>
-          </div>
-          </div>
-          <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:12,padding:3,border:'1px solid var(--border)',marginBottom:14}}>
-          {[
-          {id:'received',label:`💚 Received (${allReceived.length})`},
-          {id:'sent',    label:`💜 Sent (${allSent.length})`}
-          ].map(tb=>(
-          <button key={tb.id} onClick={()=>setGiftView(tb.id)} style={{
-          flex:1,padding:'8px 6px',borderRadius:9,border:'none',
-          background:giftView===tb.id?'var(--surface)':'transparent',
-          color:giftView===tb.id?'var(--text)':'var(--muted)',
-          fontSize:12,fontWeight:700,cursor:'pointer',
-          boxShadow:giftView===tb.id?'0 1px 4px rgba(0,0,0,.15)':'none',transition:'all .15s',
-          }}>{tb.label}</button>
-          ))}
-          </div>
-          <div style={{display:'flex',gap:6,marginBottom:14,flexWrap:'wrap',alignItems:'center'}}>
-          <button onClick={()=>setGiftSort(s=>s==='newest'?'oldest':'newest')} style={{padding:'5px 12px',borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:4}}>
-          {giftSort==='newest'?<><Icon n="arrowDown" size={12}/>{t('badges.newestFirst')}</>:<><Icon n="arrowUp" size={12}/>{t('badges.oldestFirst')}</>}
-          </button>
-          {['all','month','year'].map(f=>(
-          <button key={f} onClick={()=>setGiftFilter(f)} style={{padding:'5px 12px',borderRadius:20,border:`1px solid ${giftFilter===f?'var(--coral)':'var(--border)'}`,background:giftFilter===f?'rgba(255,94,91,.08)':'var(--s2)',color:giftFilter===f?'var(--coral)':'var(--muted2)',fontSize:11,fontWeight:700,cursor:'pointer',textTransform:'capitalize'}}>{f==='all'?'All time':f==='month'?'This month':'This year'}</button>
-          ))}
-          </div>
-          {giftView==='received'&&(
-          filteredReceived.length===0
-          ?<div style={{textAlign:'center',padding:'48px 0',color:'var(--muted)'}}><div style={{fontSize:36,marginBottom:8}}>🎁</div><div style={{fontWeight:700}}>{t('gift.noGiftsReceived')}</div><div style={{fontSize:13,marginTop:4}}>{t('gift.shareToStartReceiving')}</div></div>
-          :<div>
-          {wishlistReceivedCount>0&&<div style={{display:'flex',alignItems:'center',gap:6,marginBottom:10,padding:'7px 10px',borderRadius:8,background:'rgba(74,144,255,.07)',border:'1px solid rgba(74,144,255,.15)'}}><span style={{fontSize:13}}>🛍</span><span style={{fontSize:11,color:'var(--blue)',fontWeight:600}}>{wishlistReceivedCount} wishlist item{wishlistReceivedCount!==1?'s':''} claimed — shown until birthday reveal</span></div>}
-          {filteredReceived.map((g,i)=><GiftRow key={g.id||i} g={g}/>)}
-          </div>
+          {/* Budget summary card */}
+          {(budget.committed > 0 || budget.purchased > 0 || prefs.budgetMonthly) && (
+            <div style={{background:'var(--surface)',borderRadius:14,padding:'14px 16px',marginBottom:14,border:`1px solid ${budget.overBudget?'rgba(255,94,91,.3)':'var(--border)'}`}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+                <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14}}>💰 Gift Budget</div>
+                <button onClick={()=>{setShowBudgetSetup(v=>!v);setBudgetInput(String(prefs.budgetMonthly||''));}}
+                  style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--violet2)',background:'none',border:'none',cursor:'pointer',fontWeight:700}}>
+                  <Icon n="pencil" size={12}/>
+                  {prefs.budgetMonthly ? fmt$(prefs.budgetMonthly) : 'Set budget'}
+                </button>
+              </div>
+              {showBudgetSetup&&(
+                <div style={{display:'flex',gap:8,marginBottom:10}}>
+                  <input value={budgetInput} onChange={e=>setBudgetInput(e.target.value)} type="number" placeholder="Monthly budget $" autoFocus style={{flex:1,fontSize:13}}/>
+                  <button onClick={()=>{ if(!DB.wishlistPrefs[profile.id]) DB.wishlistPrefs[profile.id]={}; DB.wishlistPrefs[profile.id].budgetMonthly=parseFloat(budgetInput)||null; setShowBudgetSetup(false); refresh(); }} style={{padding:'6px 14px',borderRadius:9,border:'none',background:'var(--violet)',color:'#fff',fontWeight:700,fontSize:12,cursor:'pointer'}}>Save</button>
+                  <button onClick={()=>setShowBudgetSetup(false)} style={{padding:'6px 10px',borderRadius:9,border:'1px solid var(--border)',background:'none',color:'var(--muted)',fontSize:12,cursor:'pointer'}}>✕</button>
+                </div>
+              )}
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8}}>
+                {[
+                  {label:'Committed',value:budget.committed,color:'var(--gold)'},
+                  {label:'Purchased',value:budget.purchased,color:'var(--mint)'},
+                  {label:'In queue',value:budget.queued,color:'var(--sky)'},
+                ].map(s=>(
+                  <div key={s.label} style={{textAlign:'center'}}>
+                    <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:16,color:s.color}}>{fmt$(s.value)}</div>
+                    <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+              {budget.overBudget&&<div style={{fontSize:11,color:'var(--coral)',fontWeight:700,marginTop:8,textAlign:'center'}}>⚠️ Over budget by {fmt$(+(budget.committed+budget.purchased-budget.budget).toFixed(2))}</div>}
+            </div>
           )}
-          {giftView==='sent'&&(
-          filteredSent.length===0
-          ?<div style={{textAlign:'center',padding:'48px 0',color:'var(--muted)'}}><div style={{fontSize:36,marginBottom:8}}>💜</div><div style={{fontWeight:700}}>{t('gift.noGiftsSent')}</div><div style={{fontSize:13,marginTop:4}}>Visit someone's birthday profile to send them a gift or claim a wishlist item!</div></div>
-          :<div>
-          {wishlistSentCount>0&&<div style={{display:'flex',alignItems:'center',gap:6,marginBottom:10,padding:'7px 10px',borderRadius:8,background:'rgba(255,209,102,.07)',border:'1px solid rgba(255,209,102,.2)'}}><span style={{fontSize:13}}>🎁</span><span style={{fontSize:11,color:'var(--gold)',fontWeight:600}}>{wishlistSentCount} wishlist item{wishlistSentCount!==1?'s':''} you've claimed for others</span></div>}
-          {filteredSent.map((g,i)=><GiftRow key={g.id||i} g={g} isSent={true}/>)}
+
+          {/* Sub-tabs: Giving / Receiving */}
+          <div style={{display:'flex',gap:3,background:'var(--s2)',borderRadius:11,padding:3,border:'1px solid var(--border)',marginBottom:12}}>
+            {[{id:'giving',label:`💜 Giving (${claimedByMe.length})`},{id:'receiving',label:`💚 Receiving (${claimedForMe.length})`}].map(tb=>(
+              <button key={tb.id} onClick={()=>setClaimView(tb.id)} style={{flex:1,padding:'7px 4px',borderRadius:8,border:'none',background:claimView===tb.id?'var(--surface)':'transparent',color:claimView===tb.id?'var(--text)':'var(--muted)',fontSize:12,fontWeight:700,cursor:'pointer',boxShadow:claimView===tb.id?'0 1px 4px rgba(0,0,0,.15)':'none',transition:'all .15s'}}>{tb.label}</button>
+            ))}
           </div>
+
+          {/* Filters — dropdowns, only on Giving side */}
+          {claimView==='giving'&&(
+            <div style={{marginBottom:12}}>
+              <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+                <div style={{display:'flex',alignItems:'center',gap:6,flex:'1 1 120px'}}>
+                  <span style={{fontSize:11,color:'var(--muted)',fontWeight:700,whiteSpace:'nowrap'}}>🎂</span>
+                  <select value={dateRange} onChange={e=>setDateRange(e.target.value)}
+                    style={{flex:1,padding:'7px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+                    <option value="all">All birthdays</option>
+                    <option value="week">This week</option>
+                    <option value="30">Next 30 days</option>
+                    <option value="60">Next 60 days</option>
+                    <option value="custom">Custom range…</option>
+                  </select>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:6,flex:'1 1 110px'}}>
+                  <span style={{fontSize:11,color:'var(--muted)',fontWeight:700,whiteSpace:'nowrap'}}>📌</span>
+                  <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}
+                    style={{flex:1,padding:'7px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+                    <option value="all">All statuses</option>
+                    <option value="claimed">Claimed</option>
+                    <option value="purchased">Purchased</option>
+                    <option value="done_elsewhere">Bought elsewhere</option>
+                  </select>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:6,flex:'1 1 100px'}}>
+                  <span style={{fontSize:11,color:'var(--muted)',fontWeight:700,whiteSpace:'nowrap'}}>↕</span>
+                  <select value={sortMode} onChange={e=>setSortMode(e.target.value)}
+                    style={{flex:1,padding:'7px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+                    <option value="urgency">🎂 Urgency</option>
+                    <option value="newest">Newest first</option>
+                    <option value="price">Price (high)</option>
+                    <option value="person">By person</option>
+                  </select>
+                </div>
+              </div>
+              {dateRange==='custom'&&(
+                <div style={{display:'flex',gap:8,marginTop:8,alignItems:'center'}}>
+                  <input type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)} style={{flex:1,fontSize:12,padding:'6px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)'}}/>
+                  <span style={{color:'var(--muted)',fontSize:12,whiteSpace:'nowrap'}}>to</span>
+                  <input type="date" value={customTo} onChange={e=>setCustomTo(e.target.value)} style={{flex:1,fontSize:12,padding:'6px 8px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)'}}/>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Giving list */}
+          {claimView==='giving'&&(
+            filteredGiving.length===0 ? (
+              <div style={{textAlign:'center',padding:'36px 20px',color:'var(--muted)',background:'var(--s2)',borderRadius:14,border:'1px dashed var(--border)'}}>
+                <div style={{fontSize:36,marginBottom:8}}>🎁</div>
+                <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>Nothing to show</div>
+                <div style={{fontSize:12}}>Visit a friend's profile and claim something from their wishlist!</div>
+              </div>
+            ) : (
+              <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                {filteredGiving.map((claim,i) => {
+                  const daysLeft = claim.ownerDob ? Math.ceil((nextBirthday(new Date(claim.ownerDob))-Date.now())/864e5) : null;
+                  const urgent = daysLeft!==null && daysLeft<=7;
+                  const veryUrgent = daysLeft!==null && daysLeft<=3;
+                  const isDone = claim.status==='purchased'||claim.status==='done_elsewhere';
+                  // Group claim visibility
+                  const otherClaimers = ClaimedItemStore.getGroupClaimsForItem(profile.id, claim.ownerUserId, claim.itemId);
+                  return (
+                    <div key={claim.itemId||i} style={{background:'var(--surface)',borderRadius:14,padding:'14px',border:`1px solid ${veryUrgent?'rgba(255,94,91,.4)':urgent?'rgba(255,209,102,.3)':'var(--border)'}`,boxShadow:`0 1px 8px ${veryUrgent?'rgba(255,94,91,.08)':urgent?'rgba(255,209,102,.06)':'rgba(0,0,0,.04)'}`}}>
+                      <div style={{display:'flex',alignItems:'flex-start',gap:12}}>
+                        <div style={{width:42,height:42,borderRadius:10,background:statusBg(claim.status),border:`1px solid ${statusColor(claim.status)}33`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}}>
+                          {claim.isAmazon?'📦':'🛍'}
+                        </div>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontWeight:700,fontSize:13,color:'var(--text)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{claim.itemTitle}</div>
+                          <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>For {claim.ownerName} · {claim.ts?formatTs(claim.ts):''}</div>
+                          {daysLeft!==null&&<div style={{fontSize:11,color:veryUrgent?'var(--coral)':urgent?'var(--gold)':'var(--muted)',fontWeight:veryUrgent||urgent?700:400,marginTop:2}}>
+                            {veryUrgent?`⏰ Birthday in ${daysLeft} day${daysLeft!==1?'s':''}!`:urgent?`🎂 ${daysLeft} days away`:`🎂 ${daysLeft} days`}
+                          </div>}
+                          {otherClaimers.length>0&&<div style={{fontSize:10,color:'var(--violet2)',fontWeight:700,marginTop:3}}>👥 {otherClaimers.length} group member{otherClaimers.length!==1?'s':''} also claiming</div>}
+                          {claim.purchasedNote&&<div style={{fontSize:11,color:'var(--muted)',marginTop:3,fontStyle:'italic'}}>"{claim.purchasedNote}"</div>}
+                        </div>
+                        <div style={{textAlign:'right',flexShrink:0}}>
+                          {claim.price&&<div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--violet2)'}}>{fmt$(claim.price)}</div>}
+                          <div style={{fontSize:10,fontWeight:700,color:statusColor(claim.status),background:statusBg(claim.status),borderRadius:8,padding:'2px 7px',marginTop:4,whiteSpace:'nowrap'}}>{statusLabel(claim.status)}</div>
+                        </div>
+                      </div>
+                      {/* Actions */}
+                      {!isDone&&(
+                        <div style={{display:'flex',gap:6,marginTop:10}}>
+                          <button onClick={()=>handleMarkPurchased(claim)} style={{flex:2,padding:'7px',borderRadius:9,border:'none',background:'var(--mint)',color:'#000',fontWeight:700,fontSize:12,cursor:'pointer'}}>✓ Mark purchased</button>
+                          <button onClick={()=>ClaimedItemStore.addToQueue(profile.id,{...claim,ownerProfileId:claim.ownerUserId})||refresh()} style={{flex:1,padding:'7px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--muted2)',fontWeight:700,fontSize:12,cursor:'pointer'}}>📋 Queue</button>
+                          <button onClick={()=>handleUnclaim(claim)} style={{flex:1,padding:'7px',borderRadius:9,border:'1px solid rgba(255,94,91,.3)',background:'rgba(255,94,91,.06)',color:'var(--coral)',fontWeight:700,fontSize:12,cursor:'pointer'}}>Release</button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          )}
+
+          {/* Receiving list */}
+          {claimView==='receiving'&&(
+            claimedForMe.length===0 ? (
+              <div style={{textAlign:'center',padding:'36px 20px',color:'var(--muted)',background:'var(--s2)',borderRadius:14,border:'1px dashed var(--border)'}}>
+                <div style={{fontSize:36,marginBottom:8}}>🛍</div>
+                <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>No claimed items yet</div>
+                <div style={{fontSize:12}}>Add items to your wishlist so friends can claim them 🎁</div>
+              </div>
+            ) : (
+              <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                {claimedForMe.map((item,i)=>{
+                  const dob = new Date(profile.dob);
+                  const age = new Date().getFullYear() - dob.getFullYear();
+                  return (
+                    <div key={item.id||i} style={{display:'flex',alignItems:'center',gap:12,padding:'14px',background:'var(--surface)',borderRadius:14,border:'1px solid rgba(6,214,160,.2)'}}>
+                      <div style={{width:42,height:42,borderRadius:10,background:'rgba(6,214,160,.1)',border:'1px solid rgba(6,214,160,.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}}>
+                        {item.isAmazon?'📦':'🛍'}
+                      </div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontWeight:700,fontSize:13,color:'var(--text)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.title}</div>
+                        <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>Claimed by {item.claimedBy||'Someone'} · {item.claimedAt?formatTs(item.claimedAt):''}</div>
+                        <div style={{fontSize:10,color:'var(--violet2)',fontWeight:700,marginTop:2}}>🔒 Secret until your {ordinal(age)} birthday</div>
+                      </div>
+                      {item.price&&<div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:14,color:'var(--mint)',flexShrink:0}}>{fmt$(item.price)}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          )}
+        </div>
+      )}
+
+      {/* ── Shopping Queue tab ── */}
+      {tab==='queue'&&(
+        <div>
+          <div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:18,marginBottom:4}}>📋 Shopping Queue</div>
+          <div style={{fontSize:13,color:'var(--muted)',marginBottom:16}}>Items you've saved to buy later — across all your friends' wishlists.</div>
+          {queue.length===0 ? (
+            <div style={{textAlign:'center',padding:'48px 20px',color:'var(--muted)',background:'var(--s2)',borderRadius:14,border:'1px dashed var(--border)'}}>
+              <div style={{fontSize:40,marginBottom:10}}>📋</div>
+              <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>Queue is empty</div>
+              <div style={{fontSize:12}}>When viewing a wishlist, tap "Queue" on any item to save it here for later.</div>
+            </div>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              {/* Budget snapshot */}
+              {budget.queued>0&&(
+                <div style={{padding:'10px 14px',background:'rgba(56,189,248,.08)',borderRadius:12,border:'1px solid rgba(56,189,248,.2)',marginBottom:4,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontSize:12,fontWeight:700,color:'var(--sky)'}}>Queue total</span>
+                  <span style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:900,fontSize:16,color:'var(--sky)'}}>{fmt$(budget.queued)}</span>
+                </div>
+              )}
+              {applySort(applyDateRange(queue,'ownerDob')).map((item,i)=>{
+                const daysLeft = item.ownerDob ? Math.ceil((nextBirthday(new Date(item.ownerDob))-Date.now())/864e5) : null;
+                const urgent = daysLeft!==null&&daysLeft<=7;
+                return (
+                  <div key={item.itemId+'_'+i} style={{background:'var(--surface)',borderRadius:14,padding:'14px',border:`1px solid ${urgent?'rgba(255,209,102,.3)':'var(--border)'}`,display:'flex',alignItems:'center',gap:12}}>
+                    <div style={{width:42,height:42,borderRadius:10,background:'rgba(56,189,248,.1)',border:'1px solid rgba(56,189,248,.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}}>
+                      {item.isAmazon?'📦':'🛍'}
+                    </div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontWeight:700,fontSize:13,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.itemTitle}</div>
+                      <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>For {item.ownerName}</div>
+                      {daysLeft!==null&&<div style={{fontSize:11,color:urgent?'var(--coral)':'var(--muted)',fontWeight:urgent?700:400,marginTop:1}}>{urgent?`⏰ `:'🎂 '}{daysLeft} days until birthday</div>}
+                    </div>
+                    <div style={{textAlign:'right',flexShrink:0,display:'flex',flexDirection:'column',gap:6}}>
+                      {item.price&&<div style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:13,color:'var(--sky)'}}>{fmt$(item.price)}</div>}
+                      <button onClick={()=>{ClaimedItemStore.removeFromQueue(profile.id,item.itemId,item.ownerProfileId);refresh();}} style={{padding:'4px 10px',borderRadius:8,border:'1px solid rgba(255,94,91,.3)',background:'rgba(255,94,91,.06)',color:'var(--coral)',fontSize:11,fontWeight:700,cursor:'pointer'}}>Remove</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       )}
@@ -18363,7 +20202,7 @@ const WishlistHub = ({profile, initialTab='wishlist', onTabChange}) => {
 const SUPPORT_FAQS = [
   {q:"How do I reset my password?", a:"Tap 'Sign In' on the login screen, then 'Forgot Password?' below the button. Enter your email and you'll get a reset link within a minute or two. Check your spam folder if you don't see it."},
   {q:"How does the Age Slider work?", a:"Set a per-year-of-life rate between $0.25 and $1.00. Your total gift = that rate × the recipient's age. For example: $0.50 × 30 = $15. It's a meaningful way to make the birthday math personal!"},
-  {q:"What is the platform fee?", a:"Birthday Me charges a transparent 15% platform fee before you pay. On a $20 gift, $3.00 is our fee and $17.00 goes directly to the birthday person. The minimum gift is age × $0.25/yr rate (e.g. age 20 = $5 minimum). For accounts age 13 and under, a $5 hard minimum applies."},
+  {q:"What is the platform fee?", a:"Birthday Me charges a transparent 15% platform fee before you pay. On a $20 gift, $3.00 is our fee and $17.00 goes directly to the birthday person. There is no minimum gift amount — send any amount you're comfortable with! For recipients aged 13 and under, the Age Slider starts at $0.50/year instead of $0.25/year."},
   {q:"How do referrals work?", a:"Share your unique invite link from the Invite tab. When a friend signs up through it, they get immediate access to all features and you both grow your birthday networks together. Track your friends joined and leaderboard rank from the Invite tab."},
   {q:"How do I claim a wishlist item?", a:"Go to someone's birthday profile, tap the Wishlist tab, and tap '🎁 I'll get this!' on any available item. Your name is kept secret until their birthday. You can unclaim anytime if your plans change."},
   {q:"What is the Monthly Sweepstakes?", a:"Every month Birthday Me holds a draw with prizes up to $100 in gift cards. You earn entries by sending gifts, referring friends, posting on walls, and more — every 5 points = 1 entry. Birthday month users get 2× entries automatically."},
@@ -18406,9 +20245,9 @@ const SupportChat = ({onClose}) => {
 Birthday Me is a social birthday gifting PWA where users create a profile, share a link, and friends can contribute money, claim wishlist items, send e-cards, and post wall messages.
 
 Key facts:
-- 10% platform fee on all contributions (shown transparently before payment)
+- 15% platform fee on all contributions (shown transparently before payment)
 - Age Slider: $0.25–$1.00 per year of life × recipient's age
-- Fixed amount gifting also available (minimum = age × $0.25, or $5 for ages 13 & under)
+- Fixed amount gifting also available — no minimum amount required
 - Wishlist items can be claimed secretly, revealed on birthday, unclaimed anytime
 - Surprise Mode: hides contributor names/amounts until the user's birthday
 - Group Pool: multiple people chip in toward one shared fund, no account needed for guests
@@ -18416,7 +20255,7 @@ Key facts:
 - Monthly Sweepstakes: every 5 points = 1 entry. Birthday month = 2× entries. Prizes: $100/$25/$10 gift cards
 - Birthday Score Tiers (lifetime points, never reset): Newcomer→Rising Star (150)→Champion (400)→Legend (800)→Icon (1500)
 - Points earned by: sending gifts, referring friends, wall posts, wishlist additions, AI Concierge use
-- Withdrawal: minimum $5.00 available balance, 48-hour hold on new contributions
+- Withdrawal: minimum $5.00 available balance (cashout threshold), 48-hour hold on new contributions
 - AI Gift Concierge: personalized gift suggestions based on interests/budget
 - Family Accounts: manage birthday profiles for kids and family members
 - E-cards: send animated birthday cards with AI-generated or custom messages
@@ -18581,10 +20420,10 @@ const generateDemoData = (profile) => {
     likes:Math.floor(Math.random()*8), likedBy:[],
   }));
   const RICH_DEMO_PROFILES = [
-    {id:"dd-001",slug:"dd-001",name:"Zara B.", isDemo:true,dob:"1996-03-15",emoji:"💃",bio:"Dance instructor & birthday queen 👑",goal:300,raised:520,giverCount:18,badges:["birthday_star","goal_crusher","that_girl","main_character","yaas_queen","card_collector"],photoUrl:null,background:{id:'solid_hotpink',cat:'Solid',label:'Hot Pink',type:'solid',value:'#F72585'},overlayIntensity:0},
-    {id:"dd-002",slug:"dd-002",name:"Marcus W.", isDemo:true,dob:"1994-08-22",emoji:"🎮",bio:"Gamer. Engineer. Birthday hype man.",goal:200,raised:85,giverCount:6,badges:["first_gift"],photoUrl:null,background:null,overlayIntensity:0},
-    {id:"dd-003",slug:"dd-003",name:"Priya K.", isDemo:true,dob:"1999-12-01",emoji:"🌸",bio:"Sagittarius ♐ | Foodie | Dog mom 🐶",goal:150,raised:12,giverCount:2,badges:["early_bird"],photoUrl:null,background:null,overlayIntensity:0},
-    {id:"dd-004",slug:"dd-004",name:"Dre M.", isDemo:true,dob:"1993-05-30",emoji:"🎤",bio:"Music producer. Gemini season always hits.",goal:400,raised:610,giverCount:22,badges:["birthday_star","goal_crusher","viral_link","top_dog","the_don","king_vibes"],photoUrl:null,background:{id:'solid_violet',cat:'Solid',label:'Violet',type:'solid',value:'#9B5DE5'},overlayIntensity:0},
+    {id:"dd-001",slug:"dd-001",name:"Zara B.", isDemo:true,dob:"1996-03-15",emoji:"💃",bio:"Dance instructor & birthday queen 👑",goal:300,raised:520,giverCount:18,badges:["birthday_star","goal_crusher","that_girl","main_character","yaas_queen","card_collector"],photoUrl:null,background:{id:'solid_hotpink',cat:'Solid',label:'Hot Pink',type:'solid',value:'#F72585'},overlayIntensity:0,socialLinks:{instagram:'zarab_dances',tiktok:'zarab.birthday',twitter:'zarab_dances'}},
+    {id:"dd-002",slug:"dd-002",name:"Marcus W.", isDemo:true,dob:"1994-08-22",emoji:"🎮",bio:"Gamer. Engineer. Birthday hype man.",goal:200,raised:85,giverCount:6,badges:["first_gift"],photoUrl:null,background:null,overlayIntensity:0,socialLinks:{instagram:'marcuswgames',tiktok:'marcusw.irl'}},
+    {id:"dd-003",slug:"dd-003",name:"Priya K.", isDemo:true,dob:"1999-12-01",emoji:"🌸",bio:"Sagittarius ♐ | Foodie | Dog mom 🐶",goal:150,raised:12,giverCount:2,badges:["early_bird"],photoUrl:null,background:null,overlayIntensity:0,socialLinks:{instagram:'priyak.eats',linktree:'priyak'}},
+    {id:"dd-004",slug:"dd-004",name:"Dre M.", isDemo:true,dob:"1993-05-30",emoji:"🎤",bio:"Music producer. Gemini season always hits.",goal:400,raised:610,giverCount:22,badges:["birthday_star","goal_crusher","viral_link","top_dog","the_don","king_vibes"],photoUrl:null,background:{id:'solid_violet',cat:'Solid',label:'Violet',type:'solid',value:'#9B5DE5'},overlayIntensity:0,socialLinks:{instagram:'drembeats',tiktok:'dremproduces',twitter:'drembeats',youtube:'https://youtube.com/@drembeats'}},
     {id:"dd-005",slug:"dd-005", isDemo:true,name:"Keisha T.", dob:"1998-02-14",emoji:"💝",bio:"Valentine's baby 🥰 Aquarius vibes only",goal:100,raised:3.5,giverCount:1,badges:[],photoUrl:null,background:{id:'solid_rose',cat:'Solid',label:'Rose',type:'solid',value:'#F43F5E'},overlayIntensity:0},
     {id:"dd-006",slug:"dd-006",name:"Liam O.",dob:"2001-07-04",emoji:"🎆",bio:"Born on the 4th 🇺🇸 Leo energy forever",goal:250,raised:175,giverCount:9,badges:["first_gift","early_bird"],photoUrl:null,background:{id:'solid_blue',cat:'Solid',label:'Blue',type:'solid',value:'#3B82F6'},overlayIntensity:0},
     {id:"dd-007",slug:"dd-007",name:"Nia F.",dob:"1997-10-31",emoji:"🎃",bio:"Halloween baby 🎃",goal:200,raised:67,giverCount:4,badges:[],photoUrl:null,background:{id:'solid_orange',cat:'Solid',label:'Orange',type:'solid',value:'#F97316'},overlayIntensity:0},
@@ -18867,6 +20706,111 @@ const generateDemoData = (profile) => {
   if(!DB.groupPools['dd-016']) DB.groupPools['dd-016']=[];
   const existIdxM2 = DB.groupPools['dd-016'].findIndex(p=>p.id==='demo-pool-m2');
   if(existIdxM2>=0) DB.groupPools['dd-016'][existIdxM2]=memberPool2; else DB.groupPools['dd-016'].push(memberPool2);
+
+  // ── Seeded received/popped piñata for the demo user (pid) ──────────────
+  // This simulates a piñata that was filled by friends and already popped on a past birthday
+  const receivedPool1 = {
+    id:'demo-pool-recv1', ownerId:'dd-004', recipientId:pid,
+    name:"Alex's Birthday Bash 🎂", goal:200,
+    created:Date.now()-86400000*32,
+    released:true, releasedAt:Date.now()-86400000*30, status:'released',
+    members:['dd-004','dd-008','dd-013','dd-022','dd-027','dd-034'],
+    pendingInvites:[],
+    contributions:[
+      {userId:'dd-004', gross:60, net:54, fee:6, amount:54, displayName:'Dre M.', isAnonymous:false, note:"Happy birthday Alex!! You deserve everything 🎉", ts:Date.now()-86400000*31},
+      {userId:'dd-008', gross:50, net:45, fee:5, amount:45, displayName:'Jordan K.', isAnonymous:false, note:"Another year wiser 🙏 love you!", ts:Date.now()-86400000*31},
+      {userId:'dd-013', gross:40, net:36, fee:4, amount:36, displayName:'Taylor S.', isAnonymous:false, note:"Treat yourself! 🥂", ts:Date.now()-86400000*30},
+      {userId:'dd-022', gross:30, net:27, fee:3, amount:27, displayName:'', isAnonymous:true, note:"You know who 😏", ts:Date.now()-86400000*30},
+      {userId:'dd-027', gross:25, net:22.5, fee:2.5, amount:22.5, displayName:'Morgan T.', isAnonymous:false, note:'', ts:Date.now()-86400000*30},
+      {userId:'dd-034', gross:20, net:18, fee:2, amount:18, displayName:'Casey R.', isAnonymous:false, note:"Can't wait to celebrate! 🎊", ts:Date.now()-86400000*30},
+    ],
+  };
+  if(!DB.groupPools[pid]) DB.groupPools[pid]=[];
+  const existRecv1 = DB.groupPools[pid].findIndex(p=>p.id==='demo-pool-recv1');
+  if(existRecv1>=0) DB.groupPools[pid][existRecv1]=receivedPool1; else DB.groupPools[pid].push(receivedPool1);
+
+  // ── Unpopped piñata for demo user — lets them test the pop animation ──
+  // Organizer is dd-004 (Dre M.), recipients is the demo user (pid)
+  // Pool is active (not released) — birthday gate bypassed in demo via isDemoMode
+  const unpoppedPool = {
+    id:'demo-pool-unpop1', ownerId:'dd-004', recipientId:pid,
+    name:"Alex's Big 30 🎂", goal:300,
+    created:Date.now()-86400000*5,
+    released:false, status:'active',
+    members:['dd-004','dd-008','dd-013','dd-022','dd-027','dd-034','dd-043'],
+    pendingInvites:[],
+    contributions:[
+      {userId:'dd-004', gross:60, net:54, fee:6, amount:54, displayName:'Dre M.', isAnonymous:false, note:"We love you Alex!! 🎉", ts:Date.now()-86400000*4},
+      {userId:'dd-008', gross:50, net:45, fee:5, amount:45, displayName:'Jordan K.', isAnonymous:false, note:"Happy birthday legend 🙌", ts:Date.now()-86400000*3},
+      {userId:'dd-013', gross:40, net:36, fee:4, amount:36, displayName:'Taylor S.', isAnonymous:false, note:"You deserve the world 💫", ts:Date.now()-86400000*2},
+      {userId:'dd-022', gross:30, net:27, fee:3, amount:27, displayName:'', isAnonymous:true, note:"You know who this is 😏", ts:Date.now()-86400000*1},
+      {userId:'dd-027', gross:50, net:45, fee:5, amount:45, displayName:'Morgan T.', isAnonymous:false, note:"Can't wait to celebrate!", ts:Date.now()-3600000*8},
+      {userId:'dd-034', gross:25, net:22.5, fee:2.5, amount:22.5, displayName:'Casey R.', isAnonymous:false, note:"30 never looked so good 🔥", ts:Date.now()-3600000*4},
+    ],
+  };
+  if(!DB.groupPools[pid]) DB.groupPools[pid]=[];
+  const existUnpop = DB.groupPools[pid].findIndex(p=>p.id==='demo-pool-unpop1');
+  if(existUnpop>=0) DB.groupPools[pid][existUnpop]=unpoppedPool; else DB.groupPools[pid].push(unpoppedPool);
+
+  // ── Seed wishlist claimed items for demo user (things they're giving) ────
+  if(!DB._claimedItems) DB._claimedItems = {};
+  DB._claimedItems[pid] = [
+    {
+      id:1001, ts:Date.now()-86400000*5, itemId:201,
+      ownerUserId:'dd-002', ownerName:'Marcus W.', ownerDob:'1994-08-22',
+      itemTitle:'Sony WH-1000XM5 Headphones', itemUrl:'https://amazon.com', price:279,
+      isAmazon:true, status:'claimed', confirmed:false, purchasedAt:null,
+      birthdayYear:2026, remindersSent:0, lastReminderAt:null,
+    },
+    {
+      id:1002, ts:Date.now()-86400000*12, itemId:202,
+      ownerUserId:'dd-001', ownerName:'Zara B.', ownerDob:'1996-03-15',
+      itemTitle:'Spa Day Voucher', itemUrl:'', price:85,
+      isAmazon:false, status:'purchased', confirmed:true, purchasedAt:Date.now()-86400000*3,
+      purchasedNote:'Ordered from Spafinder, arrives Friday!',
+      birthdayYear:2026, remindersSent:1, lastReminderAt:Date.now()-86400000*3,
+    },
+    {
+      id:1003, ts:Date.now()-86400000*20, itemId:203,
+      ownerUserId:'dd-004', ownerName:'Dre M.', ownerDob:'1993-05-30',
+      itemTitle:'Bose QuietComfort Earbuds', itemUrl:'https://amazon.com', price:179,
+      isAmazon:true, status:'done_elsewhere', confirmed:true, purchasedAt:Date.now()-86400000*2,
+      purchasedNote:'Got it on Best Buy — saved $20!',
+      birthdayYear:2026, remindersSent:0, lastReminderAt:null,
+    },
+  ];
+  // History
+  DB.claimHistory[pid] = [...(DB._claimedItems[pid]||[])];
+
+  // ── Seed shopping queue ──────────────────────────────────────────────────
+  DB.shoppingQueue[pid] = [
+    {
+      itemId:301, ownerProfileId:'dd-010', ownerName:'Jordan K.',
+      ownerDob:'1995-07-14', itemTitle:'Kindle Paperwhite 16GB',
+      price:139, link:'https://amazon.com', isAmazon:true, savedAt:Date.now()-86400000*2,
+    },
+    {
+      itemId:302, ownerProfileId:'dd-013', ownerName:'Taylor S.',
+      ownerDob:'1998-11-22', itemTitle:'Yoga Mat Premium',
+      price:68, link:'', isAmazon:false, savedAt:Date.now()-86400000*1,
+    },
+  ];
+
+  // ── Seed wishlist prefs ──────────────────────────────────────────────────
+  DB.wishlistPrefs[pid] = { reminderDays:[14,3,1], priceRangeMax:null, budgetMonthly:400 };
+
+  // ── Seed a gift group on the first demo list ─────────────────────────────
+  const demoLists = DB.lists[pid]||[];
+  if(demoLists.length > 0) {
+    ListsStore.setGiftGroup(demoLists[0].id, true);
+    // Seed a group claim so the feature is visible
+    if(!DB.groupClaims[demoLists[0].id]) DB.groupClaims[demoLists[0].id] = [];
+    DB.groupClaims[demoLists[0].id].push({
+      itemId:201, ownerUserId:'dd-002', claimedBy:'dd-004',
+      claimedByName:'Dre M.', ts:Date.now()-86400000*3,
+    });
+  }
+
   seedDemoPoints(pid, profile);
   RICH_DEMO_PROFILES.forEach(p=>seedDemoPoints(p.id, p));
 
@@ -20170,8 +22114,10 @@ const MetricsDashboard = ({allUsers}) => {
   // KPIs
   const totalVolume = inRange.reduce((s,g)=>s+(g.amount||0), 0);
   const prevVolume = inPrevRange.reduce((s,g)=>s+(g.amount||0), 0);
-  const platformRevenue = totalVolume * 0.10;
-  const prevRevenue = prevVolume * 0.10;
+  const platformRevenue = totalVolume * 0.15;
+  const stripeFeesEst = +(totalVolume * 0.029 + (totalVolume / 20) * 0.30).toFixed(2); // 2.9% + est $0.30/txn
+  const netMargin = +(platformRevenue - stripeFeesEst).toFixed(2);
+  const prevRevenue = prevVolume * 0.15;
   const avgGift = inRange.length > 0 ? totalVolume/inRange.length : 0;
   const prevAvgGift = inPrevRange.length > 0 ? prevVolume/inPrevRange.length : 0;
   const uniqueRecipients = new Set(inRange.map(g=>g.recipientId)).size;
@@ -20222,7 +22168,8 @@ const MetricsDashboard = ({allUsers}) => {
   };
 
   const volumeSeries = buildSeries(inRange, 'amount');
-  const revenueSeries = Object.fromEntries(Object.entries(volumeSeries).map(([k,v])=>[k,+(v*0.10).toFixed(2)]));
+  const revenueSeries = Object.fromEntries(Object.entries(volumeSeries).map(([k,v])=>[k,+(v*0.15).toFixed(2)]));
+  const netMarginSeries = Object.fromEntries(Object.entries(volumeSeries).map(([k,v])=>[k,+(v*0.121 - (v/20)*0.30).toFixed(2)]));
   const userSeries = buildSeries(usersInRange, 'count', 'createdAt');
   const giftCountSeries = buildSeries(inRange, 'count');
 
@@ -20293,7 +22240,8 @@ const MetricsDashboard = ({allUsers}) => {
   const exportMetrics = () => {
     const rows = [
       {metric:'Total Gift Volume',value:totalVolume.toFixed(2),period:range,currency:'USD'},
-      {metric:'Platform Revenue (10%)',value:platformRevenue.toFixed(2),period:range,currency:'USD'},
+      {metric:'Gross Revenue (15%)',value:platformRevenue.toFixed(2),period:range,currency:'USD'},
+      {metric:'Net Margin (after Stripe)',value:netMargin.toFixed(2),period:range,currency:'USD'},
       {metric:'Gift Count',value:inRange.length,period:range,currency:''},
       {metric:'Average Gift Size',value:avgGift.toFixed(2),period:range,currency:'USD'},
       {metric:'Unique Recipients',value:uniqueRecipients,period:range,currency:''},
@@ -20337,7 +22285,7 @@ const MetricsDashboard = ({allUsers}) => {
 <h2>Period: ${selectedRange?.label||'Custom'} · Generated ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</h2>
 <div class="grid">
   <div class="kpi"><div class="val">${fmt$(totalVolume)}</div><div class="lbl">Gift Volume (GMV)</div><div class="chg ${volumeGrowth>=0?'up':'down'}">${volumeGrowth>=0?'↑':'↓'} ${Math.abs(volumeGrowth).toFixed(1)}% vs prior</div></div>
-  <div class="kpi"><div class="val">${fmt$(platformRevenue)}</div><div class="lbl">Platform Revenue (10%)</div><div class="chg ${volumeGrowth>=0?'up':'down'}">${volumeGrowth>=0?'↑':'↓'} ${Math.abs(volumeGrowth).toFixed(1)}% vs prior</div></div>
+  <div class="kpi"><div class="val">${fmt$(platformRevenue)}</div><div class="lbl">Gross Revenue (15%)</div><div class="chg ${volumeGrowth>=0?'up':'down'}">${volumeGrowth>=0?'↑':'↓'} ${Math.abs(volumeGrowth).toFixed(1)}% vs prior</div></div>
   <div class="kpi" style="border-left-color:#FFD166"><div class="val">${fmtK(newUsers)}</div><div class="lbl">New Signups</div><div class="chg ${userGrowth>=0?'up':'down'}">${userGrowth>=0?'↑':'↓'} ${Math.abs(userGrowth).toFixed(1)}% vs prior</div></div>
   <div class="kpi" style="border-left-color:#06D6A0"><div class="val">${fmtK(inRange.length)}</div><div class="lbl">Total Gifts Sent</div><div class="chg">Avg ${fmt$(avgGift)} per gift</div></div>
 </div>
@@ -20345,7 +22293,8 @@ const MetricsDashboard = ({allUsers}) => {
 <table><tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
 ${[
   ['Total Gift Volume (GMV)', fmt$(totalVolume), 'Gross monetary value of all gifts'],
-  ['Platform Revenue', fmt$(platformRevenue), '10% of all transactions'],
+  ['Gross Revenue (15%)', fmt$(platformRevenue), '15% of all transactions'],
+  ['Net Margin (after Stripe ~2.9%+$0.30)', fmt$(netMargin), 'After estimated Stripe processing fees'],
   ['Average Gift Size', fmt$(avgGift), 'Per transaction'],
   ['Gift Count', inRange.length, 'Individual transactions'],
   ['Unique Recipients', uniqueRecipients, 'Birthday profiles that received gifts'],
@@ -20423,7 +22372,8 @@ ${topSenders.map((s,i)=>`<tr><td>${i+1}</td><td>${s.user.name} (@${s.user.userna
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:10,marginBottom:20}}>
         {[
           {label:'Gift Volume (GMV)', value:fmt$(totalVolume), growth:<GrowthBadge now={totalVolume} prev={prevVolume}/>, color:'var(--violet2)', icon:'💰'},
-          {label:'Platform Revenue', value:fmt$(platformRevenue), growth:<GrowthBadge now={platformRevenue} prev={prevRevenue}/>, color:'var(--mint)', icon:'📈'},
+          {label:'Gross Revenue (15%)', value:fmt$(platformRevenue), growth:<GrowthBadge now={platformRevenue} prev={prevRevenue}/>, color:'var(--mint)', icon:'📈'},
+          {label:'Net Margin (after Stripe)', value:fmt$(netMargin), growth:<GrowthBadge now={netMargin} prev={+(prevRevenue - prevVolume*0.029).toFixed(2)}/>, color:'var(--sky)', icon:'💰'},
           {label:'New Signups', value:fmtK(newUsers), growth:<GrowthBadge now={newUsers} prev={prevNewUsers}/>, color:'var(--gold)', icon:'👤'},
           {label:'Gifts Sent', value:fmtK(inRange.length), growth:<GrowthBadge now={inRange.length} prev={inPrevRange.length}/>, color:'var(--coral)', icon:'🎁'},
           {label:'Avg Gift Size', value:fmt$(avgGift), growth:<GrowthBadge now={avgGift} prev={prevAvgGift}/>, color:'var(--violet2)', icon:'📊'},
@@ -20589,7 +22539,7 @@ ${topSenders.map((s,i)=>`<tr><td>${i+1}</td><td>${s.user.name} (@${s.user.userna
         <div style={{fontWeight:800,fontSize:13,color:'var(--violet2)',marginBottom:8}}>📋 Investor Summary — {selectedRange?.label||'Custom'}</div>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:8,fontSize:12,color:'var(--muted)'}}>
           <div>GMV: <strong style={{color:'var(--text)'}}>{fmt$(totalVolume)}</strong></div>
-          <div>Take Rate: <strong style={{color:'var(--text)'}}>10% → {fmt$(platformRevenue)}</strong></div>
+          <div>Take Rate: <strong style={{color:'var(--text)'}}>15% gross → {fmt$(platformRevenue)}</strong><span style={{fontSize:11,color:'var(--muted)',marginLeft:6}}>~{fmt$(netMargin)} net after Stripe</span></div>
           <div>MAU (proxy): <strong style={{color:'var(--text)'}}>{uniqueSenders + uniqueRecipients}</strong></div>
           <div>New Users: <strong style={{color:'var(--text)'}}>{newUsers} <span style={{color:userGrowth>=0?'var(--mint)':'var(--coral)'}}>{userGrowth>0?'+':''}{userGrowth.toFixed(0)}%</span></strong></div>
           <div>Gifts Sent: <strong style={{color:'var(--text)'}}>{inRange.length}</strong></div>
@@ -22246,7 +24196,8 @@ const AdminOverviewDashboard = ({allUsers, auditLog, showToast, setTab, logActio
   const allGifts = Object.values(DB.walls||{}).flat().filter(p=>p.isGift&&p.amount>0);
   const giftsThisMonth = allGifts.filter(g=>g.ts&&new Date(g.ts)>monthAgo);
   const volumeThisMonth = giftsThisMonth.reduce((s,g)=>s+(g.amount||0),0);
-  const revenueThisMonth = volumeThisMonth * 0.10;
+  const revenueThisMonth = volumeThisMonth * 0.15;
+  const netMarginThisMonth = +(revenueThisMonth - volumeThisMonth * 0.029 - (volumeThisMonth/20) * 0.30).toFixed(2);
 
   const pendingReports = ReportStore.getPending().length;
   const openTickets = SupportTicketStore.getOpen().length;
@@ -22260,7 +24211,7 @@ const AdminOverviewDashboard = ({allUsers, auditLog, showToast, setTab, logActio
     const label = d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     const users = allUsers.filter(u=>u.createdAt&&new Date(u.createdAt).toDateString()===d.toDateString()).length;
     const volume = allGifts.filter(g=>g.ts&&new Date(g.ts).toDateString()===d.toDateString()).reduce((s,g)=>s+(g.amount||0),0);
-    return {label, users, volume, revenue:+(volume*0.10).toFixed(2)};
+    return {label, users, volume, revenue:+(volume*0.15).toFixed(2), netMargin:+(volume*0.121 - (volume/20)*0.30).toFixed(2)};
   });
 
   const chartValues = last7.map(d=>d[chartMode]);
@@ -22336,7 +24287,8 @@ const AdminOverviewDashboard = ({allUsers, auditLog, showToast, setTab, logActio
         {[
           {label:'Total Users',     value:totalUsers.toLocaleString(),    sub:`+${newThisWeek} this week`,  trend:userGrowth, color:'var(--violet2)',  icon:'users'},
           {label:'Monthly Volume',  value:fmt$(volumeThisMonth),          sub:'last 30 days',               trend:null,       color:'var(--mint)',     icon:'gift'},
-          {label:'Platform Revenue',value:fmt$(revenueThisMonth),         sub:'10% of volume',              trend:null,       color:'var(--coral)',    icon:'dollar-sign'},
+          {label:'Gross Revenue',value:fmt$(revenueThisMonth),sub:'15% of volume',trend:null,color:'var(--coral)',icon:'dollar-sign'},
+          {label:'Net Margin',value:fmt$(netMarginThisMonth),sub:'after Stripe fees',trend:null,color:'var(--mint)',icon:'dollar-sign'},
           {label:'Active Businesses',value:(DB.businesses||[]).filter(b=>b.status==='active').length, sub:`${pendingBiz} pending`,trend:null,color:'var(--gold)', icon:'store'},
           {label:'Pending Items',   value:attentionCount,                 sub:`${pendingReports}R · ${openTickets}S · ${flaggedContent}C`, trend:null, color:healthColor, icon:'bell'},
         ].map((kpi,i)=>(
@@ -22501,6 +24453,13 @@ const BrandSettingsPanel = ({showToast, logAction}) => {
     if(brand.brandColorPrimary) document.documentElement.style.setProperty('--violet', brand.brandColorPrimary);
     if(brand.brandColorAccent)  document.documentElement.style.setProperty('--coral',  brand.brandColorAccent);
     if(brand.brandColorGold)    document.documentElement.style.setProperty('--gold',   brand.brandColorGold);
+    // Apply color mode
+    if(brand.defaultColorMode==='light') document.documentElement.classList.remove('dark-mode');
+    if(brand.defaultColorMode==='dark')  document.documentElement.classList.add('dark-mode');
+    // Inject custom CSS
+    let styleEl = document.getElementById('admin-custom-css');
+    if(!styleEl){ styleEl=document.createElement('style'); styleEl.id='admin-custom-css'; document.head.appendChild(styleEl); }
+    styleEl.textContent = brand.customCss||'';
     logAction('brand_settings_update', {fields: Object.keys(brand)});
     showToast('Brand settings saved ✓');
   };
@@ -22525,6 +24484,7 @@ const BrandSettingsPanel = ({showToast, logAction}) => {
         {sectionBtn('identity','🏷️ Identity')}
         {sectionBtn('logos','🖼️ Logos & Icons')}
         {sectionBtn('colors','🎨 Brand Colors')}
+        {sectionBtn('theme','🌓 Theme & Style')}
         {sectionBtn('pwa','📱 PWA / Mobile')}
         {sectionBtn('social','🔗 Social & Contact')}
       </div>
@@ -22623,6 +24583,70 @@ const BrandSettingsPanel = ({showToast, logAction}) => {
           ))}
           <div style={{padding:'10px 14px',background:'rgba(255,209,102,.06)',border:'1px solid rgba(255,209,102,.2)',borderRadius:10,fontSize:12,color:'var(--muted)'}}>
             ⚠️ Color changes apply live to the current session. In Phase 2 these will be stored in Supabase and applied via CSS variables on load.
+          </div>
+        </div>
+      )}
+
+      {/* ── THEME & STYLE ── */}
+      {activeSection==='theme'&&(
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          {/* Dark/Light mode default */}
+          <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:12,padding:14}}>
+            <div style={{fontWeight:700,fontSize:13,color:'var(--text)',marginBottom:2}}>🌓 Default Color Mode</div>
+            <div style={{fontSize:11,color:'var(--muted)',marginBottom:12}}>Sets the platform default. Users can override in their own settings.</div>
+            <div style={{display:'flex',gap:8}}>
+              {[['system','🖥️ System (auto)'],['light','☀️ Light'],['dark','🌙 Dark']].map(([val,label])=>(
+                <button key={val} onClick={()=>update('defaultColorMode',val)} style={{flex:1,padding:'10px 8px',borderRadius:10,border:`1.5px solid ${(brand.defaultColorMode||'system')===val?'var(--violet)':'var(--border)'}`,background:(brand.defaultColorMode||'system')===val?'rgba(155,93,229,.1)':'var(--s2)',color:(brand.defaultColorMode||'system')===val?'var(--violet)':'var(--muted)',fontWeight:(brand.defaultColorMode||'system')===val?700:500,fontSize:13,cursor:'pointer'}}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Font selection */}
+          <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:12,padding:14}}>
+            <div style={{fontWeight:700,fontSize:13,color:'var(--text)',marginBottom:2}}>🔤 Platform Font</div>
+            <div style={{fontSize:11,color:'var(--muted)',marginBottom:10}}>Applied to headings and UI elements. Body text uses system fonts.</div>
+            <select value={brand.platformFont||'Plus Jakarta Sans'} onChange={e=>update('platformFont',e.target.value)}
+              style={{width:'100%',padding:'9px 12px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:13}}>
+              {['Plus Jakarta Sans','Inter','DM Sans','Outfit','Nunito','Poppins','Raleway','Sora'].map(f=>(
+                <option key={f} value={f}>{f}</option>
+              ))}
+            </select>
+            <div style={{marginTop:8,padding:'8px 12px',borderRadius:8,background:'var(--s2)',fontSize:15,fontFamily:brand.platformFont||'Plus Jakarta Sans',fontWeight:700}}>
+              The quick brown fox — preview: {brand.platformFont||'Plus Jakarta Sans'}
+            </div>
+          </div>
+          {/* Border radius preset */}
+          <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:12,padding:14}}>
+            <div style={{fontWeight:700,fontSize:13,color:'var(--text)',marginBottom:2}}>⬜ Corner Style</div>
+            <div style={{fontSize:11,color:'var(--muted)',marginBottom:10}}>Controls the roundness of cards, buttons, and inputs.</div>
+            <div style={{display:'flex',gap:8}}>
+              {[['sharp','Sharp (4px)'],['default','Default (12px)'],['rounded','Rounded (20px)'],['pill','Pill (99px)']].map(([val,label])=>(
+                <button key={val} onClick={()=>update('borderRadiusPreset',val)} style={{flex:1,padding:'10px 6px',borderRadius:val==='sharp'?4:val==='default'?10:val==='rounded'?16:99,border:`1.5px solid ${(brand.borderRadiusPreset||'default')===val?'var(--violet)':'var(--border)'}`,background:(brand.borderRadiusPreset||'default')===val?'rgba(155,93,229,.1)':'var(--s2)',color:(brand.borderRadiusPreset||'default')===val?'var(--violet)':'var(--muted)',fontWeight:(brand.borderRadiusPreset||'default')===val?700:500,fontSize:11,cursor:'pointer',textAlign:'center'}}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Custom CSS */}
+          <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:12,padding:14}}>
+            <div style={{fontWeight:700,fontSize:13,color:'var(--text)',marginBottom:2}}>💻 Custom CSS</div>
+            <div style={{fontSize:11,color:'var(--muted)',marginBottom:4}}>Injected into a &lt;style&gt; tag on every page. Use CSS variables like <code style={{fontFamily:'monospace',fontSize:10,background:'var(--s2)',padding:'1px 4px',borderRadius:3}}>--violet</code>, <code style={{fontFamily:'monospace',fontSize:10,background:'var(--s2)',padding:'1px 4px',borderRadius:3}}>--coral</code>, <code style={{fontFamily:'monospace',fontSize:10,background:'var(--s2)',padding:'1px 4px',borderRadius:3}}>--gold</code>.</div>
+            <div style={{background:'rgba(239,68,68,.05)',border:'1px solid rgba(239,68,68,.15)',borderRadius:7,padding:'6px 10px',fontSize:11,color:'#991b1b',marginBottom:8}}>
+              ⚠️ Custom CSS applies immediately. Bad CSS can break the layout — test carefully.
+            </div>
+            <textarea value={brand.customCss||''} onChange={e=>update('customCss',e.target.value)}
+              rows={8} placeholder={`.tab-bar { border-top: 2px solid var(--violet); }\n.badge-pop { animation: none; }`}
+              style={{width:'100%',padding:'10px 12px',borderRadius:9,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12,fontFamily:"'JetBrains Mono','Courier New',monospace",resize:'vertical'}}/>
+            {brand.customCss&&(
+              <button onClick={()=>{ const el=document.getElementById('admin-custom-css'); if(el)el.textContent=brand.customCss; }}
+                style={{marginTop:6,fontSize:11,color:'var(--sky)',background:'none',border:'none',cursor:'pointer',fontWeight:600}}>
+                ▶ Apply preview
+              </button>
+            )}
+          </div>
+          <div style={{padding:'10px 14px',background:'rgba(155,93,229,.06)',border:'1px solid rgba(155,93,229,.2)',borderRadius:10,fontSize:12,color:'var(--muted)'}}>
+            ⚠️ Theme changes apply live in this session. In Phase 2 these will be stored in Supabase and applied globally on app load.
           </div>
         </div>
       )}
@@ -23157,7 +25181,7 @@ const AIConfigPanel = ({showToast, logAction}) => {
           <input type="number" value={editing.dailyLimit} onChange={e=>setEditing(p=>({...p,dailyLimit:+e.target.value}))}
             min={0} max={1000} step={1}
             style={{width:'100%',padding:'8px 10px',borderRadius:8,border:'1px solid var(--border)',background:'var(--s2)',color:'var(--text)',fontSize:12}}/>
-          <div style={{fontSize:9,color:'var(--muted)',marginTop:2}}>0 = unlimited</div>
+          <div style={{fontSize:9,color:'var(--muted)',marginTop:2}}>0 = unlimited{selectedFeature==='gift_intelligence'?' (recommended — drives gifting revenue)':''}</div>
         </div>
       </div>
 
@@ -23199,6 +25223,66 @@ const AIConfigPanel = ({showToast, logAction}) => {
           )}
         </div>
       )}
+
+      {/* Knowledge base — document upload + URL scrape */}
+      <div style={{marginBottom:14,background:'var(--s2)',borderRadius:12,border:'1px solid var(--border)',padding:14}}>
+        <div style={{fontWeight:700,fontSize:13,marginBottom:4,display:'flex',alignItems:'center',gap:7}}>
+          <i className="fas fa-database" style={{color:'var(--sky)'}}/>Knowledge Base
+          <span style={{fontSize:10,fontWeight:600,color:'var(--muted)',background:'var(--s2)',border:'1px solid var(--border)',borderRadius:20,padding:'1px 7px'}}>Optional — injected into system prompt</span>
+        </div>
+        <div style={{fontSize:11,color:'var(--muted)',marginBottom:12,lineHeight:1.5}}>
+          Paste a URL to scrape, upload a document, or paste text directly. Content is appended as a <code style={{fontFamily:'monospace',background:'var(--s3)',padding:'1px 4px',borderRadius:3}}>KNOWLEDGE BASE:</code> block in the system prompt.
+        </div>
+        {/* URL scrape */}
+        <div style={{marginBottom:10}}>
+          <label style={{fontSize:10,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:5}}>Scrape URL</label>
+          <div style={{display:'flex',gap:6}}>
+            <input value={editing.kbUrl||''} onChange={e=>setEditing(p=>({...p,kbUrl:e.target.value}))}
+              placeholder="https://help.birthdayme.app/faq"
+              style={{flex:1,padding:'8px 10px',borderRadius:8,border:'1px solid var(--border)',background:'var(--surface)',color:'var(--text)',fontSize:12}}/>
+            <button onClick={async()=>{
+              if(!editing.kbUrl) return;
+              try {
+                const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(editing.kbUrl)}`);
+                const d = await r.json();
+                const text = d.contents?.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,8000)||'Could not parse content';
+                setEditing(p=>({...p,kbText:(p.kbText?p.kbText+'\n\n':'')+`[From: ${p.kbUrl}]\n${text}`}));
+              } catch(e) { setEditing(p=>({...p,kbText:(p.kbText||'')+`\n[Failed to scrape ${p.kbUrl}: ${e.message}]`})); }
+            }} style={{padding:'8px 14px',borderRadius:8,border:'none',background:'var(--sky)',color:'#fff',fontWeight:700,fontSize:12,cursor:'pointer',flexShrink:0}}>
+              <i className="fas fa-download" style={{marginRight:5}}/>Fetch
+            </button>
+          </div>
+        </div>
+        {/* File upload */}
+        <div style={{marginBottom:10}}>
+          <label style={{fontSize:10,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:5}}>Upload Document (PDF / TXT / DOCX)</label>
+          <input type="file" accept=".txt,.pdf,.doc,.docx,.md" onChange={e=>{
+            const file = e.target.files?.[0]; if(!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+              const text = ev.target.result?.toString().slice(0,8000)||'';
+              setEditing(p=>({...p,kbText:(p.kbText?p.kbText+'\n\n':'')+`[From file: ${file.name}]\n${text}`}));
+            };
+            reader.readAsText(file);
+          }} style={{fontSize:12,color:'var(--text)'}}/>
+        </div>
+        {/* Paste text */}
+        <div>
+          <label style={{fontSize:10,fontWeight:700,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:5}}>
+            Knowledge Base Text
+            {editing.kbText&&<span style={{marginLeft:8,fontWeight:500,color:'var(--mint)'}}>{editing.kbText.length.toLocaleString()} chars</span>}
+          </label>
+          <textarea value={editing.kbText||''} onChange={e=>setEditing(p=>({...p,kbText:e.target.value}))}
+            rows={5} placeholder="Paste FAQ content, policy documents, help articles..."
+            style={{width:'100%',padding:'10px 12px',borderRadius:9,border:'1px solid var(--border)',background:'var(--surface)',color:'var(--text)',fontSize:12,fontFamily:"'JetBrains Mono','Courier New',monospace",resize:'vertical'}}/>
+          {editing.kbText&&(
+            <button onClick={()=>setEditing(p=>({...p,kbText:''}))}
+              style={{marginTop:4,fontSize:11,color:'var(--coral)',background:'none',border:'none',cursor:'pointer',fontWeight:600}}>
+              ✕ Clear knowledge base
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Save note */}
       <div style={{marginBottom:14}}>
@@ -23405,6 +25489,7 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
   const [newUserDob, setNewUserDob] = React.useState("");
   const [resetEmail, setResetEmail] = React.useState("");
   const [userStatusFilter, setUserStatusFilter] = React.useState("all");
+  const [userSortField, setUserSortField] = React.useState("name_az"); // name_az|name_za|newest|oldest|most_raised|most_gifts_received|most_gifts_sent|most_referrals|birthday_soon
   const [userPage, setUserPage] = React.useState(0);
   const [userPageSize, setUserPageSize] = React.useState(25);
   const USER_PAGE_SIZE = userPageSize; // dynamic
@@ -23457,11 +25542,24 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
     if(userStatusFilter === 'admin_created') return !!(u.createdByAdmin);
     return true;
   });
-  const pagedUsers = filteredUsers.slice(userPage*userPageSize, (userPage+1)*userPageSize);
+  const sortedUsers = React.useMemo(()=>{
+    const arr = [...filteredUsers];
+    if(userSortField==='name_az') arr.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    else if(userSortField==='name_za') arr.sort((a,b)=>(b.name||'').localeCompare(a.name||''));
+    else if(userSortField==='newest') arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    else if(userSortField==='oldest') arr.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    else if(userSortField==='most_raised') arr.sort((a,b)=>(b.raised||0)-(a.raised||0));
+    else if(userSortField==='most_gifts_received') arr.sort((a,b)=>(b.giverCount||0)-(a.giverCount||0));
+    else if(userSortField==='most_gifts_sent') arr.sort((a,b)=>((DB.giftHistory?.[b.id]||[]).length)-((DB.giftHistory?.[a.id]||[]).length));
+    else if(userSortField==='most_referrals') arr.sort((a,b)=>ReferralStore.getCount(b.id)-ReferralStore.getCount(a.id));
+    else if(userSortField==='birthday_soon') arr.sort((a,b)=>daysUntil(a.dob)-daysUntil(b.dob));
+    return arr;
+  },[filteredUsers, userSortField]);
+  const pagedUsers = sortedUsers.slice(userPage*userPageSize, (userPage+1)*userPageSize);
   const allVisibleSelected = pagedUsers.length > 0 && pagedUsers.every(u => selectedUsers.has(u.id));
 
   const totalGifts = Object.values(DB.giftHistory||{}).flat();
-  const totalRevenue = totalGifts.reduce((s,g) => s + (g.amount||0) * 0.10, 0);
+  const totalRevenue = totalGifts.reduce((s,g) => s + (g.amount||0) * 0.15, 0);
   const totalVolume  = totalGifts.reduce((s,g) => s + (g.amount||0), 0);
   const totalPosts   = Object.values(DB.walls||{}).flat().length;
   const totalCards   = Object.values(DB.ecards||{}).flat().length;
@@ -23600,20 +25698,22 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
   };
 
   const TABS = [
-    { id:"overview",    label:"Overview",      fa:"chart-line" },
-    { id:"users",       label:"Users",         fa:"users" },
-    { id:"businesses",  label:"Businesses",    fa:"store", badge: BusinessStore.getApplications().filter(a=>a.status==='pending').length||null },
-    { id:"promotions",  label:"Promotions",    fa:"trophy" },
-    { id:"finance",     label:"Finance",       fa:"dollar-sign" },
-    { id:"content",     label:"Content",       fa:"shield-alt", badge: ContentFlagStore.getFlagged().length||null },
-    { id:"reports",     label:"Reports & Logs",fa:"clipboard-list", badge: (ReportStore.getPending().length + SupportTicketStore.getOpen().length)||null },
-    { id:"config",      label:"Config",        fa:"cog" },
+    { id:"overview",      label:"Overview",       fa:"chart-line" },
+    { id:"users",         label:"Users",          fa:"users" },
+    { id:"businesses",    label:"Businesses",     fa:"store", badge: BusinessStore.getApplications().filter(a=>a.status==='pending').length||null },
+    { id:"promotions",    label:"Promotions",     fa:"trophy" },
+    { id:"finance",       label:"Finance",        fa:"dollar-sign" },
+    { id:"pinatas",       label:"Piñatas",        fa:"gift" },
+    { id:"content",       label:"Content",        fa:"shield-alt", badge: ContentFlagStore.getFlagged().length||null },
+    { id:"reports",       label:"Reports & Logs", fa:"clipboard-list", badge: (ReportStore.getPending().length + SupportTicketStore.getOpen().length)||null },
+    { id:"announcements", label:"Announcements",  fa:"bullhorn" },
+    { id:"config",        label:"Config",         fa:"cog" },
   ];
   const TAB_ALIASES = {flags:'config', points:'users', sweepstakes:'promotions', campaigns:'promotions', audit:'reports'};
 
   const defaultConfig = {
-    platform_fee: "10%",
-    min_gift: "Age × $0.25 (≥13: $5 floor)",
+    platform_fee: "15%",
+    min_gift: "No minimum — any amount",
     max_gift: "$500.00",
     hold_hours: "48",
     min_payout: "$5.00",
@@ -23693,7 +25793,7 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
           <div style={{fontWeight:800,fontSize:14,color:"var(--text)"}}>BirthdayMe Admin</div>
           <div style={{fontSize:10,color:"var(--violet2)",fontWeight:700,letterSpacing:".04em"}}>SUPER ADMIN · INTERNAL ONLY</div>
         </div>
-        <div style={{fontSize:11,color:"var(--muted)"}}>v96 · {new Date().toLocaleDateString()}</div>
+        <div style={{fontSize:11,color:"var(--muted)"}}>v1.0 · {new Date().toLocaleDateString()}</div>
         {sessionWarning&&(
           <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",background:"rgba(255,209,102,.1)",border:"1px solid rgba(255,209,102,.3)",borderRadius:8,padding:"4px 10px",display:"flex",alignItems:"center",gap:6}}>
             <i className="fas fa-clock"/>  Session expiring in ~5 min
@@ -23895,6 +25995,21 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
                 <option value="vip">🌟 VIP</option>
                 <option value="demo">🧪 Demo</option>
                 <option value="admin_created">🛡️ Admin Created</option>
+              </select>
+              <i className="fas fa-chevron-down" style={{position:"absolute",right:9,top:"50%",transform:"translateY(-50%)",color:"var(--muted)",fontSize:10,pointerEvents:"none"}}/>
+            </div>
+            <div style={{position:"relative",flexShrink:0}}>
+              <select value={userSortField} onChange={e=>{setUserSortField(e.target.value);setUserPage(0);}}
+                style={{...inp,marginBottom:0,padding:"8px 30px 8px 10px",fontSize:12,appearance:"none",cursor:"pointer"}}>
+                <option value="name_az">A → Z</option>
+                <option value="name_za">Z → A</option>
+                <option value="newest">Newest joined</option>
+                <option value="oldest">Oldest joined</option>
+                <option value="most_raised">Most raised</option>
+                <option value="most_gifts_received">Most gifts received</option>
+                <option value="most_gifts_sent">Most gifts sent</option>
+                <option value="most_referrals">Most referrals</option>
+                <option value="birthday_soon">Birthday soonest</option>
               </select>
               <i className="fas fa-chevron-down" style={{position:"absolute",right:9,top:"50%",transform:"translateY(-50%)",color:"var(--muted)",fontSize:10,pointerEvents:"none"}}/>
             </div>
@@ -24192,7 +26307,7 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
                 {label:"Pending Cashouts", value:(DB.pendingCashouts||[]).filter(c=>c.status==='pending').length, color:"var(--gold)",icon:"clock"},
                 {label:"Total Held",       value:"$"+((DB.pendingCashouts||[]).reduce((s,c)=>s+(c.status==='pending'?c.amount:0),0)).toFixed(2), color:"var(--violet2)",icon:"lock"},
                 {label:"Flagged Txns",     value:(DB.flaggedTransactions||[]).filter(t=>t.status==='pending').length, color:"var(--coral)",icon:"exclamation-triangle"},
-                {label:"Platform Rev",     value:"$"+(Object.values(DB.giftHistory||{}).flat().reduce((s,g)=>s+(g.amount||0)*0.10,0)).toFixed(2), color:"var(--mint)",icon:"chart-line"},
+                {label:"Platform Rev",     value:"$"+(Object.values(DB.giftHistory||{}).flat().reduce((s,g)=>s+(g.amount||0)*(DB.featureFlags?.platform_fee_rate||0.15),0)).toFixed(2), color:"var(--mint)",icon:"chart-line"},
               ].map((k,i)=>(
                 <div key={i} style={{background:"var(--surface)",borderRadius:12,padding:"12px 14px",border:"1px solid var(--border)",borderTop:`3px solid ${k.color}`}}>
                   <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
@@ -24232,6 +26347,85 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
                   );
                 })
               )}
+            </div>
+
+            {/* Revenue breakdown */}
+            <div style={{background:"var(--surface)",borderRadius:14,padding:16,border:"1px solid var(--border)",marginBottom:12}}>
+              <div style={{fontWeight:800,fontSize:14,marginBottom:12,display:"flex",alignItems:"center",gap:6}}>
+                📊 Revenue Breakdown
+              </div>
+              {(()=>{
+                const allGifts = Object.values(DB.giftHistory||{}).flat();
+                const feeRate = DB.featureFlags?.platform_fee_rate || 0.15;
+                const gmv = allGifts.reduce((s,g)=>s+(g.amount||0),0);
+                const gross = gmv * feeRate;
+                const stripeEst = allGifts.reduce((s,g)=>s+(g.amount||0)*0.029+0.30,0);
+                const net = gross - stripeEst;
+                const rows = [
+                  {label:"Gross Gift Volume (GMV)", value:fmt$(gmv), color:"var(--text)"},
+                  {label:`Platform Fee (${(feeRate*100).toFixed(0)}%)`, value:fmt$(gross), color:"var(--mint)"},
+                  {label:"Stripe Fees (est ~2.9%+$0.30)", value:`-${fmt$(stripeEst)}`, color:"var(--coral)"},
+                  {label:"Net Margin", value:fmt$(Math.max(0,net)), color:"var(--gold)"},
+                ];
+                return (
+                  <div>
+                    {rows.map((r,i)=>(
+                      <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:i<rows.length-1?"1px solid var(--border)":"none"}}>
+                        <span style={{fontSize:13,color:"var(--muted)"}}>{r.label}</span>
+                        <span style={{fontWeight:800,fontSize:14,color:r.color}}>{r.value}</span>
+                      </div>
+                    ))}
+                    <div style={{marginTop:10,padding:"8px 10px",borderRadius:8,background:"rgba(6,214,160,.06)",border:"1px solid rgba(6,214,160,.2)",fontSize:11,color:"var(--muted)"}}>
+                      Fee rate is configurable in Config → Feature Flags → <code>platform_fee_rate</code>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Transaction ledger */}
+            <div style={{background:"var(--surface)",borderRadius:14,padding:16,border:"1px solid var(--border)",marginBottom:12}}>
+              <div style={{fontWeight:800,fontSize:14,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <span>📋 Transaction Ledger</span>
+                <span style={{fontSize:11,color:"var(--muted)",fontWeight:400}}>Last 20 transactions</span>
+              </div>
+              {(()=>{
+                const feeRate = DB.featureFlags?.platform_fee_rate || 0.15;
+                const allGifts = Object.values(DB.giftHistory||{}).flat()
+                  .sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,20);
+                if(allGifts.length===0) return <div style={{textAlign:"center",padding:"20px",color:"var(--muted)",fontSize:13}}>No transactions yet</div>;
+                return (
+                  <div style={{overflowX:"auto"}}>
+                    <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+                      <thead>
+                        <tr style={{borderBottom:"2px solid var(--border)"}}>
+                          {["Date","From","To","Amount","Fee","Net","Stripe"].map(h=>(
+                            <th key={h} style={{padding:"6px 8px",textAlign:"left",fontSize:10,fontWeight:700,color:"var(--muted)",textTransform:"uppercase",whiteSpace:"nowrap"}}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allGifts.map((g,i)=>{
+                          const stripeFee = +(g.amount*0.029+0.30).toFixed(2);
+                          const platFee = +(g.amount*feeRate).toFixed(2);
+                          const net = +(platFee-stripeFee).toFixed(2);
+                          return (
+                            <tr key={i} style={{borderBottom:"1px solid var(--border)",background:i%2===0?"transparent":"rgba(0,0,0,.02)"}}>
+                              <td style={{padding:"7px 8px",color:"var(--muted)",whiteSpace:"nowrap"}}>{g.ts?new Date(g.ts).toLocaleDateString():"—"}</td>
+                              <td style={{padding:"7px 8px",fontWeight:600,maxWidth:100,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{g.from||"Guest"}</td>
+                              <td style={{padding:"7px 8px",color:"var(--muted)",maxWidth:100,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{DB.users[g.recipientId]?.name||g.recipientId||"—"}</td>
+                              <td style={{padding:"7px 8px",fontWeight:700,color:"var(--text)"}}>${(g.amount||0).toFixed(2)}</td>
+                              <td style={{padding:"7px 8px",color:"var(--mint)",fontWeight:600}}>${platFee.toFixed(2)}</td>
+                              <td style={{padding:"7px 8px",color:net>=0?"var(--mint)":"var(--coral)",fontWeight:700}}>${net.toFixed(2)}</td>
+                              <td style={{padding:"7px 8px",color:"var(--coral)",fontSize:11}}>-${stripeFee.toFixed(2)}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Flagged transactions */}
@@ -24278,6 +26472,127 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
         {tab==="content"&&(
           <EnhancedContentTab showToast={showToast} logAction={logAction} setTab={setTab} allUsers={allUsers}/>
         )}
+        {tab==="pinatas"&&(
+          <div>
+            <div style={{fontWeight:900,fontSize:18,marginBottom:4}}>🪅 Piñata Management</div>
+            <div style={{fontSize:13,color:"var(--muted)",marginBottom:16}}>All active group pools across the platform. Force-release or cancel any pool.</div>
+            {(()=>{
+              const allPools = Object.values(DB.groupPools||{}).flat();
+              const active = allPools.filter(p=>!p.released&&!p.cancelled);
+              const released = allPools.filter(p=>p.released&&!p.cancelled).slice(0,10);
+              const feeRate = DB.featureFlags?.platform_fee_rate||0.15;
+              const totalGMV = active.reduce((s,p)=>s+GroupPoolStore.getTotal(p.id),0);
+              return (
+                <div>
+                  {/* KPIs */}
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10,marginBottom:16}}>
+                    {[
+                      {label:"Active Pools",value:active.length,color:"var(--violet2)"},
+                      {label:"Total Pool GMV",value:fmt$(totalGMV),color:"var(--mint)"},
+                      {label:"Platform Fee Est",value:fmt$(totalGMV*feeRate),color:"var(--gold)"},
+                      {label:"Completed",value:released.length,color:"var(--muted)"},
+                    ].map((k,i)=>(
+                      <div key={i} style={{background:"var(--surface)",borderRadius:12,padding:"12px 14px",border:"1px solid var(--border)",borderTop:`3px solid ${k.color}`}}>
+                        <div style={{fontSize:10,fontWeight:700,color:"var(--muted)",textTransform:"uppercase",marginBottom:4}}>{k.label}</div>
+                        <div style={{fontWeight:900,fontSize:20,color:"var(--text)"}}>{k.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Active pools list */}
+                  <div style={{background:"var(--surface)",borderRadius:14,border:"1px solid var(--border)",overflow:"hidden",marginBottom:12}}>
+                    <div style={{padding:"12px 16px",borderBottom:"1px solid var(--border)",fontWeight:800,fontSize:14}}>Active Pools ({active.length})</div>
+                    {active.length===0?(
+                      <div style={{padding:"24px",textAlign:"center",color:"var(--muted)",fontSize:13}}>No active pools</div>
+                    ):active.sort((a,b)=>GroupPoolStore.getTotal(b.id)-GroupPoolStore.getTotal(a.id)).map((pool,i)=>{
+                      const owner = DB.users[pool.ownerId];
+                      const recipient = DB.users[pool.recipientId];
+                      const total = GroupPoolStore.getTotal(pool.id);
+                      const pct = pool.goal>0?Math.min(100,Math.round(total/pool.goal*100)):0;
+                      return (
+                        <div key={pool.id} style={{padding:"12px 16px",borderBottom:i<active.length-1?"1px solid var(--border)":"none",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+                          <div style={{flex:1,minWidth:200}}>
+                            <div style={{fontWeight:700,fontSize:13,marginBottom:2}}>{pool.name}</div>
+                            <div style={{fontSize:11,color:"var(--muted)"}}>
+                              by {owner?.name||pool.ownerId} → for {recipient?.name||pool.recipientId}
+                            </div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginTop:4}}>
+                              <div style={{flex:1,height:4,background:"var(--border)",borderRadius:2,overflow:"hidden",maxWidth:120}}>
+                                <div style={{width:`${pct}%`,height:"100%",background:"var(--violet2)",borderRadius:2}}/>
+                              </div>
+                              <span style={{fontSize:11,color:"var(--mint)",fontWeight:700}}>{fmt$(total)}</span>
+                              {pool.goal>0&&<span style={{fontSize:11,color:"var(--muted)"}}>of {fmt$(pool.goal)}</span>}
+                              <span style={{fontSize:11,color:"var(--muted)"}}>· {pool.members?.length||0} members</span>
+                              {pool.paused&&<span style={{fontSize:10,fontWeight:800,color:"var(--gold)",background:"rgba(255,209,102,.15)",borderRadius:20,padding:"1px 7px"}}>⏸ PAUSED</span>}
+                            </div>
+                          </div>
+                          <div style={{display:"flex",gap:6,flexShrink:0}}>
+                            <button onClick={()=>{GroupPoolStore.release(pool.id);showToast(`Released ${fmt$(total)} to ${recipient?.name||'recipient'}`);logAction("force_release_pool",{poolId:pool.id,name:pool.name,total});}}
+                              style={{padding:"5px 10px",borderRadius:7,border:"none",background:"rgba(6,214,160,.1)",color:"var(--mint)",fontSize:11,fontWeight:700,cursor:"pointer"}}>
+                              🎁 Release
+                            </button>
+                            <button onClick={()=>{if(window.confirm(`Cancel "${pool.name}"? Contributors will NOT be auto-refunded.`)){pool.cancelled=true;pool.released=true;showToast("Pool cancelled");logAction("cancel_pool",{poolId:pool.id,name:pool.name});}}}
+                              style={{padding:"5px 10px",borderRadius:7,border:"none",background:"rgba(255,94,91,.1)",color:"var(--coral)",fontSize:11,fontWeight:700,cursor:"pointer"}}>
+                              ✕ Cancel
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+        {tab==="announcements"&&(
+          <div>
+            <div style={{fontWeight:900,fontSize:18,marginBottom:4}}>📣 Announcements</div>
+            <div style={{fontSize:13,color:"var(--muted)",marginBottom:16}}>Send platform-wide banners and push notifications to all users or specific segments.</div>
+            {/* Current banner */}
+            <div style={{background:"var(--surface)",borderRadius:14,padding:16,border:"1px solid var(--border)",marginBottom:12}}>
+              <div style={{fontWeight:800,fontSize:14,marginBottom:12}}>🔔 Platform Banner</div>
+              <div style={{fontSize:12,color:"var(--muted)",marginBottom:12}}>Shows at the top of the app for all users. Leave empty to hide.</div>
+              <textarea value={bannerMsg} onChange={e=>setBannerMsg(e.target.value)}
+                placeholder="e.g. 🎉 We're live! Share your birthday link and earn rewards."
+                rows={3} style={{width:"100%",padding:"10px 12px",borderRadius:10,border:"1px solid var(--border)",background:"var(--s2)",color:"var(--text)",fontSize:13,resize:"vertical",boxSizing:"border-box",marginBottom:10}}/>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:10}}>
+                {["info","success","warning","error"].map(t=>(
+                  <button key={t} onClick={()=>setBannerType(t)} style={{padding:"5px 12px",borderRadius:8,border:`1px solid ${bannerType===t?"var(--violet2)":"var(--border)"}`,background:bannerType===t?"rgba(155,93,229,.1)":"var(--s2)",color:bannerType===t?"var(--violet2)":"var(--muted)",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                    {t==="info"?"ℹ️ Info":t==="success"?"✅ Success":t==="warning"?"⚠️ Warning":"🔴 Error"} 
+                  </button>
+                ))}
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <button onClick={()=>{DB.platformBanner={msg:bannerMsg,type:bannerType,ts:Date.now()};showToast(bannerMsg?"Banner updated":"Banner cleared");logAction("set_banner",{msg:bannerMsg,type:bannerType});}}
+                  style={{padding:"9px 18px",borderRadius:10,border:"none",background:"var(--violet)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>
+                  📣 {bannerMsg?"Publish Banner":"Clear Banner"}
+                </button>
+                {DB.platformBanner?.msg&&<button onClick={()=>{setBannerMsg("");DB.platformBanner={msg:"",type:"info",ts:Date.now()};showToast("Banner cleared");}}
+                  style={{padding:"9px 14px",borderRadius:10,border:"1px solid var(--border)",background:"none",color:"var(--muted)",fontWeight:600,fontSize:13,cursor:"pointer"}}>
+                  Clear
+                </button>}
+              </div>
+              {bannerMsg&&(
+                <div style={{marginTop:12,padding:"10px 14px",borderRadius:10,background:bannerType==="error"?"rgba(255,94,91,.1)":bannerType==="warning"?"rgba(255,209,102,.1)":bannerType==="success"?"rgba(6,214,160,.1)":"rgba(56,189,248,.1)",border:`1px solid ${bannerType==="error"?"rgba(255,94,91,.3)":bannerType==="warning"?"rgba(255,209,102,.3)":bannerType==="success"?"rgba(6,214,160,.3)":"rgba(56,189,248,.3)"}`,fontSize:13}}>
+                  <strong>Preview:</strong> {bannerMsg}
+                </div>
+              )}
+            </div>
+            {/* Targeted notification */}
+            <div style={{background:"var(--surface)",borderRadius:14,padding:16,border:"1px solid var(--border)",marginBottom:12}}>
+              <div style={{fontWeight:800,fontSize:14,marginBottom:4}}>📱 Send Push Notification</div>
+              <div style={{fontSize:12,color:"var(--muted)",marginBottom:12}}>Push to all users or a specific segment. Phase 2: connects to real push service.</div>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:10}}>
+                {[["all","All Users"],["birthday_week","Birthday this week"],["no_withdrawal","Never withdrawn"],["inactive_30","Inactive 30+ days"]].map(([seg,label])=>(
+                  <div key={seg} style={{padding:"6px 12px",borderRadius:20,border:"1px solid var(--border)",background:"var(--s2)",fontSize:12,color:"var(--muted)",cursor:"pointer"}}>{label}</div>
+                ))}
+              </div>
+              <div style={{padding:"12px 14px",borderRadius:10,background:"rgba(245,158,11,.06)",border:"1px solid rgba(245,158,11,.2)",fontSize:12,color:"var(--muted)"}}>
+                ⚠️ Phase 2 — Real push delivery requires Supabase Edge Functions + web-push integration. Currently previews only.
+              </div>
+            </div>
+          </div>
+        )}
         {tab==="config"&&(
           <div>
             {/* Config sub-tabs */}
@@ -24291,15 +26606,15 @@ const AdminPanel = ({ onClose, demoProfiles }) => {
           <div style={{fontSize:13,color:"var(--muted)",marginBottom:16}}>These values mirror the system_config table. In production, changes here will call the Supabase API.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {[
-            {key:"platform_fee",            val:"10%",         desc:"Platform commission on all transactions"},
-            {key:"min_gift",                val:"Age × $0.25", desc:"Minimum gift — age × $0.25/yr (turning age used)"},
+            {key:"platform_fee",            val:"15%",         desc:"Platform commission on all transactions"},
+            {key:"min_gift",                val:"No minimum",  desc:"No minimum gift — users can send any amount"},
             {key:"max_gift",                val:"$5,000",      desc:"Max single gift for any registered user"},
             {key:"max_guest_gift",          val:"$200",        desc:"Max single gift for non-registered guests"},
             {key:"max_pool_size",           val:"$10,000",     desc:"Max total a single group pool can raise"},
             {key:"hold_hours",              val:"48",          desc:"Hours before received funds can be withdrawn"},
             {key:"min_payout",              val:"$5.00",       desc:"Minimum balance to initiate a cashout"},
             {key:"pool_funding_close_hours",val:"24",          desc:"Hours before birthday pools stop accepting contributions"},
-            {key:"belated_gift_window_days",val:"14",          desc:"Days after birthday belated gifts are allowed"},
+            {key:"belated_gift_window_days",val:"7",           desc:"Days after birthday belated gifts are allowed (grace period)"},
             {key:"max_wishlist",            val:"50",          desc:"Maximum wishlist items per user"},
             {key:"referral_points",         val:"50",          desc:"Points awarded per successful referral"},
             {key:"checkin_points",          val:"5",           desc:"Points for daily check-in"},
@@ -24410,6 +26725,7 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
   const { t } = useTranslation();
   const [screen, setScreen]=useState(_initialScreen||"auth");
   const [authUser, setAuthUser]=useState(_initialAuthUser||null);
+  const [pendingClaim, setPendingClaim]=useState(null);
   const [profile, setProfile]=useState(_initialProfile||null);
   const [showGenderPrompt, setShowGenderPrompt] = useState(false);
   const [showSecuritySetup, setShowSecuritySetup] = useState(false);
@@ -24556,14 +26872,72 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
       bio:"Living life one birthday at a time 🎂 Big fan of good music, good food, and good people.",
       raised:0, giverCount:0, badges:["first_gift","early_bird","zodiac_sage","birthday_star"],
       goal:300, surpriseMode:false, photoUrl:null, totalGiven:0,
+      socialLinks:{instagram:'alexrivera',tiktok:'alexrivera.bday',twitter:'alexrivera_',linktree:'alexrivera'},
     };
     DB.users["demo-user"] = demoProfile;
     setAuthUser({id:"demo-user", name:"Alex Rivera", isNew:false});
     setProfile(demoProfile);
     setProfileUrl(makeShortUrl("demo-user"));
     const updated = generateDemoData(demoProfile);
-    BalanceStore.addContribution('demo-user', 17.00, 'Taylor K.', 'Happy birthday!! 🎉');
-    BalanceStore.addContribution('demo-user', 34.20, 'Jordan M.', 'Celebrate good times 🎂');
+
+    // ── Seed per-year birthday wallet history for demo user ──────────────────
+    // Demo user DOB: 1996-03-15 — birthday is March 15
+    // Current active year (2026) — contributions for upcoming/recent birthday
+    BalanceStore.addContribution('demo-user', 17.00, 'Taylor K.', 'Happy birthday!! 🎉', 2026);
+    BalanceStore.addContribution('demo-user', 34.20, 'Jordan M.', 'Celebrate good times 🎂', 2026);
+
+    // Manually seed past year wallets directly into the years structure
+    const demoBalance = BalanceStore._ensure('demo-user');
+
+    // 2025 birthday — 30th birthday, fully withdrawn
+    demoBalance.years[2025] = {
+      raised: 287.50, withdrawn: 287.50, contributorCount: 11,
+      contributions: [
+        {from:'Dre M.',    amount:75,   note:'Big 30 energy!! 🎉',          ts: Date.now()-86400000*365},
+        {from:'Jordan K.', amount:50,   note:'Thirty and thriving 🙌',       ts: Date.now()-86400000*365},
+        {from:'Taylor S.', amount:40,   note:'You deserve everything 💫',    ts: Date.now()-86400000*365},
+        {from:'Zara B.',   amount:35,   note:'Happy 30th!! 👑',              ts: Date.now()-86400000*365},
+        {from:'Casey R.',  amount:25,   note:'Legend status unlocked',       ts: Date.now()-86400000*365},
+        {from:'Morgan T.', amount:20,   note:'',                             ts: Date.now()-86400000*365},
+        {from:'Isaiah T.', amount:18,   note:'🎂🎂🎂',                        ts: Date.now()-86400000*365},
+        {from:'Kofi A.',   amount:12,   note:'Happy bday!',                  ts: Date.now()-86400000*365},
+        {from:'Imani G.',  amount:5.50, note:'',                             ts: Date.now()-86400000*365},
+        {from:'Priya K.',  amount:4,    note:'Small but with love ❤️',       ts: Date.now()-86400000*365},
+        {from:'Anonymous', amount:3,    note:'You know who 😉',              ts: Date.now()-86400000*365},
+      ],
+      withdrawals: [{amount:287.50, ts: Date.now()-86400000*358}],
+    };
+
+    // 2024 birthday — 29th birthday, fully withdrawn
+    demoBalance.years[2024] = {
+      raised: 203.00, withdrawn: 203.00, contributorCount: 8,
+      contributions: [
+        {from:'Dre M.',    amount:60,   note:'29 is the new 30 😂',         ts: Date.now()-86400000*730},
+        {from:'Jordan K.', amount:40,   note:'HBD!! 🎊',                    ts: Date.now()-86400000*730},
+        {from:'Taylor S.', amount:35,   note:'One more year wiser 🙏',       ts: Date.now()-86400000*730},
+        {from:'Casey R.',  amount:28,   note:'',                             ts: Date.now()-86400000*730},
+        {from:'Zara B.',   amount:20,   note:'Love you Alex! 💛',            ts: Date.now()-86400000*730},
+        {from:'Morgan T.', amount:10,   note:'Happy birthday!',              ts: Date.now()-86400000*730},
+        {from:'Kofi A.',   amount:5,    note:'',                             ts: Date.now()-86400000*730},
+        {from:'Imani G.',  amount:5,    note:'',                             ts: Date.now()-86400000*730},
+      ],
+      withdrawals: [{amount:203.00, ts: Date.now()-86400000*723}],
+    };
+
+    // 2023 birthday — 28th birthday
+    demoBalance.years[2023] = {
+      raised: 142.75, withdrawn: 142.75, contributorCount: 6,
+      contributions: [
+        {from:'Dre M.',    amount:50,   note:'28 looks good on you 🔥',      ts: Date.now()-86400000*1095},
+        {from:'Jordan K.', amount:35,   note:'HBD bestie!! 🎂',              ts: Date.now()-86400000*1095},
+        {from:'Taylor S.', amount:25,   note:'',                             ts: Date.now()-86400000*1095},
+        {from:'Zara B.',   amount:17.75,note:'Treat yourself girl!',         ts: Date.now()-86400000*1095},
+        {from:'Casey R.',  amount:10,   note:'Happy birthday 🥳',            ts: Date.now()-86400000*1095},
+        {from:'Morgan T.', amount:5,    note:'',                             ts: Date.now()-86400000*1095},
+      ],
+      withdrawals: [{amount:142.75, ts: Date.now()-86400000*1088}],
+    };
+
     const dr = BalanceStore._ensure('demo-user');
     dr.history.forEach(h=>{ if(h.status==='pending'){h.releaseAt=Date.now()-1;} });
     BalanceStore.releasePending('demo-user');
@@ -24572,8 +26946,8 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
       id:'demo_pool_invite_notif', type:'pool_invite',
       poolId:'demo-pool-m1', poolName:"Zara's Birthday Bash 🎉",
       from:'Dre M.', fromId:'dd-004',
-      icon:'🎁',
-      text:"Dre M. invited you to join \"Zara's Birthday Bash 🎉\" — help chip in for Zara's birthday! 🎊",
+      icon:'🪅',
+      text:"Dre M. invited you to fill \"Zara's Birthday Bash 🎉\" piñata 🪅 — help stuff it for Zara's birthday! 🎊",
       ts:Date.now()-3600000*1, read:false,
     });
     setProfile({...demoProfile,...updated});
@@ -24601,8 +26975,9 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
     window._setDashTab = (tab) => { setDashTab(tab); scrollToTop(); };
     window._goToWall = (tab) => { setDashTab("feed"); scrollToTop(); setTimeout(()=>{ if(window._setWallTab) window._setWallTab(tab||"mywall"); },80); };
     window._goToPools = (poolId) => { setDashTab("pools"); scrollToTop(); if(poolId) setTimeout(()=>{ if(window._highlightPool) window._highlightPool(poolId); },120); };
+    window._goToPoolsCreate = (prefill={}) => { setDashTab("pools"); scrollToTop(); setTimeout(()=>{ if(window._openPoolCreate) window._openPoolCreate(prefill); },120); };
     window._goToCards = () => { setDashTab("feed"); scrollToTop(); setTimeout(()=>{ if(window._setWallTab) window._setWallTab("cards"); },80); };
-    window._goToGifts = () => { setDashTab("wish"); setWishTab("gifts"); scrollToTop(); };
+    window._goToGifts = () => { setDashTab("wish"); setWishTab("claimed"); scrollToTop(); };
     window._goToSweepstakes = () => { setDashTab("sweepstakes"); scrollToTop(); };
     window._goToWallet = (step) => { setShowCashout(true); if(step) setTimeout(()=>{ if(window._setCashoutStep) window._setCashoutStep(step); },80); };
     window._goToFollowers = (tab='followers') => {
@@ -24611,7 +26986,17 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
     };
     window._routeNotif = (notif) => {
       const r = notif?.route;
-      if(notif?.type==='pool_invite') { setDashTab("pools"); return; }
+      if(notif?.type==='pool_invite') {
+        setDashTab("pools");
+        // Deep-link to the specific piñata after tab renders
+        if(notif.poolId) setTimeout(()=>{ if(window._highlightPool) window._highlightPool(notif.poolId); }, 150);
+        return;
+      }
+      if(notif?.type==='pool_reveal') {
+        // Birthday pop moment — go to home profile which shows PiñataBar
+        setDashTab("home");
+        return;
+      }
       if(!r) return;
       if(r === 'wall')      { setDashTab("wall"); }
       else if(r === 'badges')    { setDashTab("badges"); }
@@ -24622,7 +27007,10 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
       else if(r === 'home')      { setDashTab("home"); }
       else if(r === 'cashout')   { window.dispatchEvent(new CustomEvent('open-cashout')); }
       else if(r === 'family')    { setDashTab("family"); }
-      else if(r === 'pools')     { setDashTab("pools"); }
+      else if(r === 'pools')     {
+        setDashTab("pools");
+        if(notif?.poolId) setTimeout(()=>{ if(window._highlightPool) window._highlightPool(notif.poolId); }, 150);
+      }
       else if(r === 'dispute')   {
         // Open help agent pre-loaded with dispute context from the notification
         if(notif?.isDisputeNotif && notif.postId) {
@@ -24669,6 +27057,13 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
         }
       }
     };
+    // Auth gate for wishlist claims — redirects to auth preserving claim context
+    window._setPendingClaim = setPendingClaim;
+    window._openAuthForClaim = (item, ownerId, ownerNm, isSignIn=false) => {
+      setPendingClaim({item, ownerId, ownerName:ownerNm});
+      setScreen("auth");
+    };
+
     window._navigateTo = (targetProfile) => {
       if(!targetProfile) return;
       navReturnRef.current = {
@@ -24681,11 +27076,30 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
       setGiftProfile(targetProfile);
       setScreen("gift");
     };
-    return ()=>{ delete window._navigateTo; delete window._goToWall; delete window._goToCards; delete window._goToGifts; delete window._goToFollowers; delete window._setSocialTab; delete window._setFriendsSubTab; delete window._routeNotif; delete window._goToPools; };
+    return ()=>{ delete window._openAuthForClaim; delete window._navigateTo; delete window._goToWall; delete window._goToCards; delete window._goToGifts; delete window._goToFollowers; delete window._setSocialTab; delete window._setFriendsSubTab; delete window._routeNotif; delete window._goToPools; };
   }, []);
 
   const handleAuth=user=>{
     setAuthUser(user);
+    // Auto-complete any pending wishlist claim from auth gate
+    if(pendingClaim) {
+      const {item, ownerId, ownerName:ownerNm} = pendingClaim;
+      const now = Date.now();
+      if(DB.wishlists[ownerId]) {
+        DB.wishlists[ownerId] = DB.wishlists[ownerId].map(i=>
+          i.id===item.id ? {...i, claimed:true, claimedBy:user.name||user.email, claimedAt:now} : i
+        );
+      }
+      const ownerProf = DB.users[ownerId];
+      ClaimedItemStore.add(user.id, ownerId, ownerNm, item, ownerProf?.dob||null);
+      NotifStore.push(user.id,{
+        icon:"🎁",
+        text:`Reserved "${item.title||"an item"}" on ${ownerNm||"their"} wishlist`,
+        sub:"Confirm purchase when you buy it — we will remind you before their birthday",
+        color:"var(--mint)",route:"wishlist",
+      });
+      setPendingClaim(null);
+    }
     if(user.isNew) setScreen("setup");
     else {
       /* returning user — check if gender needs to be set (skip demo) */
@@ -24963,7 +27377,7 @@ export default function BirthdayMeApp({ _initialScreen, _initialAuthUser, _initi
       <div ref={scrollRef} style={{flex:1,overflowY:"auto",position:"relative",zIndex:1,paddingBottom:'calc(72px + env(safe-area-inset-bottom,0px))'}}>
         {dashTab==="home"&&<DashHome profile={profile} profileUrl={profileUrl} onEdit={()=>setScreen("edit")} onViewProfile={handleViewProfile} currentUserId={profile.id} onViewWall={()=>{ setDashTab("feed"); setTimeout(()=>{ if(window._setWallTab) window._setWallTab("mywall"); },80); }}/>}
         {dashTab==="feed"&&<WallHub profile={profile} onViewProfile={handleViewProfile} onViewLists={()=>setDashTab('lists')}/>}
-        {dashTab==="analytics"&&<AnalyticsDashboard profile={profile}/>}
+        {dashTab==="analytics"&&<div><div style={{padding:'16px 20px 0'}}><BirthdayWalletHistory profile={profile}/></div><AnalyticsDashboard profile={profile}/></div>}
         {dashTab==="lists"&&<ListsManager profile={profile}/>}
         {dashTab==="wall"&&<WallHub profile={profile} onViewProfile={handleViewProfile} onViewLists={()=>setDashTab('lists')} initialTab="mywall"/>}
         {dashTab==="wish"&&<WishlistHub profile={profile} initialTab={wishTab} onTabChange={setWishTab}/>}
